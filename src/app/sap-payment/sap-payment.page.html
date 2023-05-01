@@ -1,0 +1,198 @@
+<div class="card mb-2">
+  <form [formGroup]="filterBoxFormGroup">
+    <div class="card-body pb-0">
+      <div class="row">
+        <div class="col">
+          <div class="form-group row">
+            <label for="fd" class="col-sm-5 col-form-label col-form-label-sm">From Date</label>
+            <div class="col-sm">
+              <div class="input-group  input-group-sm">
+                <input matInput [(ngModel)]="criteria.fromDate" [matDatepicker]="fromDatePicker_pay" placeholder="Select Date" class="form-control"
+                  formControlName="fromDate" [disabled]="criteria.checkAll" readonly>
+                  <!-- <input [(ngModel)]="criteria.fromDate" [min]="criteria.fromDate" matInput [matDatepicker]="fromDatePicker" placeholder="Select Date" class="form-control"
+                  [disabled]="true" [ngModelOptions]="{standalone: true}" readonly> -->
+                <div class="input-group-append date-form"
+                  style="width: fit-content;" (click)="fromDatePicker_pay.open()">
+                  <i class="input-group-text fa fa-calendar" aria-hidden="true "></i>
+                  <mat-datepicker #fromDatePicker_pay></mat-datepicker>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group row">
+            <label for="fd" class="col-sm-5 col-form-label col-form-label-sm">To Date</label>
+            <div class="col-sm">
+              <div class="input-group  input-group-sm">
+                <input  matInput [(ngModel)]="criteria.toDate" [matDatepicker]="toDatePicker_pay" placeholder="Select Date" class="form-control"
+                  formControlName="toDate" [disabled]="criteria.checkAll" readonly>
+ 
+                  <!-- <input [(ngModel)]="criteria.toDate" [min]="criteria.toDate" matInput [matDatepicker]="toDatePicker" placeholder="Select Date" class="form-control"
+                  [disabled]="true" [ngModelOptions]="{standalone: true}" readonly> -->
+                <div class="input-group-append date-form"
+                  style="width: fit-content;" (click)="toDatePicker_pay.open()">
+                  <i class="input-group-text fa fa-calendar" aria-hidden="true "></i>
+                  <mat-datepicker #toDatePicker_pay></mat-datepicker>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group row">
+            <label class="col-sm-5 col-form-label col-form-label-sm">
+              <input type="checkbox" [(ngModel)]="criteria.checkAll" [ngModelOptions]="{standalone: true}">&nbsp;All
+            </label>
+          </div>
+        </div>
+
+        <!--         
+        <div class="col">
+          <div class="form-group row">
+            <label  class="col-sm-5 col-form-label col-form-label-sm">Date Options</label>
+            <div class="col-sm">
+              <select [(ngModel)]="criteria.dateOptions" class="custom-select custom-select-sm"
+                name="cri-dateopt-inv" id="cri-dateopt-inv" (change)="dateOptionsChange()" [ngModelOptions]="{standalone: true}">
+                <option value="0" selected>-</option>
+                <option value="today">
+                  Today
+                </option>
+                <option value="yesterday">
+                  Yesterday
+                </option>
+                <option value="this_week">
+                  This Week
+                </option>
+                <option value="last_week">
+                  Last Week
+                </option>
+                <option value="this_month">
+                  This Month
+                </option>
+                <option value="last_month">
+                  Last Month
+                </option>
+              </select>
+            </div>
+          </div>
+        </div> 
+        -->
+
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group row">
+            <label  class="col-sm-5 col-form-label col-form-label-sm">Shop Code</label>
+            <div class="col-sm">
+              <input type="text" id="inv-shop" matInput class="form-control form-control-sm"
+              [(ngModel)]="criteria.shopCode" formControlName="shop">
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group row">
+            <label for="dischanpay" class="col-sm-5 col-form-label col-form-label-sm">Distribution Channel</label>
+            <div class="col-sm">
+              <mat-select class="form-control form-control-sm" id="dischanpay" name="dischanpay"
+              [(ngModel)]="criteria.disChanSyskey"  [ngModelOptions]="{standalone: true}" multiple>                       
+                <mat-option [value]="-1" #triggerAllDisChanSelectOption (click)="toggleDisChanAllSelect()">
+                  Select All
+                </mat-option>
+                <mat-option [value]="dischan.syskey" *ngFor="let dischan of disChanList; let i = index"
+                          >
+                          {{dischan.desc}}
+                </mat-option>
+            </mat-select>
+            <!-- <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+              *ngIf="disChanList.length==0"></span>               -->
+            </div>
+          </div>
+        </div>
+        <div class="col"></div>
+      </div>
+    </div>
+    <div class="card-footer d-flex bg-light border-top-0">
+      <!-- <button class="btn btn-primary mr-3" id="btn-invsearch" (click)="search(false)">
+        <i class="fa fa-search mr-1"></i>
+        Search
+      </button>  -->
+      <button class="btn btn-primary mr-3" id="btn-paypreview" (click)="search(false)">
+        <i class="fa fa-eye mr-1"></i>
+        Preview
+      </button>
+      <button class="btn btn-primary mr-3" id="btn-paypost" (click)="printToExport()" [disabled]="!crdCollectionExport_Access">
+        <i class="fa fa-upload mr-1"></i>
+        Export SAP Template
+      </button>
+      <button class="btn btn-primary mr-3" id="btn-payreset" (click)="resetStatus()" [disabled]="!crdCollectionExport_Access">
+        <i class="fa fa-undo mr-1"></i>
+        Reset Export Status
+      </button>
+      <button class="btn btn-primary ml-auto" id="btn-payupload" (click)="upload()" [hidden]="true">
+        <i class="fa fa-upload mr-1"></i>
+        Upload
+      </button>
+    </div>
+    <div class="progress" style="width: 100%;" id="progress-bar-payment">
+      <div class="progress-bar progress-bar-success progress-bar-striped active progress-bar-animated" role="progressbar" aria-valuenow="83"
+      aria-valuemin="0" aria-valuemax="100" style="width:100%">
+      </div>
+    </div>  
+  </form>
+</div>
+<div id="no-log-tab">
+  <div class="border rounded py-3 px-2 mb-2 pl-4" id="payment-upload-result">
+    <i class="fa fa-check"></i>
+    Success!
+  </div>
+  <div class="card col-sm mb-1" id="payment-search-result">
+    <span class="text-dark btn"> <strong>{{paymentDataList.length}}</strong> Records are found to upload. 
+    </span>
+    <!-- <button class="btn btn-link " (click)="upload()">Yes</button> -->
+    <button class="btn btn-link ml-2" id="btn-show-detail" (click)="printToPreview()">Preview Download</button>
+
+  </div>
+  <div id="payment-detail-table" class="table-responsive text-nowrap overflow-auto mt-2">
+    <pagination-controls id="paypagi" (pageChange)="pageChanged($event)">
+    </pagination-controls>
+    <table class="table table-hover" style="font-size: 13px;">
+      <thead class="thead-dark">
+        <tr class="bg-light">
+          <th>No.</th>
+          <th>USERNAME</th>
+          <th>CUSTOMER_ID</th>
+          <th>TRANS_DATE</th>
+          <th>INVOICE_NUMBER</th>
+          <th>INVOICE_DATE</th>
+          <th>CURRENCY</th>
+          <th>AMOUNT</th>
+          <th>PSTNG_DATE</th>
+          <th>REF_DOC_NO</th>   
+          <th>SALES_OFFICE</th> 
+          <!-- <th>UPDATE_FLAG</th>
+          <th>DELETE_FLAG</th>      -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pay of paymentDataList | paginate : config; let i = index">
+          <td>{{i+1}}</td>
+          <td>{{pay.userName}}</td>
+          <td>{{pay.customerId}}</td>
+          <td>{{pay.transDate}}</td>
+          <td>{{pay.invNum}}</td>
+          <td>{{pay.invDate}}</td>
+          <td>{{pay.currency}}</td>
+          <td>{{pay.amount}}</td>
+          <td>{{pay.pstngDate}}</td>
+          <td>{{pay.refDocNo}}</td>  
+          <td>{{pay.salesOffice}}</td>   
+          <!-- <td>{{pay.updateFlag}}</td>
+          <td>{{pay.deleteFlag}}</td>        -->
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

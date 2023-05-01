@@ -1,0 +1,318 @@
+<div class="card mb-2">
+  <form [formGroup]="filterBoxFormGroup">
+    <div class="card-body pb-0">
+      <div class="row">
+        <div class="col">
+          <div class="form-group row">
+            <label for="fd" class="col-sm-5 col-form-label col-form-label-sm">From Date</label>
+            <div class="col-sm">
+              <div class="input-group input-group-sm">
+                <!-- <input matInput [matDatepicker]="fromDatePicker" placeholder="Select Date" class="form-control" 
+                  formControlName="fromDate" [disabled]="filterBoxFormGroup.get('checkAll').value" readonly> -->
+
+                <input matInput [matDatepicker]="fromDatePicker" placeholder="Select Date" class="form-control" 
+                  formControlName="fromDate" [disabled]="filterBoxFormGroup.get('checkAll').value" readonly>
+                <div class="input-group-append date-form"
+                  style="width: fit-content;">
+                  <!-- [disabled]="filterBoxFormGroup.get('checkAll').value" -->
+                  <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="fromDatePicker.open()"></i>
+                  <mat-datepicker #fromDatePicker></mat-datepicker>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group row">
+            <label for="fd" class="col-sm-5 col-form-label col-form-label-sm">To Date</label>
+            <div class="col-sm">
+              <div class="input-group  input-group-sm">
+                <!-- <input matInput [matDatepicker]="toDatePicker" placeholder="Select Date" class="form-control" 
+                  formControlName="toDate" [disabled]="filterBoxFormGroup.get('checkAll').value" readonly> -->
+
+                <input matInput [matDatepicker]="toDatePicker" placeholder="Select Date" class="form-control"
+                  formControlName="toDate" [disabled]="filterBoxFormGroup.get('checkAll').value" readonly>
+                <div class="input-group-append date-form"
+                  style="width: fit-content;">                  
+                  <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="toDatePicker.open()"></i>
+                  <mat-datepicker #toDatePicker></mat-datepicker>
+                </div>
+              </div>
+            </div>
+            <!-- <label class="col-sm-3 col-form-label"><input type="checkbox" formControlName="checkAll" [disabled]="true">&nbsp;All</label> -->
+            <!-- <label class="col-sm-3 col-form-label"><input type="checkbox" [disabled]="true">&nbsp;All</label> -->
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group row">
+            <label class="col-sm-5 col-form-label col-form-label-sm"><input type="checkbox" formControlName="checkAll">&nbsp;All</label>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col" id="store-type">
+          <div class="form-group row">
+            <label class="col-sm-5 col-form-label col-form-label-sm">Store Type</label>
+            <div class="col-sm">
+              <!-- <select class="custom-select custom-select-sm" (change)="changeStore($event)" formControlName="storeType">
+                <option value="" selected>-</option>
+                <option [value]="t.t1" *ngFor="let t of storeType">
+                  {{t.t2}}
+                </option>
+              </select> -->
+              <mat-select class="form-control form-control-sm" formControlName="storeType" multiple>                       
+                <mat-option [value]="-1" #triggerAllStoreTypeSelectOption (click)="toggleStoreTypeAllSelect()">
+                  Select All
+                </mat-option>
+                <mat-option [value]="st.t1" *ngFor="let st of storeType; let i = index">
+                  {{st.t2}}
+                </mat-option>
+              </mat-select>
+            </div>
+          </div>
+        </div>
+        <div class="col" id="sale-region">
+          <div class="form-group row">
+            <label class="col-sm-5 col-form-label col-form-label-sm">Sale Region</label>
+            <div class="col-sm">
+              <!-- <select class="custom-select custom-select-sm" (change)="changeState($event)" formControlName="saleRegion">
+                <option value="0" selected>-</option>
+                <option [value]="s.syskey" *ngFor="let s of statelist">
+                  {{s.t2}}
+                </option>
+              </select> -->
+              <mat-select class="form-control form-control-sm" formControlName="saleRegion" multiple>                       
+                <mat-option [value]="-1" #triggerAllSaleRegSelectOption (click)="toggleSaleRegAllSelect()">
+                  Select All
+                </mat-option>
+                <mat-option [value]="s.syskey" *ngFor="let s of statelist; let i = index">
+                  {{s.t2}}
+                </mat-option>
+              </mat-select>
+            </div>
+          </div>
+        </div>
+        <div class="col" id="dis-channel">
+          <!-- <div class="form-group row">
+            <label class="col-sm-5 col-form-label col-form-label-sm" (change)="changeDisChannel($event)">Dis Channel</label>
+            <div class="col-sm">
+              <select class="custom-select custom-select-sm" (change)="changeDisChannel($event)" formControlName="disChannel">
+                <option value="0" selected>-</option>
+                <option [value]="dist.syskey" *ngFor="let dist of discChannelList">
+                  {{dist.desc}}
+                </option>
+              </select>
+            </div>
+          </div> -->
+          <div class="form-group row">
+            <label for="dischancus" class="col-sm-5 col-form-label col-form-label-sm">Distribution Channel</label>
+            <div class="col-sm">
+              <mat-select class="form-control form-control-sm" id="dischancus" name="dischancus" formControlName="disChannel"
+                 multiple>                       
+                <mat-option [value]="-1" #triggerAllDisChanSelectOption (click)="toggleDisChanAllSelect()">
+                  Select All
+                </mat-option>
+                <mat-option [value]="dischan.syskey" *ngFor="let dischan of discChannelList; let i = index">
+                  {{dischan.desc}}
+                </mat-option>
+            </mat-select>
+            <!-- <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+              *ngIf="disChanList.length==0"></span>               -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="row row-cols-1 row-cols-sm-2 ">
+        <div class="col">
+          <fieldset class="form-group row">
+            <legend class="col-form-label col-sm-3 float-sm-left pt-0">Type</legend>
+            <div class="col-sm">
+              <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1" formControlName="log">
+                <label class="form-check-label" for="exampleCheck1">log file</label>
+              </div>
+            </div>
+          </fieldset>
+
+        </div>
+      </div> -->
+    </div>
+    <div class="card-footer d-flex bg-light border-top-0">
+      <!-- <button class="btn btn-primary" id="btn-search" (click)="search()" style="width: 14%;">
+        <i class="fa fa-search mr-1"></i>
+        Search
+      </button>
+        <button class="btn btn-primary" id="btn-search" (click)="uploadCustomers()" style="width: 14%;margin-left: 72%;">
+          <i class="fa fa-upload mr-1"></i>
+          Upload
+        </button> -->
+
+      <button class="btn btn-primary mr-3" id="btn-search" (click)="search(false)">
+        <i class="fa fa-eye mr-1"></i>
+        Preview
+      </button>
+
+      <button class="btn btn-primary mr-3" id="btn-search" (click)="printToExport()">
+        <i class="fa fa-upload mr-1"></i>
+        Export SAP Template
+      </button>
+      <button class="btn btn-primary mr-3" id="btn-cusreset" (click)="resetToExport()">
+        <i class="fa fa-undo mr-1"></i>
+        Reset Export Status
+      </button>
+      <!-- <button class="btn btn-primary mr-3" id="btn-search" (click)="updateShopExportStatus()"
+        [disabled]="this.shopSyskeys == undefined || this.shopSyskeys == null || this.shopSyskeys.toString() == ''">
+          <i class="fa fa-upload mr-1"></i>
+          Post
+      </button> -->
+
+      <button class="btn btn-primary ml-auto" id="btn-upload" (click)="uploadCustomers()" [hidden]="true">
+        <i class="fa fa-upload mr-1"></i>
+        Upload
+      </button>
+
+    </div>
+  </form>
+</div>
+<div id="no-log-tab">
+  <div class="border rounded py-3 px-2 mb-2 pl-4" id="upload-result">
+    <i class="fa fa-check"></i>
+    <span> <strong style="color: green;">  {{successCount}} </strong> shops Success and <strong
+        style="color: red;"> {{failCount}} </strong> shops Fail! </span>
+  </div>
+  <div class="card col-sm mb-1" id="search-result">
+    <!-- <span class="text-dark btn">We found <strong style="color: green;">{{totalCount}}</strong> stores to upload.</span> -->
+    <span class="text-dark btn"> <strong>{{totalCount}}</strong> Records are found to upload. 
+    </span>
+    <!-- <button class="btn btn-link " (click)="uploadCustomers()">Yes</button> -->
+    <button class="btn btn-link ml-2" id="btn-show-detail" (click)="printToPreview()">Preview Download</button>
+    <!-- <button class="btn btn-primary ml-auto" id="btn-upload" (click)="uploadCustomers()">
+      <i class="fa fa-upload mr-1"></i>
+      Upload
+    </button> -->
+  </div>
+  <!-- <pagination-controls class="my-pagination" (pageChange)="pageChanged($event)"> -->
+  <!-- </pagination-controls> -->
+  <div id="detail-table" class="table-responsive text-nowrap overflow-auto">
+    <pagination-controls id="cuslist" (pageChange)="pageChanged($event)"></pagination-controls>
+    <table class="table table-hover mt-1 table-bordered" style="font-size: 13px;">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col" class="sticky-top" style="width: 5px">#</th>
+          <th scope="col" class="sticky-top">CUSTOMER_ID</th>
+          <th scope="col" class="sticky-top">CUSTOMER_NAME</th>
+          <th scope="col" class="sticky-top">ACCOUNT_GROUP</th>
+          <th scope="col" class="sticky-top">STR_SUPPL1</th>
+
+          <th scope="col-2" class="sticky-top">CITY2</th>
+          <th scope="col-2" class="sticky-top">HOME_CITY</th>
+          <th scope="col-2" class="sticky-top">STR_SUPPL2</th>
+          <th scope="col-2" class="sticky-top">STR_SUPPL3</th>
+
+          <th scope="col-2" class="sticky-top">HOUSE_NO</th>
+          <th scope="col-2" class="sticky-top">STREET</th>
+          <th scope="col-2" class="sticky-top">TELEPHONE</th>
+          <th scope="col-2" class="sticky-top">SALE_ORG</th>
+
+          <th scope="col-2" class="sticky-top">DIS_CHANNEL</th>
+          <th scope="col-2" class="sticky-top">DIVISION</th>
+          <th scope="col-2" class="sticky-top">SAL_DISTRICT</th>
+          <th scope="col-2" class="sticky-top">PAYMENT_TERM</th>
+
+          <th scope="col-2" class="sticky-top">UPDATE_FLAG</th>
+          <th scope="col-2" class="sticky-top">DELETE_FLAG</th>
+          <th scope="col-2" class="sticky-top">BLOCK_STATUS</th>
+          <th scope="col-2" class="sticky-top">TRANSPZONE</th>
+
+          <th scope="col-2" class="sticky-top">PARTNER_ROLE</th>
+          <th scope="col-2" class="sticky-top">PARTNER_ID</th>
+          <th scope="col-2" class="sticky-top">SALES_OFFICE</th>
+          <th scope="col-2" class="sticky-top">SALE_GROUP</th>
+
+          <th scope="col-2" class="sticky-top">CUSTOMER_GROUP</th>
+          <th scope="col-2" class="sticky-top">PRICE_LIST_TYPE</th>
+          <th scope="col-2" class="sticky-top">CREDIT_LIMIT_AMOUNT</th>
+        </tr>
+      </thead>
+      <tr *ngIf="showShopList.length==0">
+        <td scope="row" colspan="14">No record</td>
+      </tr>
+      <tr *ngFor="let d of showShopList | paginate: config;let i = index">
+        <th scope="row">{{i+1}}</th>
+        <td>{{d.CustomerId}}</td>
+        <td>{{d.CustomerName}}</td>
+        <td>{{d.AccountGroup}}</td>
+        <td>{{d.STR_SUPPL1}}</td>
+
+        <td>{{d.CITY2}}</td>
+        <td>{{d.HOME_CITY}}</td>
+        <td>{{d.STR_SUPPL2}}</td>
+        <td>{{d.STR_SUPPL3}}</td>
+
+        <td>{{d.HOUSE_NO}}</td>
+        <td>{{d.Street}}</td>
+        <td>{{d.TELEPHONE}}</td>
+        <td>{{d.SALE_ORG}}</td>
+        
+        <td>{{d.DIS_CHANNEL}}</td>
+        <td>{{d.DIVISION}}</td>
+        <td>{{d.SAL_DISTRICT}}</td>
+        <td>{{d.PAYMENT_TERM}}</td>
+
+        <td>{{d.UPDATE_FLAG}}</td>
+        <td>{{d.DELETE_FLAG}}</td>
+        <td>{{d.Status}}</td>
+        <td>{{d.TRANSPZONE}}</td>
+
+        <td>{{d.PARTNER_ROLE}}</td>
+        <td>{{d.PARTNER_ID}}</td>
+        <td>{{d.SALES_OFFICE}}</td>
+        <td>{{d.SALE_GROUP}}</td>
+
+        <td>{{d.CUSTOMER_GROUP}}</td>
+        <td>{{d.PriceListType}}</td>
+        <td>{{d.CreditLimitAmount}}</td>
+
+        <!-- <td style="width: 16% !important;" class="align-middle">
+          <div>
+            <div class="custom-control custom-switch" style="width: 50px;">
+              <input type="checkbox" class="custom-control-input" [checked]="d.n5==0? true:false"
+                [id]="'switch-'+d.shopSysKey" readonly>
+              <label class="custom-control-label" style="width: 0px;">
+              </label>
+            </div>
+          </div>
+          <ng-template #btnDisable>
+            <span class="text-muted">-</span>
+          </ng-template>
+        </td> -->
+      </tr>
+    </table>
+  </div>
+
+</div>
+<!-- <div id="log-tab" *ngIf="filterBoxFormGroup.get('log').value">
+  <div id="log-table">
+    <pagination-controls>
+    </pagination-controls>
+    <table class="table table-sm mt-2">
+      <tr class="bg-light">
+        <th>No</th>
+        <th>File Name</th>
+        <th>Date</th>
+        <th>Batch No</th>
+        <th width="20px"></th>
+      </tr>
+      <tr *ngFor="let i of tableData | paginate : config">
+        <td>1</td>
+        <td>batch_1</td>
+        <td>27-8-2021</td>
+        <td>1</td>
+        <td>
+          <button class="btn btn-link">Download</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+</div> -->

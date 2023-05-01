@@ -1,0 +1,42 @@
+.image-wrapper {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 10px !important;
+}
+
+.btn_img_del:hover, .btn_txt_del:hover {
+    background: rgba(0, 173, 255, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.btn_img_del, .btn_txt_del {
+    background: rgba(137, 127, 127, 0.3);
+    color: rgba(0, 173, 255, 1);
+    border-radius: 30px;
+}
+
+.btn_img_del {
+    margin: -10px -12px;
+}
+
+.btn_txt_del {
+    margin: -3px 12px;
+}
+// .form-control-sm,.custom-select-sm{
+//     width: 170px;
+// }
+.btndelete {
+
+    background-color: rgb(189, 51, 80);
+
+    color: white;
+
+  }
+
+.btndelete:hover {
+
+    background-color:  #740110;
+
+    color: white;
+
+  }

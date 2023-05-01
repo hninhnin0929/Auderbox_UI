@@ -1,0 +1,264 @@
+<ion-content>
+    <div class="myOuterContainer">
+        <div class="d-flex justify-content-start mb-2">
+            <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link" id="list-tab" data-toggle="tab" href="#list" role="tab" aria-controls="list"
+                        aria-selected="true" (click)="btn=false;">List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="new-tab" data-toggle="tab" href="#new" role="tab" aria-controls="new"
+                        aria-selected="false" (click)="newTabClick($event); btn=true">New</a>
+                </li>
+            </ul>
+            <button type="button" class="btn btn-primary  header-btn" (click)="save()" *ngIf="btn">{{zoneObj.syskey==''
+                || zoneObj.syskey=='0'? 'Save':'Update' }}</button>
+            <button type="button" class="btn btn-primary  header-btn btndelete"
+                [disabled]="zoneObj.syskey=='' || zoneObj.syskey=='0'" *ngIf="btn"
+                (click)="gotoDelete()">Delete</button>
+        </div>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade" id="list" role="tabpanel" aria-labelledby="list-tab">
+                <mat-accordion class="example-headers-align ">
+                    <mat-expansion-panel class="border rounded mb-1">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title class="text-primary">
+                                Advance
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                <small></small>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <form [formGroup]='list_searchbox'>
+                            <div class="row row-cols-2">
+                                <div class="col">
+                                    <div class="form-group row">
+                                        <label for="stock-code"
+                                            class="col-sm-2 col-form-label col-form-label-sm">Code</label>
+                                        <div class="col">
+                                            <input type="text" id="stockcat-code" name="stock-code"
+                                                class="form-control form-control-sm" formControlName="code">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group row">
+                                        <label for="stock-name"
+                                            class="col-sm-2 col-form-label col-form-label-sm">Description</label>
+                                        <div class="col">
+                                            <input type="text" id="stock-name" name="stock-name" formControlName="name"
+                                                class="form-control form-control-sm">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="d-flex justify-content-start">
+                                        <div class="btn-group" role="group" style="height: 35px;">
+                                            <button (click)="search()" type="button" class="btn btn-primary"
+                                                [disabled]="spinner">
+                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                            </button>
+                                            <button (click)="refresh()" type="button" class="btn btn-primary">
+                                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        <div class="d-flex justify-content-start">
+                                            <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                                                <button (click)="print()" type="button" class="btn btn-primary">
+                                                    Export
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </mat-expansion-panel>
+
+                </mat-accordion>
+                <pagination-controls id="config_zone_list" (pageChange)="pageChangedList($event)">
+                </pagination-controls>
+                <table class="table table-hover " style="font-size: 13px;">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" style="width: 5px">#</th>
+                            <th scope="col">Code</th>
+                            <th scope="col">Description</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let d of zoneList | paginate : config_list ;let i = index" (click)="detail(d)">
+                            <th scope="row">{{i+1}}</th>
+                            <td>{{d.code}}</td>
+                            <td>{{d.description}}</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade px-3" id="new" role="tabpanel" aria-labelledby="new-tab">
+
+                <div class="row mb-3">
+                    <div class="col ">
+                        <div class="card-body mx-auto py-0" style="margin-bottom: -2px; margin-top: 10px;">
+                            <div class="form-group">
+                                <label for="name">Description</label>
+                                <input type="text" name="name" [(ngModel)]="zoneObj.description" class="form-control"
+                                    id="name">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="row">
+                    <div class="col ">
+                        <div class="card-body mx-auto ">
+
+                            <ul style="list-style-type: none;padding: inherit;">
+                                <li class="pb-2">
+                                    <h6>Assigned Stores</h6>
+                                </li>
+                                <li class="pb-2">
+                                    <div class="row">
+                                        <div class="col-8 py-0">
+                                            <pagination-controls id="config_assign"
+                                                (pageChange)="pageChangedAssign($event)"
+                                                (pageBoundsCorrection)="pageBoundsCorrectionAssign($event)">
+                                            </pagination-controls>
+                                        </div>
+                                        <div class="col py-0 text-right">
+                                            <div class="btn-group" role="group" aria-label="Basic example">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                    (click)="descending()">
+                                                    
+                                                    <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                    (click)="ascending()">
+                                                    
+                                                    <i class="fa fa-sort-asc" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <li class="py-1 border-bottom">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h6>Name</h6>
+                                        </div>
+                                        <div class="col-3 text-right">
+                                            <h6>Code</h6>
+                                        </div>
+                                        <div class="col-3 text-right">
+                                            <h6>Operation</h6>
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <li class="py-1"
+                                    *ngFor="let s of checked_store_list | paginate: config_assign ; let i = index"
+                                    [hidden]="s === undefined">
+                                    <div class="row" *ngIf="s !== undefined">
+                                        <div class="col-6">
+                                            {{s.name}}
+                                        </div>
+                                        <div class="col-3 text-right">
+                                            {{s.code}}
+                                        </div>
+                                        <div class="col-3 text-right">
+                                            <a class="text-danger remove" (click)="removeAssignedStore(s)">Remove</a>
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <li class="py-1" *ngIf="checked_store_list.length == 0">
+                                    <a class="text-muted">No records</a>
+
+                                </li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div class="col ">
+                        <div class="card-body mx-auto ">
+                            <ul style="list-style-type: none;padding: inherit;">
+                                <li class="pb-2">
+                                    <h6 class="align-middle">Avaliable Stores</h6>
+                                    <mat-progress-bar mode="query" id="progress-bar-avaliable-zonestore" class="mt-1">
+                                    </mat-progress-bar>
+                                </li>
+                                <li class="pb-2 ">
+                                    <div class="row">
+                                        <div class="col-8 py-0 pagination-block-stores">
+                                            <pagination-controls id="config_storeall"
+                                                (pageChange)="pageChanged($event)">
+                                            </pagination-controls>
+                                        </div>
+                                        <div class="col py-0 text-right">
+                                            <div class="input-group input-group-sm" style="width: 200px;">
+                                                <input type="text" class="form-control border-right-0 store-search-box"
+                                                    [(ngModel)]="available_store_search"
+                                                    (keyup.enter)="searchAvailableStores()" placeholder="Search"
+                                                    aria-describedby="basic-search">
+                                                <div class="input-group-append">
+
+                                                    <button class="btn btn-sm btn-outline-secondary" type="button"
+                                                     style="border-color: #cacaca;border-left: none;border-right: none;"
+                                                        (click)="searchAvailableStores()" id="button-addon1"><i
+                                                            class="fa fa-search"></i></button>
+                                                </div>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-sm btn-outline-secondary" type="button"
+                                                    style="border-color: #cacaca;border-left: none;"
+                                                        (click)="clearAvailableStores()" id="button-addon1"><i
+                                                            class="fa fa-times"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li class="py-1 border-bottom">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h6>Name</h6>
+                                        </div>
+                                        <div class="col text-right">
+                                            <h6>Code</h6>
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <li class="py-1"
+                                    *ngFor="let s of available_zone_list | paginate: config; let i = index">
+                                    <div class="row">
+                                        <div class="col">
+                                            <mat-checkbox [(ngModel)]="s.check" (change)="changeCheckedStore(s)"
+                                                [disabled]="s.inactive">{{s.name}}
+                                            </mat-checkbox>
+                                        </div>
+                                        <div class="col text-right">
+                                            {{s.code}}
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <li class="py-1" *ngIf="available_zone_list.length == 0">
+                                    <a class="text-muted">No records</a>
+
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ion-content>

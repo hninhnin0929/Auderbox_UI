@@ -1,0 +1,11 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "AuderBox",
+  "short_name": "AuderBox",
+  "version": "io.ionic.starter",
+  "description": "AuderBox.",
+  "author": "Ionic Framework Team",
+  "icons": [],
+  "start_url": "index.html"
+}

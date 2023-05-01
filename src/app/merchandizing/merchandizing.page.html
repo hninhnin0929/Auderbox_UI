@@ -1,0 +1,128 @@
+<ion-content>
+    <mat-progress-bar [hidden]="!loading" id="processbar" mode="indeterminate"></mat-progress-bar>
+    <div [hidden]="loading">
+        <mat-horizontal-stepper [linear]="isLinear" #stepper>
+            <mat-step [editable]="editable">
+                <ng-template matStepLabel>Choose Shop</ng-template>
+                <div style="height: 370px">
+                    <div>
+                        <div class="row">
+                            <div class="col">
+
+                                <div class="form-group row mr-5">
+                                    <div class="col">
+                                        <input placeholder="Search " style="width: 150px;" type="search" [(ngModel)]="selectShop" class="form-control" id="search" (change)="changeShop()">
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="col overflow-auto" style="height: 340px;">
+                                <div class="card mouse-hover mb-5" style="width: 300px" (click)="chooseShopClick(i)" *ngFor="let shop of shopList; let i=index">
+                                    <div class="card-body">
+                                        <div class="card-title text-left text-primary">
+                                            {{shop.shopname}}
+                                        </div>
+                                        <div class="card-subtitle mb-2 text-muted text-left" style="font-size: 12px">
+                                            {{shop.shopcode}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </mat-step>
+            <mat-step [editable]="editable">
+                <ng-template matStepLabel>Choose Campaign</ng-template>
+                <div style="height: 370px">
+                    <div>
+                        <div class="row">
+                            <div class="col">
+
+                                <div class="form-group row mr-5">
+                                    <div class="col">
+                                        <input placeholder="Search " style="width: 150px;" type="search" [(ngModel)]="selectCampain" class="form-control" (change)="changeCampain()">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- <div class="col v-divider"></div> -->
+                            <div class="col overflow-auto" style="height: 340px">
+                                <div class="card mouse-hover mb-3" style="width: 300px" (click)="campaignClick(i)" *ngFor="let mc002 of mc002list; let i=index">
+                                    <div class="card-body">
+                                        <div class="card-title text-left text-primary">
+                                            {{mc002.t1==''? i+1: mc002.t1}} {{mc002.mc003.length == 0? ' (No task avariable)':''}}
+                                        </div>
+                                        <div class="card-subtitle mb-2 text-muted text-left" style="font-size: 12px">
+                                            Campaign Id : {{mc002.campaignId}}
+                                        </div>
+                                        <div class="card-subtitle mb-2 text-muted text-left" style="font-size: 12px">
+                                            BrandOwner Id : {{mc002.brandOwnerId}}
+                                        </div>
+                                        <p class="card-text"><small class="text-muted">{{mc002.createdDate}}</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </mat-step>
+            <mat-step [editable]="editable">
+                <ng-template matStepLabel>Choose Task</ng-template>
+                <div style="height: 370px">
+                    <div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="col overflow-auto photo" style="height: 340px;">
+                                    <div style="width: 18rem" class="card mouse-hover mb-3" *ngFor="let pic of piclist; let i=index">
+                                        <img [src]="pic.modifiedDate == ''? 'assets/img/not-found.png': pic.modifiedDate" class="card-img-top" alt="...">
+                                        <div class="card-body">
+                                            <h5 class="card-title" style="font-size: 10px">{{pic.t2}}</h5>
+                                            <p class="card-text"></p>
+                                        </div>
+                                    </div>
+                                    <div class="card" style="border: none" *ngIf="piclist.length==0">
+                                        <div>
+                                            <h5 id="picTxt" class="text-muted">Please Choose task</h5>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            <!-- <div class="col v-divider"></div> -->
+                            <div class="col overflow-auto" style="height: 340px">
+                                <div class="card bg-light  mb-3" style="width: 300px" *ngFor="let mc003 of mc003list; let i=index">
+                                    <div class="card-body">
+                                        <div class="card-title text-primary btn-style" (click)="taskClick(i)">
+                                            {{i+1}}. {{mc003.t1}}
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-start">
+                                                <ion-checkbox class="mr-3" slot="end" [(ngModel)]="mc003.complete" id="checkme"></ion-checkbox>
+                                                <p for="checkme" style="font-size: 13px">Complete</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div id="btnGroup">
+                    <ion-button (click)="saveTask()">save</ion-button>
+                </div>
+
+            </mat-step>
+
+        </mat-horizontal-stepper>
+    </div>
+    <img src="C:\Program Files\Apache Software Foundation\Tomcat 8.5_Tomcat8recover\webapps\auderbox-img\merchandizing-img\1\20200520\2005110512357800002\null\20200520IMG_19861.jpg">
+</ion-content>

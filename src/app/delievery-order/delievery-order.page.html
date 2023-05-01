@@ -1,0 +1,1401 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="d-flex justify-content-start optionNavBar">
+      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="delordlist-tab" data-toggle="tab" href="#delordlist" role="tab" aria-controls="list"
+            aria-selected="true" (click)="btn=false;">List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="delordnew-tab" data-toggle="tab" href="#delordnew" role="tab" aria-controls="new"
+            aria-selected="false" (click)="newDelivery()">New</a>
+        </li>
+      </ul>
+      <button *ngIf="btn && button.save" type="button" class="btn btn-primary header-btn" (click)="prepareToSave2(true)"
+        id="btn-delivery-update" [disabled]="sop003.length == 0 || savebtnDisable">
+        Save
+        <span class="spinner-border spinner-border-sm" role="status" id="spinner-delivery-update" style="display: none;"
+          aria-hidden="true">
+        </span>
+      </button>
+      <button *ngIf="btn && button.void" type="button" class="btn btn-primary header-btn btn-void btn btn-warning"
+        (click)="voidOrder(soObj.syskey)">Void</button>
+      <button type="button" class="btn btn-primary header-btn" *ngIf="adminPannel.isAdmin && btn"
+        (click)="adminPannel.isHide? adminPannel.isHide=false:adminPannel.isHide=true">Show Admin</button>
+    </div>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade" id="delordlist" role="tabpanel" aria-labelledby="ordlist-tab">
+
+        <mat-accordion class="example-headers-align ">
+          <mat-expansion-panel (opened)="advanceSearch(searchtab? false: true)" class="border rounded mb-1">
+            <mat-expansion-panel-header>
+              <mat-panel-title class="text-primary">
+                <span *ngIf="!spinner">Advance</span>
+                <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+                  <span class="sr-only"></span>
+                </div>
+              </mat-panel-title>
+              <mat-panel-description>
+                <small></small>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="searchbox">
+              <div class="row">
+                <div class="col">
+                  <div class="form-group row">
+                    <label for="fd" class="col-sm-4 col-form-label">From date</label>
+                    <div class="col-sm">
+                      <div class="input-group input-group-sm cri-input">
+                        <input [(ngModel)]="advSearchObjTmp.adv_fromDate" matInput [matDatepicker]="p1"
+                          placeholder="Select Date" class="form-control" readonly>
+                        <span class="input-group-append" style="width: fit-content;">
+                          <div class="input-group-text">
+                            <i class=" fa fa-calendar" aria-hidden="true" (click)="p1.open()"></i>
+                          </div>
+                          <mat-datepicker #p1 (opened)="streamOpened()"></mat-datepicker>
+                        </span>
+
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="cri-shop" class="col-sm-4 col-form-label">Shop</label>
+                    <div class="col-sm">
+                      <!-- <input type="text" matInput id="cri-shop" class="form-control form-control-sm cri-input"
+                        [(ngModel)]="advSearchObjTmp.adv_shopsyskey" [formControl]="shopNameSearchCri"
+                        [matAutocomplete]="auto2">
+                      <mat-autocomplete #auto2="matAutocomplete">
+                        <mat-option *ngFor="let shop of shopNameSearchCri_shopList" [value]="shop.shopName"
+                          style="font-size: small;">
+                          {{shop.shopName}}
+                        </mat-option>
+                      </mat-autocomplete> -->
+                      <input type="text" id="cri-shop" class="form-control form-control-sm cri-input"
+                        [(ngModel)]="advSearchObjTmp.adv_shopsyskey">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="cri-bo" class="col-sm-4 col-form-label">BrandOwner</label>
+                    <div class="col-sm">
+                      <select [(ngModel)]="advSearchObjTmp.adv_brandOwnerSyskey"
+                        class="custom-select custom-select-sm cri-input" name="cri-shop" id="cri-bo"
+                        [disabled]="bolist.length==0">
+                        <option value="" selected>-</option>
+                        <option [value]="bo.syskey" *ngFor="let bo of bolist">
+                          {{bo.t2}}
+                        </option>
+                      </select>
+                      <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+                        *ngIf="bolist.length==0"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group row">
+                    <label for="fd" class="col-sm-4 col-form-label">To date</label>
+                    <div class="col-sm">
+                      <div class="input-group input-group-sm cri-input">
+                        <input [(ngModel)]="advSearchObjTmp.adv_toDate" matInput [matDatepicker]="myDatepicker2"
+                          placeholder="Select Date" class="form-control form-control-sm inputdate" readonly>
+                        <div class="input-group-append date-form" style="width: fit-content;">
+                          <i class="input-group-text fa fa-calendar" aria-hidden="true "
+                            (click)="myDatepicker2.open()"></i>
+                          <mat-datepicker #myDatepicker2 (opened)="streamOpened()"></mat-datepicker>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="cri-user" class="col-sm-4 col-form-label">User</label>
+                    <div class="col-sm">
+                      <select [(ngModel)]="advSearchObjTmp.adv_usersyskey"
+                        class="custom-select cri-input custom-select-sm" name="cri-user" id="cri-user"
+                        [disabled]="userlist.length==0">
+                        <option value="" selected>-</option>
+                        <option [value]="data.syskey" *ngFor="let data of userlist">
+                          {{data.userName}}
+                        </option>
+                      </select>
+                      <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+                        *ngIf="userlist.length==0"></span>
+                    </div>
+                  </div>
+                  <!-- <div class="form-group row">
+                    <label for="cri-bDate" class="col-sm-5 col-form-label">Back Date Transaction</label>
+                    <div class="col-sm" style="display: flex;align-items: center"> 
+                      <input type="checkbox" [(ngModel)]="backDate">
+                    </div>
+                  </div> -->
+                </div>
+                <div class="col">
+                  <div class="form-group row">
+                    <label for="cri-dateoptions" class="col-sm-4 col-form-label col-form-label-sm">Date Options</label>
+                    <div class="col-sm">
+                      <select [(ngModel)]="advSearchObjTmp.dateOptions" class="custom-select cri-input custom-select-sm"
+                        name="cri-dateoptions" id="cri-dateoptions" (change)="dateOptionsChange()">
+                        <option value="NA" selected class="text-muted"> Custom date</option>
+                        <option value="today">
+                          Today
+                        </option>
+                        <option value="yesterday">
+                          Yesterday
+                        </option>
+                        <option value="this_week">
+                          This Week
+                        </option>
+                        <option value="last_week">
+                          Last Week
+                        </option>
+                        <option value="this_month">
+                          This Month
+                        </option>
+                        <option value="last_month">
+                          Last Month
+                        </option>
+
+                      </select>
+
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="cri-status" class="col-sm-4 col-form-label col-form-label-sm"> Status</label>
+                    <div class="col-sm">
+                      <select [(ngModel)]="advSearchObjTmp.activeStatus"
+                        class="custom-select cri-input custom-select-sm" name="cri-status" id="cri-status">
+                        <option [value]="s.code" *ngFor="let s of tran_status">{{s.desc}}</option>
+
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="row">
+
+                <div class="col">
+                  <div class="form-group row">
+                    <!-- <label for="cri-backdate" class="col-sm-4 col-form-label col-form-label-sm">
+                     
+                    </label> -->
+                    <div class="col-sm">
+                      <div class="form-group">
+                        <input type="checkbox" [(ngModel)]="backDate" style="margin-right: 5px;">
+                        <label class=" col-form-label col-form-label-sm">Back Date Transaction</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- <div class="col"></div>
+                <div class="col"></div> -->
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="d-flex justify-content-start">
+                    <div class="btn-group mr-1" role="group">
+                      <button (click)="search()" type="button" class="btn btn-primary" [disabled]="spinner">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                      </button>
+                      <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <button (click)="print()" type="button" class="btn btn-primary">
+                      Export
+                    </button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </mat-expansion-panel>
+        </mat-accordion>
+        <pagination-controls (pageChange)="pageChanged($event)" [hidden]="spinner" *ngIf="solist.length>0">
+        </pagination-controls>
+        <div class="table-responsive text-nowrap mt-2">
+          <table class="table table-hover table-bordered " style="font-size: 13px;" [hidden]="solist.length==0">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col" style="width: 5px">#</th>
+                <th scope="col" class="text-center" style="width: 10px">Status</th>
+                <th class="text-center" scope="col" style="width: 10px">Invoice No</th>
+                <th scope="col">Date</th>
+                <th scope="col">BrandOwner</th>
+                <th scope="col">Shop</th>
+
+                <th class="text-right" scope="col">Sub Total Amt</th>
+                <th class="text-right" scope="col">Order Total Amt</th>
+                <th class="text-right" scope="col">Return Total Amt</th>
+                <th class="text-right"scope="col">Tax Amt</th>
+                <th scope="col" [hidden]='!isUseSAP'>Sales Type</th>
+                <th scope="col">Delivery Person</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let so of solist | paginate: config;let i = index" (click)="detail(so.headersyskey); ">
+                <td scope="row">{{so.i+1}}</td>
+                <td class="text-center">
+                  <span [class]="so.status==='128'? 'badge badge-success' : 'badge badge-warning' "
+                    style="width: 40px;">{{so.status==='128'? 'paid':'void'}}</span>
+                </td>
+                <td class="text-center">{{so.ordno}}</td>
+                <td>{{so.date | date:'d/M/y'}}</td>
+                <td>{{so.boname}}</td>
+                <td>{{so.shopname}}</td>
+                <td class="text-right">{{manager.numberWithCommas(so.total)}}</td>
+                <td class="text-right">{{manager.numberWithCommas(so.ordertotal)}}</td>
+                <td class="text-right">{{manager.numberWithCommas(so.returntotal)}}</td>
+                <td class="text-right">{{manager.numberWithCommas(so.taxAmount)}}</td>
+                <td [hidden]='!isUseSAP'>{{so.salesTypeDesc}}</td>
+                <td>{{so.username}}</td>
+
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+      </div>
+      <div class="tab-pane fade" id="delordnew" role="tabpanel" aria-labelledby="ordnew-tab">
+        <div id="delivery-detail-tab">
+          <div class="card border-danger" [hidden]="adminPannel.isHide" id="adminPannel" [@inOutAnimation]>
+            <div class="card-body">
+              <ul id="admin-dashboard" style="list-style: none;">
+                
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col border-right px-4">
+                  <div class="card-title text-primary">Store Details</div>
+                </div>
+                <div class="col px-4">
+                  <div class="card-title text-primary">User Details</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col border-right px-4">
+                  <div class="form-group row mb-1">
+                    <label for="shopname" class="col-sm-5 col-form-label">Name</label>
+                    <div class="col-sm">
+                      <p class="col-form-label price-align">{{soShop.shopName}}</p>
+                    </div>
+                  </div>
+
+                  <div class="form-group row mb-1">
+                    <label for="shopcode" class="col-sm-5 col-form-label">Code</label>
+                    <div class="col-sm">
+
+                      <p class="col-form-label price-align">{{soShop.shopCode}}</p>
+                    </div>
+                  </div>
+                  <div class="form-group row mb-1">
+                    <label for="ownername" class="col-sm-5 col-form-label ">OwnerName</label>
+                    <div class="col-sm">
+
+                      <p class="col-form-label price-align">{{soShop.personName}}</p>
+                    </div>
+                  </div>
+                  <div class="form-group row mb-1">
+                    <label for="phno" class="col-sm-5 col-form-label">PhoneNo</label>
+                    <div class="col-sm">
+
+                      <p class="col-form-label price-align">{{soShop.phno}}</p>
+                    </div>
+                  </div>
+                  <div class="form-group row mb-1">
+                    <label for="add" class="col-sm-5 col-form-label">Address</label>
+                    <div class="col-sm">
+
+                      <p class="text-break" style="font-size: small;text-align: end;"> {{soShop.address}}</p>
+                    </div>
+                  </div>
+
+
+                </div>
+                <div class="col px-4">
+                  <div class="form-group row mb-1">
+                    <label for="username" class="col-sm-4 col-form-label">Name</label>
+                    <div class="col-sm">
+
+                      <p class="col-form-label price-align">{{soObj.username}}</p>
+                    </div>
+
+                  </div>
+                  <div class="form-group row mb-1">
+                    <label for="username" class="col-sm-4 col-form-label">Preseller Name</label>
+                    <div class="col-sm">
+                      <p class="col-form-label price-align" id="preseller-name"></p>
+                    </div>
+
+                  </div>
+                  <div class="form-group row mb-1">
+                    <label for="usertype" class="col-sm-4 col-form-label">Type</label>
+                    <div class="col-sm">
+
+                      <p class="col-form-label price-align">{{soObj.userType}}</p>
+                    </div>
+
+                  </div>
+                  <div class="form-group row mb-1 mt-3">
+                    <div class="col-sm-5 card-title text-primary">Sales Details</div>
+                  </div>
+                  <div class="form-group row mb-1">
+                    <label for="shopname" class="col-sm-4 col-form-label">Date</label>
+                    <div class="col-sm">
+                      <!-- <p class="col-form-label price-align text-primary">{{orderDate |
+                        date:'d/M/y'}}</p> -->
+                      <div class="text-right">
+                        <input [(ngModel)]="soObj.createddate" matInput [matDatepicker]="delCreatedDatepicker"
+                          [disabled]="restrictDates.isDisable || !allowBackDate" (click)="delCreatedDatepicker.open()"
+                          placeholder="Select" id="delCdPickerInput" class="text-primary text-right" [min]="restrictDates.startDate" [max]="restrictDates.endDate" readonly>
+                        <mat-datepicker #delCreatedDatepicker></mat-datepicker>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row mb-1" [hidden]="!isUseSAP" >
+                    <label class="col-sm-5 col-form-label">Sales Type</label>
+                    <div class="col-sm">
+                      <!-- <select [(ngModel)]="soObj.t34" class="custom-select custom-select-sm"
+                         name="delisalestype" id="delisalestype" (change)="salesTypeChange(brandOwner)">
+                        <option value="" selected>-</option>
+                        <option [value]="st.code" *ngFor="let st of salesTypeList">
+                          {{st.desc}}
+                        </option>
+                      </select> -->
+                      <div class="text-right">
+                        <select [(ngModel)]="soObj.t34" class="custom-select custom-select-sm col-form-label"
+                          name="delisalestype" id="delisalestype" (change)="salesTypeChange()" [disabled]="saleTypeDisable">
+                          <option value="" selected>-</option>
+                          <option [value]="st.code" *ngFor="let st of salesTypeList">
+                          {{st.desc}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row mb-1" [hidden]="!isUseSAP">
+                    <label class="col-sm-5 col-form-label">Credit Balance</label>
+                    <div class="col-sm">
+                      <div class="text-right">
+                        <!-- <div class="col-sm"> -->
+
+                          <p class="col-form-label price-align">{{soShop.crdLimitAmt}}</p>
+                        <!-- </div> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card" id="slip-detail-card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col border-right px-4">
+                  <span class="card-title text-primary">Details</span>
+                  <a class="text-secondary ml-2 slip-number" style="font-size: small;"></a>
+                </div>
+                <div class="col px-4">
+                  <div class="card-title text-primary">Payment Type Details</div>
+                </div>
+              </div>
+
+              <div class="row" *ngFor="let brandOwner of soObj.sop003">
+                <div class="col border-right px-4">
+
+                  <div class="form-group row mb-1">
+                    <label class="col-sm-6 col-form-label">Name</label>
+                    <div class="col-sm">
+                      <p class="col-form-label price-align">
+                        {{brandOwner.t5}}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="form-group row mb-1">
+                    <label class="col-sm-6 col-form-label">Order SKU Amount</label>
+                    <div class="col-sm">
+                      <p class="col-form-label price-align">
+                        {{parseToDecimal(brandOwner.n31)}}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="form-group row mb-1">
+                    <label class="col-sm-6 col-form-label">Other Discount Amount</label>
+                    <div class="col-sm">
+                      <p class="col-form-label price-align">
+                        {{parseToDecimal(brandOwner.n7)}}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="form-group row mb-1">
+                    <label class="col-sm-6 col-form-label">Invoice Discount</label>
+                    <div class="col-sm">
+                      <p class="col-form-label price-align">
+                        {{parseToDecimal(brandOwner.n8)}}%
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="form-group row mb-1">
+                    <label class="col-sm-6 col-form-label">Sub Total</label>
+                    <div class="col-sm">
+                      <p class="col-form-label price-align">
+                        <!-- {{parseToDecimal(brandOwner.n31-brandOwner.n32)}} -->
+                        {{parseToDecimal(brandOwner.n31-brandOwner.n33-brandOwner.n7)}}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group row mb-1">
+                    <label class="col-sm-6 col-form-label">Expired SKU Amount</label>
+                    <div class="col-sm">
+                      <p class="col-form-label price-align">
+                        {{parseToDecimal(brandOwner.n32)}}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="form-group row mb-1">
+                    <label class="col-sm-6 col-form-label">Total</label>
+                    <div class="col-sm">
+                      <p class="col-form-label price-align">
+                        {{parseToDecimal(brandOwner.n5)}}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="form-group row mb-1">
+                    <label class="col-sm-6 col-form-label">Promotion SKU</label>
+                    <div class="col-sm">
+                      <ul>
+                        <li class="text-primary price-align col-form-label"
+                          *ngFor="let boPromo of brandOwner.promotionList">{{boPromo.n6}} {{boPromo.t3}}</li>
+                        <li class="text-primary price-align col-form-label"
+                          *ngIf="brandOwner.promotionList.length == 0">
+                          No promotion available
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col px-4">
+
+                  <div class="form-group row mb-1">
+                    <label for="txamount" class="col-sm-5 col-form-label">{{brandOwner.t5}}</label>
+                    <div class="col-sm align-middle">
+
+                      <p class="text-right col-form-label" style="font-size: small;">{{parseToDecimal(brandOwner.n35)}}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="form-group row mb-1">
+                    <label for="txamount" class="col-sm-5 col-form-label">Auderbox</label>
+                    <div class="col-sm align-middle">
+
+                      <p class="text-right col-form-label" style="font-size: small;">{{parseToDecimal(brandOwner.n36)}}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="form-group row mb-1">
+                    <label for="txamount" class="col-sm-5 col-form-label">Cash</label>
+                    <div class="col-sm align-middle">
+
+                      <p class="text-right col-form-label" style="font-size: small;">{{parseToDecimal(brandOwner.n37)}}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="form-group row mb-1">
+                    <label for="txamount" class="col-sm-5 col-form-label">Credit</label>
+                    <div class="col-sm">
+                      <p class="text-right col-form-label" style="font-size: small;">{{parseToDecimal(brandOwner.n38)}}
+                      </p>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="dropdown-divider"></div>
+              </div>
+
+            </div>
+            <!-- <div class="card-footer border-0">
+              <a class="text-muted">Your changes won't effect in this details </a>
+            </div> -->
+          </div>
+          <ul class="nav nav-tabs order-detail-btn" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <a class="nav-link active" id="so-tab" data-toggle="tab" href="#so" role="tab" aria-controls="so"
+                aria-selected="true">Order Details
+                <span *ngIf="button.invoice_badge" class="text-success ml-2">
+                  <span class="badge badge-success">Invoiced</span>
+                </span>
+              </a>
+
+            </li>
+            <li>
+              <button class="btn btn-primary btn-sm mr-1 mt-2 " style="font-size: small;" (click)="muldis4(false)"
+                matTooltip="Multi discount calculation result">
+                Preview</button>
+              <button class="btn btn-primary btn-sm mr-1 mt-2" style="font-size: small;" (click)="launchStockModal()">
+                Add Order Stocks</button>
+              <button class="btn btn-danger btn-sm mt-2" id="getReturnSKU" style="font-size: small;" (click)="getReturnSKU()">
+                Add Expired Stocks
+              </button>
+              <button class="btn btn-info btn-sm mr-3 mt-2"  style="font-size: small;" (click)="geEmptyBottleSKU()" [hidden]="!isUseEmptyBOT">
+                Add Returnable Packaging
+              </button>
+            </li>
+
+          </ul>
+          <div class="card border-bottom-0">
+            <mat-progress-bar mode="query" id="progressbar-1"></mat-progress-bar>
+            <div class="table-responsive text-nowrap">
+              <table class="table table-bordered " style="font-size: 13px; border: none;" id="tabel-detail"
+                [hidden]="spinner">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col" style="width: 5px">#</th>
+                    <th scope="col" class="text-center">Type</th>
+                    <th scope="col">ProId</th>
+                    <th scope="col">BrandOwner</th>
+                    <th scope="col">SKU Name</th>
+                    <th scope="col">SKU Code</th>
+                    <th scope="col" class="align-middle text-center" style="width:100px">Standard Price</th>
+                    <th scope="col" class="align-middle text-center" style="width:100px">Selling Price</th>
+                    <th scope="col" class="align-middle text-center" style="width:100px">Qty</th>
+                    <th scope="col" class="align-middle text-center" style="width:100px">Promo discount(%)</th>
+                    <th scope="col" class="align-middle text-center" style="width:100px">Total</th>
+                    <th scope="col" class="align-middle text-center"></th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let bo of sop003; let boIndex=index" [id]="'bo-'+bo.n1" [hidden]="bo.recordStatus==4">
+                  <tr *ngFor="let d of bo.skuOrderType.order;let i = index" [hidden]="d.recordStatus==4">
+                    <td class="align-middle">
+                      {{i+1}}
+                    </td>
+                    <td class="align-middle text-center">
+                      <span class="badge badge-primary badge-pill" style="width: 50px;" *ngIf="d.n42 == 0">Order</span>
+                      <span class="badge badge-warning badge-pill" style="width: 50px;" *ngIf="d.n42 != 0">Pro</span>
+                    </td>
+                    <td class="align-middle">
+                      {{getShortNum(d.ref3)}}
+                    </td>
+                    <td class="align-middle">{{ bo.t5 }}</td>
+
+                    <td class="align-middle">
+                      <span>{{ d.t3}}</span>
+
+                      <span class="badge badge-success" *ngIf="d.syskey=='0' && d.n40 == 1">new</span>
+
+                      <span class="dropdown ml-1" *ngIf="d.n40 == 3 && d.isEndTypeTotalItem == false"
+                        style="float: right;">
+                        <span class="dropdown-toggle text-primary" data-toggle="dropdown" aria-haspopup="true"
+                          *ngIf="d.stockPromotionSubDetailData.length > 0" aria-expanded="false">
+                          <i class="fa fa-sort" aria-hidden="true"></i>
+                        </span>
+                        <!-- promotion items dropdown -->
+                        <ul class="dropdown-menu">
+                          <li *ngFor="let selPro of d.stockPromotionSubDetailData; let  i=index"
+                            (click)="selectPromotion(d,i)">
+                            <a class="dropdown-item" style="font-size: small;">
+                              <span class="mr-1">{{i+1}}.</span>
+                              <span [class]="selPro.t3 == d.t3? 'text-primary' : '' ">{{selPro.t3}}</span>
+                            </a>
+                          </li>
+                        </ul>
+                      </span>
+
+                    </td>
+                    <td class="align-middle" [class]="d.t2==''? 'text-muted':''">{{d.t2==''?'N/A':d.t2}}</td>
+                    <td class="align-middle price-align"><span class="mr-3">{{parseToDecimal(d.n34)}}</span></td>
+                    <td class="align-middle price-align"><span class="mr-3">{{parseToDecimal(d.n10)}}</span></td>
+                    <td class="align-middle px-2 text-center">
+                      <!-- regular stock item -->
+                      <input type="number" class="text-center border-0" [(ngModel)]="d.n6" style="width: 70px;"
+                        (change)="quantityChange2(d,1)" *ngIf="d.n40 == 1">
+
+                      <!-- promotion item endtype 'total' -->
+                      <input type="number" class="text-center border-0" [(ngModel)]="d.n6" *ngIf="d.n40 == 3"
+                        style="width: 70px;" [disabled]="d.isEndTypeTotalItem == false"
+                        (change)="qtyProItemChange(bo,d)">
+                      <!-- maxQuantity -->
+                      <span class="text-muted" style="font-size: smaller;position: relative;top:-10px"
+                        *ngIf="d.n40 == 3 && d.isEndTypeTotalItem">{{d.maxQty}}</span>
+
+                    </td>
+                    <td class="align-middle price-align">{{parseToDecimal(d.n12)}}</td>
+                    <!-- <td class="align-middle price-align">{{parseToDecimal(d.n10*d.n6)}}</td> -->
+                    <td class="align-middle price-align">{{parseToDecimal(d.n14)}}</td>
+                    <td class="align-middle text-center">
+                      <span>
+                        <button class="btn btn-sm rounded-circle btn-outline-danger" style="font-size: small;"
+                          (click)="deleteDetail(boIndex,i,1)">
+                          <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr *ngFor="let d of bo.skuOrderType.return;let i = index" [hidden]="d.recordStatus==4">
+                    <td class="align-middle">
+                      {{i+1}}
+                    </td>
+                    <td class="align-middle text-center">
+                      <span class="badge badge-danger badge-pill" style="width: 50px;" *ngIf="d.n40 != 4">Expired</span>
+                      <span class="badge badge-info badge-pill" style="width: 70px;" *ngIf="d.n40 == 4">R_Packaging</span>
+                    </td>
+                    <!-- <td class="align-middle text-center">
+                      <span class="badge badge-danger badge-pill" style="width: 50px;">Expired</span>
+                    </td> -->
+                    <td class="align-middle"></td>
+                    <td class="align-middle">{{bo.t5}}</td>
+                    <td class="align-middle">{{d.t3}}</td>
+                    <td class="align-middle">{{d.t2}}</td>
+                    <td class="align-middle price-align"><span class="mr-3">{{parseToDecimal(d.n34)}}</span></td>
+                    <td class="align-middle price-align">
+                      <input type="number" class="text-right border-0" [(ngModel)]="d.n10"
+                        (change)="quantityChange2(d,2)">
+                    </td>
+                    <td class="align-middle text-center">
+                      <div class="row">
+                        <div class="col" *ngIf="!checkNewExpireStockQtyType(d)">
+                          <input type="number" class="text-center border-0" [(ngModel)]="d.n6" style="width: 70px;"
+                            (change)="quantityChange2(d,2)">
+                        </div>
+                        <div class="col" *ngIf="checkNewExpireStockQtyType(d)">
+                          <input type="number" class="text-right border-0" [(ngModel)]="d.n6" style="width: 70px;"
+                            [max]="d.n39" min="0" (change)="quantityChange2(d,2)"><a class="ml-2 text-muted">(of
+                            {{d.n39}})</a>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="align-middle price-align">{{parseToDecimal(d.n12)}}</td>
+                    <td class="align-middle price-align">{{parseToDecimal(d.n14)}}</td>
+                    <td class="align-middle text-center">
+                      <span>
+                        <button class="btn btn-sm rounded-circle btn-outline-danger" style="font-size: small;"
+                          (click)="deleteDetail(boIndex,i,2)">
+                          <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="align-middle" colspan="8">
+                      <span class="text-muted">Total item (</span> {{bo.skuOrderType.order.length +
+                      bo.skuOrderType.return.length}} <span class="text-muted">)</span>
+                    </td>
+                    <td class="align-middle text-right" colspan="2">Order Product Total</td>
+                    <td class="align-middle text-right">{{parseToDecimal(bo.normalSkuTotalAmount)}}</td>
+                    <td class="align-middle text-right"></td>
+                  </tr>
+                  <tr>
+                    <td class="align-middle" colspan="8">
+
+                    </td>
+                    <td class="align-middle text-right" colspan="2">Return Product Total</td>
+                    <td class="align-middle text-right">{{parseToDecimal(bo.returnSkuTotalAmount)}}</td>
+                    <td class="align-middle text-right"></td>
+                  </tr>
+                  <tr>
+                    <td class="align-middle text-right" colspan="10">
+                      Other Discount
+                      <input min="0" (change)="discountChange2(bo)" class="text-right" style="width: 70px;"
+                        type="number" [(ngModel)]="bo.n7">
+
+                      <!-- Invoice Discount Amount -->
+                    </td>
+                    <td class="align-middle text-right">{{parseToDecimal(bo.n7)}}</td>
+                    <!-- <td class="align-middle text-right">{{parseToDecimal(bo.n33)}}</td> -->
+                    <td class="align-middle text-right"></td>
+                  </tr>
+                  <tr>
+                    <td class="align-middle text-right" colspan="10">Total</td>
+                    <td class="align-middle text-right">{{parseToDecimal(bo.n5)}}</td>
+                    <td class="align-middle text-right"></td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="sop003.length == 0">
+                  <tr>
+                    <td colspan="12"><a class="text-muted">Add product!</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+<div class="modal fade" id="skuaddmodal2" tabindex="-1" role="dialog" aria-labelledby="skuaddmodal" aria-hidden="true">
+  <div class=" modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <mat-progress-bar mode="query" style="display: none;" id="stock-progressbar2"></mat-progress-bar>
+      <div class="modal-header py-2 px-3">
+
+        <h5 class="modal-title" id="exampleModalLabel">Stocks
+        </h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body overflow-auto px-0 py-0" style="height: 450px;">
+
+        <table class="table table-sm" style="font-size: 13px;" id="stockaddtbl2">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col" class="align-middle sticky-top" style="width: 5px">#</th>
+              <th scope="col" class="align-middle sticky-top" style="width: 50px">image</th>
+              <th scope="col" class="align-middle sticky-top">Name</th>
+              <th scope="col" class="align-middle sticky-top">Code</th>
+              <th scope="col" class="align-middle sticky-top">BrandOwner</th>
+              <th scope="col" class="align-middle sticky-top">Total Amount</th>
+              <th scope="col" class="align-middle sticky-top">Price</th>
+              <th scope="col" class="align-middle sticky-top" style="width: 70px;">Qty</th>
+              <th scope="col" class="align-middle sticky-top">Is ReturnSKU</th>
+              <th scope="col" class="align-middle sticky-top">Add to cart</th>
+            </tr>
+
+          </thead>
+          <tbody>
+
+            <tr *ngFor="let sku of skulist;let i = index" [id]="i">
+              <th scope="row" class="align-middle">{{i+1}}</th>
+              <td class="align-middle"><img [src]="sku.t1" id="stockimg" (error)="sku.t1 = 'assets/img/not-found.png'">
+              </td>
+              <td class="align-middle">{{sku.t3}}</td>
+              <td class="align-middle">{{sku.t2}}</td>
+              <td class="align-middle">{{sku.brandOwner.t2}}</td>
+              <td class="align-middle">{{sku.stkDetail[0].price*sku.myStk.qty}}</td>
+              <td class="align-middle">
+                {{sku.stkDetail[0].price}}
+              </td>
+              <td class="align-middle">
+                <input [disabled]="sku.myStk.isAddToCard" class="form-control-sm form-control" style="width: 70px;"
+                  type="number" [(ngModel)]="sku.myStk.qty">
+              </td>
+              <td class="align-middle">
+
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" [id]="'return-stk-input' + sku.syskey"
+                    [disabled]="sku.myStk.isAddToCard" [(ngModel)]="sku.myStk.isReturn">
+                  <label class="form-check-label hover" [for]="'return-stk-input' + sku.syskey">return</label>
+                </div>
+
+              </td>
+              <td class="align-middle">
+
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" [id]="'addcart' + sku.syskey"
+                    [(ngModel)]="sku.myStk.isAddToCard">
+                  <label class="form-check-label hover" [for]="'addcart' + sku.syskey">add</label>
+                </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+        <div class="searching-stock-icon2 align-center" style="display: none; margin-left: 50%;margin-top: 100px;">
+          <p class="text-muted" style="font-size: small;">Please wait..</p>
+        </div>
+
+      </div>
+      <div class="modal-footer skulist-btnbar">
+        <button type="button" class="btn btn-secondary  rounded-pill " data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary  rounded-pill" data-dismiss="modal"
+          (click)="addToCard('1')">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="previewToSave" tabindex="-1" role="dialog" aria-labelledby="previewToSave"
+  data-backdrop="static" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Preview</h5>
+      </div>
+
+      <div class="modal-body">
+        <div class="row" *ngFor="let brandOwner of finalSop001.sop003">
+          <div class="col border-right">
+
+            <div class="form-group row mb-1">
+              <label class="col-sm-6 col-form-label">Name</label>
+              <div class="col-sm">
+                <p class="col-form-label price-align">{{brandOwner.t5}}</p>
+              </div>
+            </div>
+
+            <div class="form-group row mb-1">
+              <label class="col-sm-6 col-form-label">Order SKU Amount</label>
+              <div class="col-sm">
+                <p class="col-form-label price-align">
+                  {{parseToDecimal(brandOwner.n31)}}
+                </p>
+              </div>
+            </div>
+
+            <div class="form-group row mb-1">
+              <label class="col-sm-6 col-form-label">Other Discount Amount</label>
+              <div class="col-sm">
+                <p class="col-form-label price-align">
+                  {{parseToDecimal(brandOwner.n7)}}
+                </p>
+              </div>
+            </div>
+
+            <div class="form-group row mb-1">
+              <label class="col-sm-6 col-form-label">Invoice Discount Amount</label>
+              <div class="col-sm">
+                <p class="col-form-label price-align">
+                  {{parseToDecimal(brandOwner.n33)}}
+                </p>
+              </div>
+            </div>
+
+            <div class="form-group row mb-1">
+              <label class="col-sm-6 col-form-label">Sub Total</label>
+              <div class="col-sm">
+                <p class="col-form-label price-align">
+                  <!-- {{parseToDecimal( (brandOwner.n31-brandOwner.n32)-brandOwner.n7)}} -->
+                  {{parseToDecimal( brandOwner.n31 - brandOwner.n33 - brandOwner.n7)}}
+                </p>
+              </div>
+            </div>
+
+            <div class="form-group row mb-1">
+              <label class="col-sm-6 col-form-label">Expired SKU Amount</label>
+              <div class="col-sm">
+                <p class="col-form-label price-align">
+                  {{parseToDecimal(brandOwner.n32)}}
+                </p>
+              </div>
+            </div>
+
+
+            <div class="form-group row mb-1">
+              <label class="col-sm-6 col-form-label">Total</label>
+              <div class="col-sm">
+                <p class="col-form-label price-align">
+                  {{parseToDecimal(brandOwner.n5)}}
+                </p>
+              </div>
+            </div>
+
+            <div class="form-group row mb-1">
+              <label class="col-sm-6 col-form-label">Promotion SKU</label>
+              <div class="col-sm">
+                <ul>
+                  <!-- <div class="text-primary price-align col-form-label" id="overmaxqty">
+                    
+                  </div>
+                  <li class="text-primary price-align col-form-label"
+                    *ngFor="let boPromo of brandOwner.promotionList">
+
+                    <input type="number" class="text-center border-0" [(ngModel)]="boPromo.n6" *ngIf="boPromo.n40 == 5"
+                    style="width: 40px;" [disabled]="boPromo.isEndTypeTotalItem == false" (change)="qtyInvProItemChange(brandOwner,boPromo)"
+                    >
+                    
+                    <span class="text-muted" style="font-size: smaller;position: relative;top:-10px"
+                    *ngIf="boPromo.n40 == 5 && boPromo.isEndTypeTotalItem">{{boPromo.maxQty}}</span>
+
+                    {{boPromo.t3}}
+                    <span class="dropdown ml-1" *ngIf="boPromo.n40 == 5 && boPromo.isEndTypeTotalItem == false"
+                      style="float: right;">
+                      <span class="dropdown-toggle text-primary" data-toggle="dropdown" aria-haspopup="true"
+                        *ngIf="boPromo.stockPromotionSubDetailData.length > 0" aria-expanded="false">
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                      </span>
+                     
+                      <ul class="dropdown-menu">
+                        <li *ngFor="let selPro of boPromo.stockPromotionSubDetailData; let  i=index" (click)="selectPromotion(boPromo,i)" 
+                          >
+                          <a class="dropdown-item" style="font-size: small;">
+                            
+                            <span [class]="true">{{selPro.t3}}</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </span>
+                  </li> -->
+                  <li class="text-primary price-align col-form-label" *ngIf="brandOwner.promotionList.length == 0">
+                    No promotion available
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="form-group row mb-1" *ngIf="brandOwner.promotionList.length != 0">
+              
+              <div class="col-sm">
+                <ul>
+                  <div class="text-primary price-align col-form-label" id="overmaxqtydeli">
+                    
+                  </div>
+                  <li class="text-primary price-align col-form-label"
+                    *ngFor="let boPromo of brandOwner.promotionList">
+
+                    <input type="number" class="text-center border-0" [(ngModel)]="boPromo.n6" *ngIf="boPromo.n40 == 5"
+                    style="width: 40px;" [disabled]="boPromo.isEndTypeTotalItem == false" (change)="qtyInvProItemChange(brandOwner,boPromo)"
+                    >
+                    
+                    <span class="text-muted" style="font-size: smaller;position: relative;top:-10px"
+                    *ngIf="boPromo.n40 == 5 && boPromo.isEndTypeTotalItem">{{boPromo.maxQty}}</span>
+
+                    {{boPromo.t3}}
+                    <span class="dropdown ml-1" *ngIf="boPromo.n40 == 5 && boPromo.isEndTypeTotalItem == false"
+                      style="float: right;">
+                      <span class="dropdown-toggle text-primary" data-toggle="dropdown" aria-haspopup="true"
+                        *ngIf="boPromo.stockPromotionSubDetailData.length > 0" aria-expanded="false">
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                      </span>
+                      <!-- promotion items dropdown HH-->
+                      <ul class="dropdown-menu">
+                        <li *ngFor="let selPro of boPromo.stockPromotionSubDetailData; let  i=index" (click)="selectPromotion(boPromo,i)" 
+                          >
+                          <a class="dropdown-item" style="font-size: small;">
+                            <!-- <span class="mr-1">{{i+1}}</span> -->
+                            <span [class]="true">{{selPro.t3}}</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </span>
+                  </li>
+                  <!-- <li class="text-primary price-align col-form-label" *ngIf="brandOwner.promotionList.length == 0">
+                    No promotion available
+                  </li> -->
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col pr-5">
+
+            <div class="form-group row mb-1">
+              <label class="col-sm-5 col-form-label">{{brandOwner.t5}}</label>
+              <div class="col-sm align-middle">
+
+                <p class="text-right" style="font-size: small;">{{parseToDecimal(brandOwner.n35)}}</p>
+              </div>
+            </div>
+            <div class="form-group row mb-1">
+              <label class="col-sm-5 col-form-label">Auderbox</label>
+              <div class="col-sm align-middle">
+
+                <p class="text-right" style="font-size: small;">{{parseToDecimal(brandOwner.n36)}}</p>
+              </div>
+            </div>
+            <!-- <div class="form-group row mb-1">
+              <label class="col-sm-5 col-form-label">Cash</label>
+              <div class="col-sm">
+                <input type="number"  style="text-align: right;
+                  float: right;
+                  margin-right: -15px;
+                  font-size: small;" [(ngModel)]="brandOwner.n37" *ngIf="soObj.saveStatus==128" id="cashamt-input"
+                  [readonly]="isLessthenZero(brandOwner.n5)" (change)="cashAmountChangeAfterSave(brandOwner)">
+                <p *ngIf="soObj.saveStatus!==128" class="text-right" style="font-size: small;">
+                  {{parseToDecimal(brandOwner.n37)}}
+                </p>
+              </div>
+            </div> -->
+            <div class="form-group row mb-1">
+              <label for="txamount" class="col-sm-5 col-form-label">Cash</label>
+              <div class="col-sm align-middle">
+                <p class="text-right col-form-label" style="font-size: small;">{{parseToDecimal(brandOwner.n37)}}
+                </p>
+              </div>
+            </div>
+            <div class="form-group row mb-1">
+              <label class="col-sm-5 col-form-label">Credit</label>
+              <div class="col-sm align-middle">
+                <p class="text-right" style="font-size: small;">{{parseToDecimal(brandOwner.n38)}}</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="dropdown-divider"></div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary  rounded-pill previewCloseBtn"
+          data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary  rounded-pill previewSaveBtn">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="returnSkuModel" tabindex="-1" role="dialog" aria-labelledby="returnSkuModel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Expire Stocks</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label=" Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex flex-row-reverse bd-highlight align-middle">
+          <div class="spinner-border text-primary spinner-rollback-invoice" role="status" style="margin-top:4px;">
+            <span class="sr-only">
+            </span>
+          </div>
+          <div class="form-group row mb-1">
+            <label for="txamount" class="col-sm-5 col-form-label align-middle" style="margin-top: -3px;">Rollback
+              invoice count</label>
+            <div class="col-sm">
+              <div class="input-group">
+                <input type='number' min='0' style="width: 100px;" class="form-control form-control-sm"
+                  id='rollback-search-input' value="10">
+                <div class="input-group-append rounded">
+                  <button class="btn btn-sm btn-secondary" id="rollback-search-btn" (click)="getReturnSKUService()">Search</button>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+        <div class="container">
+          <ul></ul>
+
+          <mat-selection-list #expiredStock>
+
+            <ol>
+              <li *ngFor="let h of expireSku.expireSku">
+                <a>{{h.createddate}}</a>
+                <ul style="list-style: none;">
+                  <li *ngFor="let bo of h.sop003">
+                    <a class="text-primary">{{bo.t5}}
+                    </a>
+                    <mat-list-option *ngFor="let sku of bo.transDetailsData; let isku = index" checkboxPosition="before"
+                      style="font-size: small;" [value]="{'detail':sku,'brandOwner':bo, 'header': h}">
+                      <span class="row">
+                        <div class="col align-middle">
+                          {{sku.t3}}
+                        </div>
+                        <div class="col align-middle">
+                          <div class="row">
+                            <div class="col-5 text-muted" style="text-align: right;">Price -
+                            </div>
+                            <div class="col pl-0">{{sku.n10}}</div>
+                          </div>
+                        </div>
+                        <div class="col align-middle">
+                          <div class="row">
+                            <div class="col-5 text-muted" style="text-align: right;">QTY -
+                            </div>
+                            <div class="col pl-0">{{sku.n39}}</div>
+                          </div>
+                        </div>
+                      </span>
+                    </mat-list-option>
+                  </li>
+                </ul>
+              </li>
+            </ol>
+          </mat-selection-list>
+
+        </div>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary  rounded-pill previewRtnCloseBtn" data-dismiss="modal"
+          (click)="expiredStock.deselectAll()">Close</button>
+        <button type="button" class="btn btn-primary  rounded-pill previewSaveBtn" data-dismiss="modal"
+          (click)="addReturnSkuBtn(expiredStock)">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="orderlist-model" tabindex="-1" role="dialog" aria-labelledby="returnSkuModel"
+  data-backdrop="static" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-content" style="height: 100%;">
+      <mat-progress-bar mode="query" id="newdel-progressbar" style="display: none;"></mat-progress-bar>
+      <div class="modal-header">
+        <h5 class="modal-title">Select Order</h5>
+        <button type="button" class="close" aria-label="Close" id="btn-dismiss-orderlist-model">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body newdel-modalbody">
+        <form [formGroup]="newDelSearchFromGroup">
+
+          <div class="row row-cols-3 new-dil-search-box">
+            <div class="col px-lg-4">
+              <div class="form-group form-group-sm">
+                <!-- <label for="newdel-shop">Date</label> -->
+                <div class="input-group input-group-sm mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">From</span>
+                  </div>
+                  <input type="text" class="form-control" formControlName="from-date" matInput id="orderlist-model-fromdate"
+                    [matDatepicker]="newdeldpfrom" (click)="newdeldpfrom.open()" placeholder="Click" readonly>
+                  <mat-datepicker #newdeldpfrom></mat-datepicker>
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">To</span>
+                  </div>
+                  <mat-datepicker #newdeldpto></mat-datepicker>
+                  <input type="text" class="form-control" formControlName="to-date" aria-describedby="basic-addon3" id="orderlist-model-todate" readonly
+                    matInput [matDatepicker]="newdeldpto" (click)="newdeldpto.open()" placeholder="Click">
+                </div>
+              </div>
+            </div>
+            <div class="col px-lg-4">
+              <div class="form-group">
+                <!-- <label for="newdel-brandowner">BrandOwner</label> -->
+                <select class="custom-select custom-select-sm" formControlName="bo-selected">
+                  <option value="" selected>- Select BrandOwner -</option>
+                  <option [value]="bo.syskey" *ngFor="let bo of let bo of bolist"> {{bo.t2}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col px-lg-4">
+              <div class="form-group">
+                <!-- <label for="newdel-user">User Name</label> -->
+                <select class="custom-select custom-select-sm" formControlName="user-selected" id='newdel-user'>
+                  <option value="" selected>- Select User Name -</option>
+                  <option [value]="data.syskey" *ngFor="let data of let bo of userlist"> {{data.userName}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row row-cols-4">
+            <div class="col px-lg-4">
+              <div class="form-group">
+                <!-- <label for="cboState">State</label> -->
+                <select id="cboStateDeli" name="cboStateDeli" (change)="cboStateChange($event)" 
+                  class="custom-select custom-select-sm">
+                    <option value="">- Select State -</option>
+                    <option *ngFor="let states of stateList" [value]="states.syskey">
+                      {{states.t2}}
+                    </option>
+                </select>
+              </div>
+            </div>
+            <div class="col px-lg-4">
+              <div class="form-group">
+                <!-- <label for="cboDistrict">District</label> -->
+                <select id="cboDistrictDeli" name="cboDistrictDeli" (change)="cboDistrictChange($event)" 
+                  class="custom-select custom-select-sm">
+                    <option value="">- Select District -</option>
+                    <option *ngFor="let districts of districtList" [value]="districts.syskey">
+                      {{districts.t2}}
+                    </option>
+                </select>
+              </div>
+            </div>
+            <div class="col px-lg-4">
+              <div class="form-group">
+                <!-- <label for="cboTownship">Township</label> -->
+                <select id="cboTownshipDeli" name="cboTownshipDeli" (change)="cboTownshipChange($event)" 
+                  class="custom-select custom-select-sm">
+                    <option value="">- Select Township -</option>
+                    <option *ngFor="let townships of townshipList" [value]="townships.syskey">
+                      {{townships.t2}}
+                    </option>
+                </select>
+              </div>
+            </div>
+            <div class="col px-lg-4">
+              <div class="form-group">
+                <!-- <label for="newdel-shop">Store</label> -->
+                <input type="text" class="form-control form-control-sm" formControlName="store-search" [(ngModel)]="soShop"
+                  [matAutocomplete]="auto" id="newdel-shop" placeholder="Search Store and Enter" 
+                  (keypress)="txtShopNameEnter($event)">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="newDelStoreSearchDisplayWith"
+                  (optionSelected)="optionSelectedNewOrder($event)">
+                  <mat-option *ngFor="let shop of newDelSearchFromGroup.get('store-list').value" [value]="shop"
+                    style="font-size: small;">
+                    {{shop.shopName}}
+                  </mat-option>
+                </mat-autocomplete>
+                <span class="text-danger" style="font-size: small;"
+                  *ngIf="!newDelSearchFromGroup.get('store-search').valid && newDelSearchFromGroup.get('store-search').touched">
+                  Store can't be empty
+                </span>
+              </div>
+            </div>
+            <div class="col px-lg-4">
+              <div class="form-group">
+                <!-- <label for="newdel-shop">Store</label> -->
+                <input type="text" class="form-control form-control-sm" formControlName="store-code" [(ngModel)]="soShop"
+                  [matAutocomplete]="auto1" id="newdel-shopcode" placeholder="Search Store Code and Enter" 
+                  (keypress)="txtShopCodeEnter($event)">
+                <mat-autocomplete #auto1="matAutocomplete" [displayWith]="newDelStoreCodeSearchDisplayWith"
+                  (optionSelected)="optionSelectedNewOrder1($event)">
+                  <mat-option *ngFor="let shop of newDelSearchFromGroup.get('store-list').value" [value]="shop"
+                    style="font-size: small;">
+                    {{shop.shopCode}}
+                  </mat-option>
+                </mat-autocomplete>
+                <span class="text-danger" style="font-size: small;"
+                  *ngIf="!newDelSearchFromGroup.get('store-code').valid && newDelSearchFromGroup.get('store-code').touched">
+                  Store Code can't be empty
+                </span>
+              </div>
+            </div>
+            
+            <!-- <div class="col px-lg-4">
+              <div class="form-group">
+                <button type="button" class="btn btn-sm btn-primary" (click)="getSaleOrderList(0)"
+                  [disabled]="!newDelSearchFromGroup.valid">Search</button>
+                <button type="button" class="btn btn-sm btn-primary ml-2" (click)="newDeliveryOrder()"
+                  [disabled]="!newDelSearchFromGroup.valid">New Order</button>
+              </div>
+            </div> -->
+          </div>
+          <div class="row row-cols-3">
+            <div class="col px-lg-4">
+              <div class="form-group">
+                <button type="button" class="btn btn-sm btn-primary" (click)="getSaleOrderList(0)"
+                  id='btnOdrSearch' [disabled]="!newDelSearchFromGroup.get('store-search').valid && newDelSearchFromGroup.get('store-search').touched">Search</button>
+                <button type="button" class="btn btn-sm btn-primary ml-2" (click)="newDeliveryOrder()"
+                 id='btnNewOdr' [disabled]="!newDelSearchFromGroup.get('store-search').valid && newDelSearchFromGroup.get('store-search').touched">New Delivery</button>
+                 <span class="text-danger" style="font-size: small;" id="delisalesblock">
+                  This shop is blocked for sale.
+                 </span>
+              </div>
+            </div>
+            <div class="col px-lg-4"></div>
+            <div class="col px-lg-4">
+              <div class="form-group">
+                   <label class="col-form-label col-form-label-sm" style="font-style: italic;">{{this.shopAddress}}</label>
+              </div>
+            </div>
+            
+
+          </div>
+        </form>
+        <h6>Order list</h6>
+        <pagination-controls id="config2"></pagination-controls>
+        <table class="table table-hover table-sm table-bordered mt-2" style="font-size: 13px;">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 5px">#</th>
+              <th scope="col">Order No</th>
+              <th scope="col">Shop</th>
+              <th scope="col">Ordered Date</th>
+              <th scope="col">Brand Owner</th>
+              <th scope="col">Tran Id</th>
+              <th scope="col">Order Total Amt</th>
+              <th scope="col">Return Total Amt</th>
+              <th scope="col">User Name</th>
+              <th scope="col">Preseller Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let so of newDelFormGroup.get('so-list').value | paginate: config2; let i = index"
+              (click)="newOrder(so); ">
+              <td class="text-right" scope="row">{{so.i + 1}}</td>
+              <td class="text-right">{{so.ordernumber}}</td>
+              <td>{{so.shopname}}</td>
+              <td>{{so.date | date:'d/M/y'}}</td>
+              <td>{{so.boname}}</td>
+              <td>{{so.tranid}}</td>
+              <td class="text-right">{{manager.numberWithCommas(so.ordertotal)}}</td>
+              <td class="text-right">{{manager.numberWithCommas(so.returntotal)}}</td>
+              <td>{{so.username}}</td>
+              <td>{{so.orderby}}</td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="newDelFormGroup.get('so-list').value.length == 0">
+            <tr >
+              <td class="text-center text-muted" scope="row" colspan="10">No record!</td>
+             
+            </tr>
+          </tbody>
+        </table>
+
+
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="addemptybotmodel" tabindex="-1" role="dialog" aria-labelledby="addemptybotmodel" aria-hidden="true">
+  <div class=" modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <mat-progress-bar mode="query" style="display: none;" id="stock-progressbar2"></mat-progress-bar>
+      <div class="modal-header py-2 px-3">
+
+        <h5 class="modal-title" id="exampleModalLabel">Returnable Packaging Stocks
+        </h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body overflow-auto px-0 py-0" style="height: 450px;">
+
+        <table class="table table-sm" style="font-size: 13px;" id="stockaddtbl2">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col" class="align-middle sticky-top" style="width: 5px">#</th>
+              <th scope="col" class="align-middle sticky-top" style="width: 50px">image</th>
+              <th scope="col" class="align-middle sticky-top">Name</th>
+              <th scope="col" class="align-middle sticky-top">Code</th>
+              <th scope="col" class="align-middle sticky-top">BrandOwner</th>
+              <th scope="col" class="align-middle sticky-top" style="width: 70px;">Qty</th>
+              <th scope="col" class="align-middle sticky-top">Add to cart</th>
+            </tr>
+
+          </thead>
+          <tbody>
+
+            <tr *ngFor="let sku of emptyBOTList;let i = index" [id]="i">
+              <th scope="row" class="align-middle">{{i+1}}</th>
+              <td class="align-middle"><img [src]="sku.t1" id="stockimg" (error)="sku.t1 = 'assets/img/not-found.png'">
+              </td>
+              <td class="align-middle">{{sku.t3}}</td>
+              <td class="align-middle">{{sku.t2}}</td>
+              <td class="align-middle">{{sku.brandOwner.t2}}</td>
+              
+              <td class="align-middle">
+                <input [disabled]="sku.myStk.isAddToCard" class="form-control-sm form-control" style="width: 70px;"
+                  type="number" [(ngModel)]="sku.myStk.qty">
+              </td>
+              <td class="align-middle">
+
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" [id]="'addcart' + sku.syskey"
+                    [(ngModel)]="sku.myStk.isAddToCard">
+                  <label class="form-check-label hover" [for]="'addcart' + sku.syskey">add</label>
+                </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+        <div class="searching-stock-icon2 align-center" style="display: none; margin-left: 50%;margin-top: 100px;">
+          <p class="text-muted" style="font-size: small;">Please wait..</p>
+        </div>
+
+      </div>
+      <div class="modal-footer skulist-btnbar">
+        <button type="button" class="btn btn-secondary  rounded-pill " data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary  rounded-pill" data-dismiss="modal"
+          (click)="addToCard('2')">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>

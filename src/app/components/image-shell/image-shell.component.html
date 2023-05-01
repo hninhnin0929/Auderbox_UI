@@ -1,0 +1,3 @@
+<ion-spinner class="spinner"></ion-spinner>
+<img class="inner-img" *ngIf="_src != ''" [src]="_src" (load)="_imageLoaded()" (error)="handleImgError($event)" alt="">
+<img *ngIf="_src == ''" src="assets/img/not-found.png" alt="">

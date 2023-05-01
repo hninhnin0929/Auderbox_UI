@@ -1,0 +1,50 @@
+#delpage-store-name:hover #delpage-so-address {
+    height: 100px;
+}
+
+#delpage-so-address {
+    height: 0px !important;
+    transition: height 2s;
+}
+.datepicker {
+    border: none;
+    width: 150px !important;
+}
+.datepicker:read-only {
+    background-color: transparent;
+}
+.datepicker:hover {
+    color: rgb(0, 129, 250);
+    cursor: pointer;
+}
+input.ng-invalid.ng-touched::placeholder {
+    color: red !important
+}
+.searchbox-input {
+    width: 150px;
+    transition: width 1s;
+}
+#spinner-excelbtn-del{
+    display: none;
+}
+#spinner-storetovisit{
+    display: none;
+}
+#spinner-undeliveredso{
+    display: none;
+}
+#spinner-allstore-del{
+    display: none;
+}
+.setall-datepicker-so{
+    width: 0px;
+    margin-right: -13px;
+    background-color: transparent;
+    visibility: hidden;
+}
+#searchbox-fromdate:read-only{
+    background-color: transparent;
+}
+#searchbox-todate:read-only{
+    background-color: transparent;
+}

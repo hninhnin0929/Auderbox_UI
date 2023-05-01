@@ -1,0 +1,58 @@
+<ion-content>
+    <div class="p-3">
+      <nav>
+        <div class="nav nav-pills " id="nav-tab" role="tablist">
+          <a class="nav-link active" id="nav-customer-tab" data-toggle="tab" role="tab"   href="#nav-customer" 
+            aria-controls="nav-customer" aria-selected="true">Customer</a>
+          <a class="nav-link" id="nav-material-tab" data-toggle="tab" href="#nav-material" role="tab"
+            aria-controls="nav-material" aria-selected="false">Material</a>
+            <a class="nav-link" id="nav-delivery-tab" data-toggle="tab" href="#nav-delivery" role="tab" aria-controls="nav-delivery"
+            aria-selected="false">Material Mapping</a>
+            <a class="nav-link" id="nav-credit-balance-tab" data-toggle="tab" href="#nav-credit-balance" role="tab"
+            aria-controls="nav-credit-balance" aria-selected="false">Credit Balance</a>
+          <a class="nav-link" id="nav-ar-tab" data-toggle="tab" href="#nav-ar" role="tab" aria-controls="nav-ar"
+            aria-selected="false">AR</a>
+          <a class="nav-link" id="nav-billing-tab" data-toggle="tab" href="#nav-billing" role="tab" aria-controls="nav-billing"
+            aria-selected="false">Invoice</a>
+          <a class="nav-link" id="nav-billing-tab" data-toggle="tab" href="#nav-return-sku" role="tab" aria-controls="nav-return-sku"
+            aria-selected="false">Return SKU</a>
+          <a class="nav-link" id="nav-returnPack-tab" data-toggle="tab" href="#nav-returnPack" role="tab" aria-controls="nav-returnPack"
+            aria-selected="false">Returnable Packaging</a>
+          <a class="nav-link" id="nav-billing-tab" data-toggle="tab" href="#nav-payment" role="tab" aria-controls="nav-billing"
+            aria-selected="false">Credit Collection</a>
+        </div>
+      </nav>
+    <div class="tab-content mt-2" id="nav-tabContent">
+        
+        <div class="tab-pane fade show active" id="nav-customer" role="tabpanel" aria-labelledby="nav-customer-tab">
+          <app-sap-customer></app-sap-customer>
+        </div>
+        <div class="tab-pane fade" id="nav-material" role="tabpanel" aria-labelledby="nav-material-tab">
+          <app-sap-material></app-sap-material>
+        </div>
+        <div class="tab-pane fade" id="nav-delivery" role="tabpanel" aria-labelledby="nav-delivery-tab">
+          <app-sap-delivery></app-sap-delivery>
+        </div>
+        <div class="tab-pane fade" id="nav-credit-balance" role="tabpanel" aria-labelledby="nav-material-tab">
+          <app-sap-credit-balance></app-sap-credit-balance>
+        </div>
+        <div class="tab-pane fade" id="nav-ar" role="tabpanel" aria-labelledby="nav-ar-tab">
+          <app-sap-ar></app-sap-ar>
+        </div>
+        <div class="tab-pane fade" id="nav-billing" role="tabpanel" aria-labelledby="nav-billing-tab">
+          <app-sap-billing></app-sap-billing>
+        </div>
+        <div class="tab-pane fade" id="nav-return-sku" role="tabpanel" aria-labelledby="nav-return-sku-tab">
+          <app-sap-return-sku></app-sap-return-sku>
+        </div>
+        <div class="tab-pane fade" id="nav-returnPack" role="tabpanel" aria-labelledby="nav-returnPack-tab">
+          <app-sap-salesorder></app-sap-salesorder>
+        </div>
+        <div class="tab-pane fade" id="nav-payment" role="tabpanel" aria-labelledby="nav-billing-tab">
+          <app-sap-payment></app-sap-payment>
+        </div>
+      </div>
+    </div>
+   
+</ion-content>
+ <!-- <ion-router-outlet ></ion-router-outlet> -->

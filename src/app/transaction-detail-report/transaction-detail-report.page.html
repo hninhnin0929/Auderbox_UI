@@ -1,0 +1,354 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="tab-content" id="nav-tabContent">
+      <div class="card mb-1">
+        <div class="card-header bg-transparent advance-form">
+          {{spinner? 'Processing .. ':'Advance'}}
+          <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+            [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true">
+          </i>
+          <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+            <span class="sr-only"></span>
+          </div>
+        </div>
+        <div class="card-body" *ngIf="searchtab" id="advance-card">
+          <div class="row">
+            <div class="col">
+              <div class="form-group row">
+                <label for="fromdate" class="col-sm-5 col-form-label col-form-label-sm">From Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input required [(ngModel)]="criteria.fromDate" [max]="maxDate" class="form-control" matInput
+                      [matDatepicker]="picker1" placeholder="Select Date" name="fromdate" readonly>
+                    <div class="input-group-append date-form">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="picker1.open()"></i>
+                      <mat-datepicker #picker1 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="stock-code" class="col-sm-5 col-form-label col-form-label-sm">Stock Code</label>
+                <div class="col-sm">
+                  <input type="text" id="cri-shop2" matInput class="form-control form-control-sm"
+                    [(ngModel)]="criteria.skuCode" [formControl]="stockCodeSearch"   [matAutocomplete]="auto">
+                  <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let stk2 of stockList2"    [value]="stk2.skuCode" style="font-size: small;">
+                      {{stk2.skuCode}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="spSKUCode" class="col-sm-5 col-form-label col-form-label-sm">Brand SKU Code</label>
+                <div class="col-sm">
+                  <input [(ngModel)]="criteria.spSKUCode" type="text" class="form-control form-control-sm"
+                    id="spSKUCode" name="spSKUCode" required>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="type" class="col-sm-5 col-form-label col-form-label-sm">Type</label>
+                <div class="col-sm">
+                  <select [(ngModel)]="criteria.type" class="custom-select custom-select-sm" name="type" id="type">
+                    <option value="" selected>-</option>
+                    <option value="1">Order Product</option>
+                    <option value="2">Return Product</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-user" class="col-sm-5 col-form-label col-form-label-sm">User</label>
+                <div class="col-sm">
+                  <!-- <select [(ngModel)]="criteria.userName" id="cri-user" name="cri-user" 
+                    class="form-control form-control-sm">  class="mdb-select colorful-select dropdown-primary md-form" 
+                      <option value="" selected>-</option>
+                      <option [value]="data.syskey" *ngFor="let data of userlist"> {{data.userName}}</option>
+                  </select> -->
+                  <mat-select class="form-control form-control-sm" [formControl]="toppings" 
+                    [(ngModel)]="criteria.syskey"  multiple>
+                      <!-- <mat-option [value]="" [disabled]="true">-</mat-option> -->
+                    <mat-option [value]="-1" #triggerAllUserSelectOption (click)="toggleUserAllSelect()">
+                        Select All
+                    </mat-option>
+                    <mat-option [value]="data.syskey"  *ngFor="let data of userlist; let i = index" [value]="data" >
+                      {{data.userName}}
+                    </mat-option>
+                  </mat-select>
+                  <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+                    *ngIf="userlist.length==0"></span>
+                </div>
+              </div>
+              <!-- <div class="form-group row">
+                <label for="address" class="col-sm-5 col-form-label col-form-label-sm">Address</label>
+                <div class="col-sm">
+                  <textarea class="form-control form-control-sm text-monospace bg-transparent" id="address"
+                    style="font-size: small;" rows="3" [(ngModel)]="criteria.location"></textarea>
+                </div>
+              </div> -->
+            </div>
+            <div class="col">
+
+              <!-- <div class="form-group row">
+                <label for="shop-name" class="col-sm-4 col-form-label col-form-label-sm">Shop Name</label>
+                <div class="col-sm">
+                  <select [(ngModel)]="criteria.shopName" class="custom-select custom-select-sm" name="shop-name"
+                    id="shop-name" [disabled]="shopList2.length==0">
+                    <option value="" selected>-</option>
+                    <option [value]="shop.shopSysKey" *ngFor="let shop of shopList2">
+                      {{shop.shopName}}
+                    </option>
+                  </select>
+                </div>
+              </div>-->
+
+
+              <!-- <div class="col-sm">
+                  <input type="text" id="date" name="date" 
+                    class="form-control form-control-sm" [(ngModel)]="criteria.createdDate">
+                </div> -->
+
+              <div class="form-group row">
+                <label for="todate" class="col-sm-5 col-form-label col-form-label-sm">To Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input required [(ngModel)]="criteria.toDate" [min]="criteria.fromDate" class="form-control"
+                      matInput [matDatepicker]="picker2" placeholder="Select Date" name="todate" readonly>
+                    <div class="input-group-append date-form">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="picker2.open()"></i>
+                      <mat-datepicker #picker2 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="stock-name" class="col-sm-5 col-form-label col-form-label-sm">Stock Name</label>
+                <div class="col-sm">
+                  <input type="text" id="cri-shop" matInput class="form-control form-control-sm"
+                    [(ngModel)]="criteria.skuName" [formControl]="stockNameSearch"  [matAutocomplete]="auto1">
+                  <mat-autocomplete #auto1="matAutocomplete">
+                    <mat-option *ngFor="let stk of stockList1"  [value]="stk.skuName" style="font-size: small;">
+                      {{stk.skuName}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="staid" class="col-sm-5 col-form-label col-form-label-sm">State</label>
+                <div class="col-sm">
+                  <select slot="end" style="font: small;" id="sta" name="sta" [(ngModel)]="criteria.state" 
+                    class="custom-select custom-select-sm col-form-label-sm" (change)="stateChange()">
+                      <option value="" selected>-</option>
+                      <option [value]="i.syskey" *ngFor="let i of stateList">
+                        {{i.t2}}
+                      </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-shopcode" class="col-sm-5 col-form-label col-form-label-sm">Shop Code</label>
+                <div class="col-sm">
+            
+                  <input type="text" id="cri-shopcode" matInput class="form-control form-control-sm"
+                    [(ngModel)]="criteria.shopCode" >
+                    <!-- [formControl]="shopCodeSearch" [matAutocomplete]="auto4"> -->
+                  <!-- <mat-autocomplete #auto4="matAutocomplete">
+                    <mat-option *ngFor="let shop of shopList2" [value]="shop.shopCode" style="font-size: small;">
+                      {{shop.shopCode}}
+                    </mat-option>
+                  </mat-autocomplete> -->
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <!-- <div class="form-group row">
+                <label for="inactive" class="col-sm-5 col-form-label col-form-label-sm">User Type</label>
+                <div class="col-sm">
+
+                  <select class="custom-select custom-select-sm" [(ngModel)]="criteria.userType" id="ut">
+                    <option [value]="t.code" *ngFor="let t of userType">{{t.val}}</option>
+                  </select>
+                </div>
+              </div> -->
+              <div class="form-group row">
+                <label for="cri-dateoptions" class="col-sm-5 col-form-label col-form-label-sm">Date Options</label>
+                <div class="col-sm">
+                  <select [(ngModel)]="criteria.dateOptions" class="custom-select custom-select-sm"
+                    name="cri-dateoptions" id="cri-dateoptions" (change)="dateOptionsChange()">
+                    <option value="0" selected>-</option>
+                    <option value="today">
+                      Today
+                    </option>
+                    <option value="yesterday">
+                      Yesterday
+                    </option>
+                    <option value="this_week">
+                      This Week
+                    </option>
+                    <option value="last_week">
+                      Last Week
+                    </option>
+                    <option value="this_month">
+                      This Month
+                    </option>
+                    <option value="last_month">
+                      Last Month
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="owner-name" class="col-sm-5 col-form-label col-form-label-sm">Brand Owner</label>
+                <div class="col-sm">
+                  <select  [(ngModel)]="criteria.brandOwner" class="custom-select custom-select-sm" name="owner-name"
+                    id="owner-name">
+                      <option value="" selected >-</option>
+                      <option  [value]="owner.syskey" *ngFor="let owner of ownerList1">
+                        {{owner.t2}}
+                      </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-tspcode" class="col-sm-5 col-form-label col-form-label-sm">
+                  Township
+                </label>
+                <div class="col-sm">
+                  <input type="text" id="cri-shop2" matInput class="form-control form-control-sm"
+                    [(ngModel)]="criteria.township" [formControl]="tspNameSearch"  (keyup.enter)="getTspListForAutoComplete()"  placeholder="Search and enter"  
+                    [matAutocomplete]="auto5">
+                  <mat-autocomplete #auto5="matAutocomplete">
+                    <mat-option *ngFor="let place of tspList" [value]="place.t2"
+                      style="font-size: small;"> {{place.t2}} </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-shopname" class="col-sm-5 col-form-label col-form-label-sm">Shop Name</label>
+                <div class="col-sm">
+                  <!-- <input   class="form-control form-control-sm text-monospace bg-transparent" id="name" 
+                      style="font-size: small;" rows="2" [(ngModel)]="criteria.shopName" >
+                  </div>-->
+                  <input type="text" id="cri-shopname" matInput class="form-control form-control-sm"
+                    [(ngModel)]="criteria.shopName" >
+                    <!-- [formControl]="shopNameSearch" [matAutocomplete]="auto2"> -->
+                  <!-- <mat-autocomplete #auto2="matAutocomplete">
+                    <mat-option *ngFor="let shop of shopList1" [value]="shop.shopName" style="font-size: small;">
+                      {{shop.shopName}}
+                    </mat-option>
+                  </mat-autocomplete> -->
+                </div>
+                <!--   <div class="form-group row">
+                  <label for="shop-name" class="col-sm-4 col-form-label col-form-label-sm">Shop Name</label>
+                  <div class="col-sm">
+                    <select [(ngModel)]="criteria.shopName" class="custom-select custom-select-sm"
+                      name="shop-name" id="shop-name" [disabled]="shopList2.length==0">
+                      <option value="" selected>-</option>
+                      <option [value]="shop.shopSysKey" *ngFor="let shop of shopList2">
+                        {{shop.shopName}}
+                      </option>
+                    </select>
+                  </div>
+                </div>-->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="d-flex justify-content-start">
+                <div class="btn-group" role="group" style="height: 35px;">
+                  <button (click)="search(0)" type="button" class="btn btn-primary" [disabled]="spinner">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                  <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="d-flex justify-content-start">
+                  <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                    <button (click)="print()" type="button" class="btn btn-primary">
+                      Export
+                    </button>
+                    <!-- <ion-button fill="clear" (click)="print()">Export</ion-button> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <pagination-controls (pageChange)="pageChanged($event)" [hidden]="shopPersonList.length == 0">
+      </pagination-controls>
+      <div class="table-responsive text-nowrap overflow-auto mt-1" style="height: 450px;"
+        [hidden]="shopPersonList.length == 0">
+
+        <table class="table table-hover " style="font-size: 13px;">
+          <thead class="thead-dark">
+            <tr>
+              <th [class]="searchtab? '':'sticky-top'" scope="col" style="width: 5px">#</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Date</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Users</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Order By</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Brand Owner</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Type</th>
+              <!-- <th [class]="searchtab? '':'sticky-top'" scope="col">SP Shop Code</th>-->
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Shop Code</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Shop Name</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Invoice Number</th>
+
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Brand SKU Code</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">SKU Code</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">SKU Name</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Quantity</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Returnable Packaging QTY</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Standard Price</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Selling Price</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Discount Amt</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Percentage</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col" [hidden]='!isUseTaxPercent'>Tax Amount</th>
+             <!-- <th [class]="searchtab? '':'sticky-top'" scope="col">Gift Item</th>-->
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Gift Qty</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Gift Type</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col" [hidden]='!isUseSAP'>Sales Type</th>
+         
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Address</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr *ngFor="let d of shopPersonList | paginate: config;let i = index">
+
+              <th scope="row">{{i+1}}</th>
+              <td>{{d.fromDate}}</td>
+              <td>{{d.userName}}</td>
+              <td>{{d.order}}</td>
+              <td>{{d.brandOwner}}</td>
+              <td>{{d.type}}</td>
+              <!-- <td>{{d.spShopCode}}</td>-->
+              <td>{{d.shopCode}}</td>
+              <td>{{d.shopName}}</td>
+              <td>{{d.orderNumber}}</td>
+              <td>{{d.spSKUCode}}</td>
+              <td>{{d.skuCode}}</td>
+              <td>{{d.skuName}}</td>
+              <td>{{d.quantity}}</td>
+              <td>{{d.emptyBotQTY}}</td>
+              <td>{{d.nprice}}</td>
+              <td>{{d.prices}}</td>
+              <td>{{d.disamt}}</td>
+              <td>{{d.dispercent}}</td>
+              <td [hidden]='!isUseTaxPercent'>{{d.taxAmount}}</td>
+             <!-- <td>{{d.dissku}}</td>-->
+              <td>{{d.giftquantity}}</td>
+              <td>{{d.saveStatus}}</td>
+              <td [hidden]='!isUseSAP'>{{d.salesTypeDesc}}</td>
+              <td>{{d.location}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</ion-content>

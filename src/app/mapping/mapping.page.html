@@ -1,0 +1,157 @@
+<ion-content>
+    <div class="myOuterContainer">
+        <div class="d-flex justify-content-start mb-2">
+            <ul class="nav nav-pills" id="pills-tab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link" id="camtasklist-tab" data-toggle="tab" href="#camtasklist" role="tab" aria-controls="camtasklist"
+                  aria-selected="true" (change)="tab($event);" (click)="btn=false; listTab()">List</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="camtasknew-tab" data-toggle="tab" href="#camtasknew" role="tab" aria-controls="camtaskNew"
+                  aria-selected="false" (click)="newTabClick($event); btn=true">New</a>
+              </li>
+            </ul>
+              <button type="button" class="btn btn-primary  header-btn"  (click)="save()" *ngIf="btn">{{_objwarehouse.syskey=='' || _objwarehouse.syskey=='0'? 'Save':'Update' }}</button>
+              <button type="button" class="btn btn-primary  header-btn btndelete" 
+                [disabled]="_objwarehouse.syskey=='' || _objwarehouse.syskey=='0'" *ngIf="btn"  (click)="gotoDelete()">Delete</button>
+        </div>
+        
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade overflow-auto" id="camtasklist" role="tabpanel" aria-labelledby="camtasklist-tab">
+               
+                <div class="card">
+                    <div class="card-header bg-transparent advance-form">
+                        Advance
+                        <i *ngIf="!spinner" (click)="searchtab? searchtab=false : searchtab = true"
+                            [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'"
+                            aria-hidden="true"></i>
+                        <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+                            <span class="sr-only"></span>
+                        </div>
+                    </div>
+                    <div class="card-body" *ngIf="searchtab" id="advance-card">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group row">
+                                    <label for="stock-code"
+                                        class="col-sm-3 col-form-label col-form-label-sm">Code</label>
+                                    <div class="col-md-6">
+                                        <input type="text" id="stockcat-code" name="stock-code" (keyup.enter)="getWareHouseList()" 
+                                            class="form-control form-control-sm" [(ngModel)]="search_param.code">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group row">
+                                    <label for="stock-name"
+                                        class="col-sm-3 col-form-label col-form-label-sm">Description</label>
+                                    <div class="col-md-6">
+                                        <input type="text" id="stock-name" name="stock-name" (keyup.enter)="getWareHouseList()" 
+                                            class="form-control form-control-sm" [(ngModel)]="search_param.description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label for="stock-code"
+                                        class="col-sm-3 col-form-label col-form-label-sm">Vendor</label>
+                                    <div class="col-md-6">
+                                        <select [(ngModel)]="search_param.vendorSyskey" class="custom-select custom-select" name="vendor" id="vendor">
+                                            <option value="" selected>-</option>
+                                            <option value="{{i.syskey}}"  *ngFor="let i of _vendorList">
+                                                {{i.t2}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="d-flex justify-content-start">
+                                    <div class="btn-group" role="group" style="height: 35px;">
+                                        <button (click)="getWareHouseList()" type="button" class="btn btn-primary"
+                                            [disabled]="spinner">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                        <button (click)="refresh()" type="button" class="btn btn-primary">
+                                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                    <!-- <div class="d-flex justify-content-start">
+                                        <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                                            <button (click)="print()" type="button" class="btn btn-primary">
+                                                Export
+                                            </button>
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-hover mt-1" style="font-size: 13px;">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" style="width: 10px;">#</th>
+                            <th scope="col">Code</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Vendor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of _warehouseList ;let i = index" (click)="btn=true;detail(item)">
+                            <td scope="row">{{i+1}}</td>
+                            <td scope="row">{{item.code}}</td>
+                            <td scope="row">{{item.desc}}</td>
+                            <td scope="row">{{item.vendorName}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade " id="camtasknew" role="tabpanel" aria-labelledby="camtasknew-tab">
+                <div class="row">
+                    <div class="col-lg">
+                        <div class="card">
+                            <div class="card-header">Warehouse</div>
+
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <form style="margin: 20px;">
+                                        <div class="form-group row">
+                                            <label for="camtaskid" class="col-sm-3 col-form-label col-form-label-sm">Vendor</label>
+                                            <div class="col-sm">
+                                                 <select [(ngModel)]="_objwarehouse.n4" class="custom-select custom-select-sm" name="vendor" id="vendor">
+                                                    <option value="{{i.syskey}}"  *ngFor="let i of _vendorList">
+                                                        {{i.t2}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="code" class="col-sm-3 col-form-label col-form-label-sm">Code</label>
+                                            <div class="col-sm">
+                                                <input [disabled]="_objwarehouse.syskey!=='0'"  type="text" name="code" 
+                                                [(ngModel)]="_objwarehouse.code" class="form-control form-control-sm" id="code">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="name" class="col-sm-3 col-form-label col-form-label-sm">Description</label>
+                                            <div class="col-sm">
+                                                <input  type="text" name="name" [(ngModel)]="_objwarehouse.desc" class="form-control form-control-sm" id="name">
+                                            </div>
+                                        </div>                                       
+                                    </form>
+                                </li>
+                                
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ion-content>

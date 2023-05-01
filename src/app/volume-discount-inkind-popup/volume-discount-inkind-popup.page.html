@@ -1,0 +1,435 @@
+<ion-content>
+  <!-- <div class="modal" tabindex="-1" role="dialog" 
+    aria-labelledby="skuaddmodal1" >
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header px-3 py-2">
+            <h5 class="modal-title" id="inkindDetailTitle">
+              Add Inkind Detail
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span>&times;</span>
+            </button>
+          </div>
+          <div class="modal-body overflow-auto py-0" style="height: 450px;"> <!-- px-0 ->
+            <div class="row" style="width: 100%; margin-top: 5px; margin-bottom: 5px;"> 
+              <div class="col">
+                <div class="card">
+                  <div class="card-body px-5 border-bottom" id="inkindDetail">
+                    <div class="row">
+                      <div class="col">
+                        <div class="form-group row">
+                          <label for="discountItemType" class="col-sm-4 col-form-label col-form-label-sm">
+                            Dis Item Type
+                          </label>
+                          <div class="col-sm-8">
+                            <select id="discountItemType" class="custom-select custom-select-sm" 
+                              [(ngModel)]="getGiftData.n2" (change)="disItemTypeChange()">
+                              <!-- [disabled]="detailDataList.n3 != '2'" ->
+                                <option value="" selected>-</option>
+                                <option [value]="1">Gift</option>
+                                <option [value]="2">Coupon</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label for="getGiftEndType" class="col-sm-4 col-form-label col-form-label-sm">
+                            End Type
+                          </label>
+                          <div class="col-sm-8">
+                            <select id="getGiftEndType" class="custom-select custom-select-sm" 
+                              [(ngModel)]="getGiftData.n6">
+                                <option [value]="0" selected>END</option>
+                                <option [value]="1">OR</option>
+                                <option [value]="2">AND</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="form-group row" id="discountItem0">
+                          <label for="discountItem" class="col-sm-4 col-form-label col-form-label-sm">
+                            Dis Item
+                          </label>
+                          <div class="col-sm-8">
+                            <input type="text" id="discountItem" name="discountItem" 
+                              class="form-control form-control-sm" [disabled]="true">
+                          </div>
+                        </div>
+                        <div class="form-group row" id="discountItem1">
+                          <label for="discountItemGift" class="col-sm-4 col-form-label col-form-label-sm">
+                            Dis Item
+                          </label>
+                          <div class="col-sm-8">
+                            <!-- <input type="text" id="discountItemGift" name="discountItemGift" 
+                              class="form-control form-control-sm" matInput [matAutocomplete]="auto7" 
+                              [formControl]="giftSearch" [(ngModel)]="getGiftData.t1" 
+                              (keyup)="discountItemChange($event, 'gift')">
+                            <mat-autocomplete #auto7="matAutocomplete">
+                              <mat-option *ngFor="let discountItemGift of giftList; let i = index;" 
+                                [value]="discountItemGift.t2" style="font-size: small;" 
+                                (click)="discountItemChange($event,'gift')">
+                                  {{discountItemGift.t2}}
+                              </mat-option>
+                            </mat-autocomplete> ->
+                            <select id="discountItemGift" class="custom-select custom-select-sm" 
+                              [(ngModel)]="getGiftData.n3">
+                                <option [value]="" selected>-</option>
+                                <option [value]="discountItemGift.syskey" *ngFor="let discountItemGift of giftList;">
+                                  {{discountItemGift.t2}}
+                                </option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group row" id="discountItem2">
+                          <label for="discountItemCoupon" class="col-sm-4 col-form-label col-form-label-sm">
+                            Dis Item
+                          </label>
+                          <div class="col-sm-8">
+                            <!-- <input type="text" id="discountItemCoupon" name="discountItemCoupon" 
+                              class="form-control form-control-sm" matInput [matAutocomplete]="auto8" 
+                              [formControl]="couponSearch" [(ngModel)]="getGiftData.t1" 
+                              (keyup)="discountItemChange($event, 'coupon')">
+                            <mat-autocomplete #auto8="matAutocomplete">
+                              <mat-option *ngFor="let discountItemCoupon of couponList; let i = index;" 
+                                [value]="discountItemCoupon.t1" style="font-size: small;" 
+                                (click)="discountItemChange($event,'coupon')">
+                                  {{discountItemCoupon.t1}}
+                              </mat-option>
+                            </mat-autocomplete> ->
+                            <select id="discountItemCoupon" class="custom-select custom-select-sm" 
+                              [(ngModel)]="getGiftData.n3">
+                                <option [value]="" selected>-</option>
+                                <option [value]="discountItemCoupon.syskey" *ngFor="let discountItemCoupon of couponList;">
+                                  {{discountItemCoupon.t1}}
+                                </option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="form-group row">
+                          <label for="disItemQty" class="col-sm-4 col-form-label col-form-label-sm">
+                            Dis Item Qty
+                          </label>
+                          <div class="col-sm-8">
+                            <input type="text" id="disItemQty" [(ngModel)]="getGiftData.n4" 
+                              class="form-control form-control-sm" 
+                              [disabled]="getGiftData.n3 == ''">
+                          </div>
+                        </div>
+                        <div class="form-group row" style="float: right; margin-right: 0px;">
+                          <div style="margin-right: 3px;">
+                            <button class="btn btn-primary btn-sm" type="button" 
+                              (click)="addGetGift()">
+                                Add Shop
+                            </button>
+                          </div>
+                          <div>
+                            <button class="btn btn-primary btn-sm" type="button" 
+                              (click)="clearGetGiftData()">
+                                Clear
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="overflow-auto table-responsive text-nowrap" style="height: 300px;">
+                      <table class="table table-hover surveyortable" style="font-size: 13px;">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th>Serial No</th>
+                            <th>Discount Item Type</th>
+                            <th>Discount Item</th>
+                            <th>Discount Item Qty</th>
+                            <th>End Type</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let gdList of getGiftDataList; let i = index">
+                            <td (click)="updateGetGiftData(i)">
+                              {{gdList.n5}}
+                            </td>
+                            <td (click)="updateGetGiftData(i)">
+                              {{gdList.n2 == '1'? 'Gift' : 
+                                  gdList.n2 == '2'? 'Coupon' : '-'}}
+                            </td>
+                            <td (click)="updateGetGiftData(i)">
+                              {{gdList.t1}}
+                            </td>
+                            <td (click)="updateGetGiftData(i)">
+                              {{gdList.n4}}
+                            </td>
+                            <td (click)="updateGetGiftData(i)">
+                              {{gdList.n6 == '0'? 'END' : 
+                                (gdList.n6 == '1'? 'OR' : 'AND')}}
+                            </td>
+                            <td>
+                              <div *ngIf="gdList.syskey != ''; else btnDisableGift">
+                                <div>
+                                  <button type="button" (click)="pmo12RecordStatusChange($event, gdList)" 
+                                    class="btn btn-primary btn-sm" *ngIf="gdList.recordStatus == 1">
+                                      Delete
+                                  </button>
+                                  <button type="button" (click)="pmo12RecordStatusChange($event, gdList)" 
+                                    class="btn btn-primary btn-sm" *ngIf="gdList.recordStatus == 4" 
+                                    style="background-color: grey; border-color: grey;">
+                                      Deleted
+                                  </button>
+                                </div>
+                              </div>
+                              <ng-template #btnDisableGift>
+                                <button type="button" class="btn btn-light btn-sm" 
+                                  (click)="removeGiftData(i)">
+                                    Remove
+                                </button>
+                              </ng-template>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+  </div> -->
+  <div class="row" style="width: 100%; margin-top: 5px; margin-bottom: 5px;">
+    <div class="col">
+      <div class="card">
+        <div class="card-body px-5 border-bottom" id="inkindDetail" *ngIf="isInkindEdit">
+          <div class="row">
+            <div class="col">
+              <div class="form-group row">
+                <label for="discountItemType" class="col-sm-4 col-form-label col-form-label-sm">
+                  Dis Item Type
+                </label>
+                <div class="col-sm-8">
+                  <select id="discountItemType" class="custom-select custom-select-sm" 
+                    [(ngModel)]="getGiftData.n2" (change)="disItemTypeChange()">
+                    <!-- [disabled]="detailDataList.n3 != '2'" -->
+                      <option value="" selected>-</option>
+                      <option [value]="1">Gift</option>
+                      <option [value]="2">Coupon</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="getGiftRuleType" class="col-sm-4 col-form-label col-form-label-sm">
+                  Rule Type
+                </label>
+                <div class="col-sm-8">
+                  <select id="getGiftRuleType" class="custom-select custom-select-sm" 
+                    [(ngModel)]="getGiftData.n7">
+                      <option [value]="0" selected>Each Item</option>
+                      <option [value]="1">Total Item</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row" id="discountItem0" *ngIf="getGiftData.n2 == ''">
+                <label for="discountItem" class="col-sm-4 col-form-label col-form-label-sm">
+                  Dis Item
+                </label>
+                <div class="col-sm-8">
+                  <!-- <input type="text" id="discountItem" name="discountItem" 
+                    class="form-control form-control-sm" [disabled]="true"> -->
+                  <select id="discountItem" class="custom-select custom-select-sm" 
+                    [disabled]="true">
+                      <option [value]="" selected>-</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row" id="discountItem1" *ngIf="getGiftData.n2 == '1'">
+                <label for="discountItemGift" class="col-sm-4 col-form-label col-form-label-sm">
+                  Dis Item
+                </label>
+                <div class="col-sm-8">
+                  <!-- <input type="text" id="discountItemGift" name="discountItemGift" 
+                    class="form-control form-control-sm" matInput [matAutocomplete]="auto7" 
+                    [formControl]="giftSearch" [(ngModel)]="getGiftData.t1" 
+                    (keyup)="discountItemChange($event, 'gift')">
+                  <mat-autocomplete #auto7="matAutocomplete">
+                    <mat-option *ngFor="let discountItemGift of giftList; let i = index;" 
+                      [value]="discountItemGift.t2" style="font-size: small;" 
+                      (click)="discountItemChange($event,'gift')">
+                        {{discountItemGift.t2}}
+                    </mat-option>
+                  </mat-autocomplete> -->
+                  <select id="discountItemGift" class="custom-select custom-select-sm" 
+                    [(ngModel)]="getGiftData.n3" (change)="discountItemChange($event, 'gift')">
+                      <option value="" selected>-</option>
+                      <option [value]="discountItemGift.syskey" *ngFor="let discountItemGift of giftList;">
+                        {{discountItemGift.t2}}
+                      </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row" id="discountItem2" *ngIf="getGiftData.n2 == '2'">
+                <label for="discountItemCoupon" class="col-sm-4 col-form-label col-form-label-sm">
+                  Dis Item
+                </label>
+                <div class="col-sm-8">
+                  <!-- <input type="text" id="discountItemCoupon" name="discountItemCoupon" 
+                    class="form-control form-control-sm" matInput [matAutocomplete]="auto8" 
+                    [formControl]="couponSearch" [(ngModel)]="getGiftData.t1" 
+                    (keyup)="discountItemChange($event, 'coupon')">
+                  <mat-autocomplete #auto8="matAutocomplete">
+                    <mat-option *ngFor="let discountItemCoupon of couponList; let i = index;" 
+                      [value]="discountItemCoupon.t1" style="font-size: small;" 
+                      (click)="discountItemChange($event,'coupon')">
+                        {{discountItemCoupon.t1}}
+                    </mat-option>
+                  </mat-autocomplete> -->
+                  <select id="discountItemCoupon" class="custom-select custom-select-sm" 
+                    [(ngModel)]="getGiftData.n3" (change)="discountItemChange($event, 'coupon')">
+                      <option value="" selected>-</option>
+                      <option [value]="discountItemCoupon.syskey" *ngFor="let discountItemCoupon of couponList;">
+                        {{discountItemCoupon.t1}}
+                      </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="getGiftEndType" class="col-sm-4 col-form-label col-form-label-sm">
+                  End Type
+                </label>
+                <div class="col-sm-8">
+                  <select id="getGiftEndType" class="custom-select custom-select-sm" 
+                    [(ngModel)]="getGiftData.n6">
+                      <option [value]="2">AND</option>
+                      <option [value]="1">OR</option>
+                      <option [value]="0" selected>END</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label for="disItemQty" class="col-sm-4 col-form-label col-form-label-sm">
+                  Dis Item Qty
+                </label>
+                <div class="col-sm-8">
+                  <input type="text" id="disItemQty" [(ngModel)]="getGiftData.n4" 
+                    class="form-control form-control-sm" 
+                    [disabled]="getGiftData.n3 == ''">
+                </div>
+              </div>
+              <div class="form-group row" style="float: right; margin-right: 0px;">
+                <div style="margin-right: 3px;">
+                  <button class="btn btn-primary btn-sm" type="button" 
+                    (click)="addGetGift()">
+                      {{updateIndex < 0 ? 'Add' : 'Update'}}
+                  </button>
+                </div>
+                <div>
+                  <button class="btn btn-primary btn-sm" type="button" 
+                    (click)="clearGetGiftData()">
+                      Clear
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body border-bottom">
+          <div class="overflow-auto table-responsive text-nowrap" style="height: 300px;">
+            <table class="table table-hover surveyortable" style="font-size: 13px;">
+              <thead class="thead-dark">
+                <tr>
+                  <th>Serial No</th>
+                  <th>Rule Type</th>
+                  <th>Discount Item Type</th>
+                  <th>Discount Item</th>
+                  <th>Discount Item Qty</th>
+                  <th>End Type</th>
+                  <th *ngIf="isInkindEdit"></th>
+                  <th *ngIf="!isInkindEdit">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let gdList of tempGetGiftDataList; let i = index">
+                  <td (click)="updateGetGiftData(i)">
+                    {{gdList.n5}}
+                  </td>
+                  <td (click)="updateGetGiftData(i)">
+                    {{gdList.n7 == '0'? 'Each Item' : 
+                        gdList.n7 == '1'? 'Total Item' : '-'}}
+                  </td>
+                  <td (click)="updateGetGiftData(i)">
+                    {{gdList.n2 == '1'? 'Gift' : 
+                        gdList.n2 == '2'? 'Coupon' : '-'}}
+                  </td>
+                  <td (click)="updateGetGiftData(i)">
+                    {{gdList.t1}}
+                  </td>
+                  <td (click)="updateGetGiftData(i)">
+                    {{gdList.n4}}
+                  </td>
+                  <td (click)="updateGetGiftData(i)">
+                    {{gdList.n6 == '0'? 'END' : 
+                      (gdList.n6 == '1'? 'OR' : 'AND')}}
+                  </td>
+                  <td *ngIf="isInkindEdit">
+                    <div *ngIf="gdList.syskey != ''; else btnDisableGift">
+                      <div>
+                        <button type="button" (click)="removeGiftData(i)" 
+                          class="btn btn-primary btn-sm" *ngIf="gdList.recordStatus == 1">
+                          <!-- (click)="pmo12RecordStatusChange($event, gdList)" -->
+                            Delete
+                        </button>
+                        <button type="button" (click)="removeGiftData(i)" 
+                          class="btn btn-primary btn-sm" *ngIf="gdList.recordStatus == 4" 
+                          style="background-color: grey; border-color: grey;">
+                          <!-- (click)="pmo12RecordStatusChange($event, gdList)" -->
+                            Deleted
+                        </button>
+                      </div>
+                    </div>
+                    <ng-template #btnDisableGift>
+                      <button type="button" class="btn btn-light btn-sm" 
+                        (click)="removeGiftData(i)">
+                          Remove
+                      </button>
+                    </ng-template>
+                  </td>
+                  <td *ngIf="!isInkindEdit">
+                    <div *ngIf="gdList.recordStatus == 1">
+                      Available
+                    </div>
+                    <div *ngIf="gdList.recordStatus == 4">
+                      Deleted
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-body">
+          <div style="float: right;">
+            <button type="button" class="btn btn-primary btn-sm" 
+              (click)="closePopup('save')" style="margin-right: 3px;"
+              *ngIf="isInkindEdit">
+                Save
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" 
+              (click)="closePopup('close')">
+                Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

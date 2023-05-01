@@ -1,0 +1,145 @@
+<ion-content>
+    <div class="myOuterContainer">
+        <div class="d-flex justify-content-start optionNavBar">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link" id="blist-tab" data-toggle="tab" href="#blist" role="tab" aria-controls="list"
+                  aria-selected="true" (change)="tab($event);" (click)="btn=false; listTab()">List</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="bnew-tab" data-toggle="tab" href="#bnew" role="tab" aria-controls="new"
+                  aria-selected="false" (click)="newTabClick($event); btn=true">New</a>
+              </li>
+            </ul>
+              <button type="button" class="btn btn-primary  header-btn"  (click)="save()" *ngIf="btn">{{obj.syskey=='' || obj.syskey=='0'? 'Save':'Update' }}</button>
+              <button type="button" class="btn btn-primary  header-btn btndelete" 
+                [disabled]="obj.syskey=='' || obj.syskey=='0'" *ngIf="btn"  (click)="gotoDelete()">Delete</button>
+        </div>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade overflow-auto" id="blist" role="tabpanel" aria-labelledby="blist-tab">
+              
+                <div class="card sticky-top" style="margin-bottom: 8px;">
+                    <div class="card-header bg-transparent advance-form">
+                        Advance
+                        <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+                            [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'"
+                            aria-hidden="true"></i>
+                        <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+                            <span class="sr-only"></span>
+                        </div>
+                    </div>
+                    <div class="card-body" *ngIf="searchtab" id="advance-card">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group row">
+                                    <label for="stock-code"
+                                        class="col-sm-3 col-form-label col-form-label-sm">Code</label>
+                                    <div class="col-md-6">
+                                        <input type="text" id="stockcat-code" name="stock-code" (keyup.enter)="getAll()" 
+                                            class="form-control form-control-sm" [(ngModel)]="search_param.code">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group row">
+                                    <label for="stock-name"
+                                        class="col-sm-3 col-form-label col-form-label-sm">Description</label>
+                                    <div class="col-md-6">
+                                        <input type="text" id="stock-name" name="stock-name" (keyup.enter)="getAll()" 
+                                            class="form-control form-control-sm" [(ngModel)]="search_param.description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label for="stock-code"
+                                        class="col-sm-3 col-form-label col-form-label-sm">Brand Owner</label>
+                                    <div class="col-md-6">
+                                            <select  name="cambrand"  class="custom-select custom-select-sm" [(ngModel)]="search_param.bosyskey"  id="cambrand">
+                                                <option  value="{{i.syskey}}" *ngFor="let i of bolist">{{i.t2}}</option>
+                                            </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="d-flex justify-content-start">
+                                    <div class="btn-group" role="group" style="height: 35px;">
+                                        <button (click)="getAll()" type="button" class="btn btn-primary"
+                                            [disabled]="spinner">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                        <button (click)="refresh()" type="button" class="btn btn-primary">
+                                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>          
+              
+                <table class="table table-hover" style="font-size: 13px;">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" style="width: 10px;">#</th>
+                            <th scope="col">Code</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Brand Owner</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of list ;let i = index" (click)="detail(item)">
+                            <td scope="row">{{i+1}}</td>
+                            <td scope="row">{{item.t1}}</td>
+                            <td scope="row">{{item.t2}}</td>
+                            <td scope="row">{{item.ownerName}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade " id="bnew" role="tabpanel" aria-labelledby="bnew-tab">
+               
+                        <div class="card">
+                            <div class="card-header text-primary bg-transparent">Product Brands </div>
+                            <div class="card-body">
+                                
+
+                                <form>
+                                    <div class="form-group row">
+                                        <label for="code" class="col-sm-3 col-form-label col-form-label-sm">Code</label>
+                                        <div class="col-sm">
+                                            <input [disabled]="obj.syskey!==''" maxlength="1" type="text" name="code"
+                                             [(ngModel)]="obj.t1" class="form-control form-control-sm" id="code">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="name" class="col-sm-3 col-form-label col-form-label-sm">Description</label>
+                                        <div class="col-sm">
+                                            <input type="text" name="name" [(ngModel)]="obj.t2" class="form-control form-control-sm" id="name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="boslist" class="col-sm-3 col-form-label col-form-label-sm">BrandOwner</label>
+                                        <div class="col-sm">
+                                            <select name="subcat" class="custom-select custom-select-sm" [(ngModel)]="brandownerid" id="boslist">
+                                                <option value="{{i.syskey}}" *ngFor="let i of bolist">{{i.t2}}</option>
+                                            </select>
+                                         
+                                        </div>
+                                    </div>
+                                </form>
+  
+
+
+                            </div>
+                        </div>
+                  
+            </div>
+        </div>
+    </div>
+</ion-content>

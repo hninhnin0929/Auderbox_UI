@@ -1,0 +1,51 @@
+<ion-content>
+    <div class="myOuterContainer">
+        <div class="d-flex justify-content-start mb-3">
+            <button class="btn btn-primary ml-3">Detail</button>
+            <button class="btn btn-primary ml-2" (click)="save()" [disabled]="_selectedRole == ''">Save</button>
+        </div>
+        <div class="mb-4 px-3">
+            <div class="card-header-title mb-2 text-primary">Roles</div>
+            <mat-chip-list class="example-chip" cdkDropList cdkDropListOrientation="horizontal">
+                <mat-chip class="example-box" cdkDrag *ngFor="let data of _rolelistdata"
+                    [selected]="data.syskey == _selectedRole" (click)="_selectedRole = data.syskey ; readMenuByRole()">
+                    {{data.t2}}
+                </mat-chip>
+            </mat-chip-list>
+        </div>
+        <div class="row" id="content">
+            <mat-progress-bar mode="indeterminate" id="pgbar-readmenus-role" ></mat-progress-bar>
+
+            <div class="col-3">
+                <div class="card-header-title ml-3 text-primary">Main Titles</div>
+                <div>
+                    <div class="nav flex-column nav-pills p-3 border-right-0  border-primary" id="v-pills-tab"
+                        role="tablist" aria-orientation="vertical">
+                        <a (click)="showChild(i)" *ngFor="let menu of _menuTitleList; let i=index"
+                            [ngClass]="activeParMenu === menu.code ? 'nav-link active' : 'nav-link' " style="cursor: pointer;" data-toggle="pill"
+                            role="tab">{{menu.description}}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card-header-title ml-3 text-primary">Child Titles</div>
+                <div class="px-3 pt-4">
+                    <div >
+                        <ul style="list-style-type: none;padding: inherit;">
+                            <li *ngFor="let child of child_menu; let i = index" >
+                                <mat-checkbox [(ngModel)]="child.n2" (change)="checkChild(child)">{{child.description}}</mat-checkbox>
+                                <ul style="list-style-type: none;
+                                margin-top: 4px;">
+                                    <li *ngFor="let button of child.menuDetailList">
+                                        <mat-checkbox [(ngModel)]="button.n2">{{button.description}}</mat-checkbox>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</ion-content>

@@ -1,0 +1,38 @@
+.input-group,.custom-select{
+    max-width: 200px;
+}
+.date-btn:hover{
+    background-color: #c9d3df;
+}
+.date-btn:active{
+    background-color: #b1b9c2;
+}
+.datepicker input:read-only{
+    background-color: transparent;
+}
+.mat-button-toggle-label-content {
+    line-height: 32px !important;
+}
+.vertical-align {
+    display: flex;
+    align-items: center;
+}
+#search-result{
+    display: none;
+}
+#detail-table{
+    display: none;
+}
+#log-table{
+    display: none;
+}
+#upload-result{
+    background-color: #d4edda;
+    color: #155724;
+    display: none;
+}
+#search-result{
+    background-color: #d4edda;
+    color: #155724;
+    display: none;
+  }

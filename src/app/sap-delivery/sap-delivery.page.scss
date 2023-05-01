@@ -1,0 +1,50 @@
+.input-group,.custom-select{
+  max-width: 200px;
+}
+.date-btn:hover{
+  background-color: #c9d3df;
+}
+.date-btn:active{
+  background-color: #b1b9c2;
+}
+.datepicker input:read-only{
+  background-color: transparent;
+}
+.mat-button-toggle-label-content {
+  line-height: 32px !important;
+}
+.vertical-align {
+  display: flex;
+  align-items: center;
+}
+#delivery-search-result{
+  display: none;
+}
+#delivery-detail-table{
+  display: none;
+}
+#delivery-log-table{
+  display: none;
+}
+#delivery-search-result{
+  background-color: #d4edda;
+  color: #155724;
+  display: none;
+}
+
+.ngx-pagination {
+  padding-left: 0px !important;
+}
+
+.ngx-pagination .current,
+.btn-info {
+  background: #17a2b8 !important;
+  border: transparent !important;
+  border-radius: 20px !important;
+}
+
+.ngx-pagination .current:hover {
+  background: #17a2b8 !important;
+  border-radius: 20px !important; 
+  border: transparent !important;
+}

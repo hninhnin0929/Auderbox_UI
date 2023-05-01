@@ -1,0 +1,84 @@
+#map {
+  height: 100%;
+}
+.float-right {
+  position: absolute;
+  top: 60px;
+  right: 2px;
+  bottom: 20px;
+}
+.close {
+  width: 10px;
+  height: 10px;
+}
+.overflow-auto {
+  max-height: 300px;
+}
+#detail-col {
+  -webkit-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.75);
+}
+
+:host ::ng-deep .mat-radio-container {
+  height: 15px;
+  width: 15px;
+}
+:host ::ng-deep .mat-radio-outer-circle {
+  height: 15px;
+  width: 15px;
+}
+:host ::ng-deep .mat-radio-inner-circle {
+  height: 15px;
+  width: 15px;
+}
+.stl_radio_group {
+  display: flex;
+  flex-direction: column;
+}
+.card-detail {
+  padding: 5px;
+}
+
+.example-headers-align .mat-expansion-panel-header-title,
+.example-headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.example-headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.example-headers-align .mat-form-field + .mat-form-field {
+  margin-left: 8px;
+}
+#setupbody {
+  display: none;
+}
+mat-chip {
+  max-width: 200px;
+}
+::ng-deep.mat-tab-label,
+::ng-deep.mat-tab-label-active {
+  min-width: 0 !important;
+}
+::ng-deep.mat-form-field-infix {
+  padding: 0.5em 0 1em 0 !important;
+}
+.gm-style-mtc {
+  background-color: lavender;
+  width: 100px;
+  font-size: 13px;
+}
+.navbar-nav > .nav-item{
+  margin-right: 2px;
+}
+.navbar-nav > .nav-item:hover{
+  color: blue;
+}
+.operation-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+}

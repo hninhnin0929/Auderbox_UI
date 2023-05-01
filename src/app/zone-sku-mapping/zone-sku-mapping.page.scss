@@ -1,0 +1,28 @@
+.main {
+  margin-top: 10px;
+}
+.overflow-auto{
+  height: 450px;
+}
+.form-control{
+  width: 200px;
+}
+#btnGroup>ion-button {
+  float: right;
+}
+.remove:hover{
+  cursor: pointer;
+  
+}
+:host ::ng-deep .mat-expansion-panel {
+  box-shadow: none !important;
+  
+}
+:host ::ng-deep .mat-expansion-panel-header {
+  height: 35px!important;
+
+}
+:host ::ng-deep .mat-expansion-panel-header.mat-expanded {
+   // note that we're transitioning transform, not height!
+  height: 48px!important;
+}

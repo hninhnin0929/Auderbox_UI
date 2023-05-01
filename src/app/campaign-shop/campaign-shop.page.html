@@ -1,0 +1,347 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="d-flex justify-content-start optionNavBar">
+      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="campaignshoplist-tab" data-toggle="tab" href="#campaignshoplist" role="tab"
+            aria-controls="list" aria-selected="true" (change)="tab($event);" (click)="btn=false; listTab()">List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="campaignshopnew-tab" data-toggle="tab" href="#campaignshopnew" role="tab"
+            aria-controls="new" aria-selected="false" (click)="newTabCampaignShopClick($event); btn=true">New</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link" id="campaignshopexport" data-toggle="tab" role="tab"
+            aria-controls="new" aria-selected="false" (click)="print()">Export</a>
+        </li> -->
+      </ul>
+      <button type="button" class="btn btn-primary  header-btn" (click)="save()"
+        *ngIf="btn && session.allowed">Save</button>
+      <button type="button" class="btn btn-primary  header-btn btndelete"
+        [disabled]="obj.campaignSysKey=='' || obj.userSysKey=='0'" *ngIf="btn && session.allowed"
+        (click)="goDelete()">Delete</button>
+    </div>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade" id="campaignshoplist" role="tabpanel" aria-labelledby="campaignshoplist-tab">
+        <div class="card">
+          <div class="card-header bg-transparent advance-form">
+              Advance
+              <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+                  [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'"
+                  aria-hidden="true"></i>
+              <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+                  <span class="sr-only"></span>
+              </div>
+          </div>
+          <div class="card-body" *ngIf="searchtab" id="advance-card">
+              <div class="row">
+                <div class="col">
+                  <div class="form-group row">
+                    <label for="fd" class="col-sm-3 col-form-label col-form-label-sm">Date</label>
+                      <div class="input-group input-group-sm">
+                        <input [(ngModel)]="this.advSearchObjTmp.adv_fromDate" matInput [matDatepicker]="p1"
+                          placeholder="Select Date" (dblclick)="dblClickFunc1()" (dateChange)="dateChange1($event)" class="form-control" readonly>
+                        <div class="input-group-append date-form" style="width: fit-content;">
+                          <i class="input-group-text fa fa-calendar" aria-hidden="true "
+                            (click)="p1.open();advSearchObjTmp.dateOptions = ''"></i>
+                          <mat-datepicker #p1></mat-datepicker>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                  <div class="col">
+                      <div class="form-group row">
+                          <label for="task-code"
+                              class="col-sm-3 col-form-label col-form-label-sm">Code</label>
+                          <div class="col-md-6">
+                              <input type="text" id="task-code" name="task-code" 
+                                  class="form-control form-control-sm" [(ngModel)]="this.advSearchObjTmp.code" >
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col">
+                      <div class="form-group row">
+                          <label for="campaign-name"
+                              class="col-sm-3 col-form-label col-form-label-sm"> Name</label>
+                          <div class="col-md-6">
+                              <input type="text" id="campaign-name" name="campaign-name" 
+                                  class="form-control form-control-sm" [(ngModel)]="this.advSearchObjTmp.name" >
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col">
+                      <div class="d-flex justify-content-start">
+                          <div class="btn-group" role="group" style="height: 35px;">
+                              <button (click)="getAll()" type="button" class="btn btn-primary"
+                                  [disabled]="spinner">
+                                  <i class="fa fa-search" aria-hidden="true"></i>
+                              </button>
+                              <button (click)="refresh()" type="button" class="btn btn-primary">
+                                  <i class="fa fa-refresh" aria-hidden="true"></i>
+                              </button>
+                          </div>
+                           <div class="d-flex justify-content-start">
+                              <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                                  <button (click)="print()" type="button" class="btn btn-primary">
+                                      Export
+                                  </button>
+                              </div>
+                          </div> 
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+        <table class="table table-hover " style="font-size: 13px;">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col" style="width: 5px">#</th>
+              <th scope="col">Campaign Code</th>
+              <th scope="col">Campaign Name</th>
+              <th scope="col">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of shopCampaignList;let i = index" (click)="detail(d)">
+              <th scope="row">{{i+1}}</th>
+              <td>{{d.cam_code}}</td>
+              <td>{{d.cam_name}}</td>
+              <td>{{d.mdate | date: 'dd/MM/yyyy'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tab-pane fade" id="campaignshopnew" role="tabpanel" aria-labelledby="campaignshopnew-tab">
+        <div
+          [class]="session.allowed ? 'alert alert-success d-flex justify-content-between' : 'alert alert-warning d-flex justify-content-between' "
+          role="alert" style="align-items: center;" *ngIf="!session.allowed">
+          <span>{{session.message}}. If you want to use it, press remove</span>
+          <button class="btn" (click)="removeSession()">Remove</button>
+        </div>
+        <div class="card mb-3">
+          <div class="row">
+            <div class="col border-right">
+              <div class="card-header">Campaign list</div>
+              <div class="table-responsive text-nowrap overflow-auto">
+                <table class="table table-hover " style="font-size: 13px;">
+                  <tbody>
+                    <tr *ngFor="let d of campaignKeyList;let i = index" (click)="addCampaign(d,i)">
+                      <th scope="row">{{i+1}}</th>
+                      <td>{{d.t1}}</td>
+                      <td>{{d.t2}}</td>
+                      <td>
+                        <ion-icon name="add"></ion-icon>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card-header">Selected campaign list</div>
+              <div class="table-responsive text-nowrap overflow-auto">
+                <table class="table table-hover " style="font-size: 13px;">
+                  <tbody>
+
+                    <tr *ngFor="let d of obj.campaignKeyList;let i = index" (click)="removeCampaign(i)">
+                      <th scope="row">{{i+1}}</th>
+                      <td>{{d.t1}}</td>
+                      <td>{{d.t2}}</td>
+                      <td>
+                        <ion-icon name="close-outline" size="medium"></ion-icon>
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="row">
+            <div class="col border-right w-50">
+              <div class="d-flex bd-highlight px-2 py-3">
+                <div class="p-2 flex-grow-1 bd-highlight">
+                  <h6>Store list</h6>
+                </div>
+                <div class="p-2 bd-highlight">
+                  <div class="input-group input-group-sm searchbox">
+                    <input (keypress)="filter($event)" type="text" id="searchshop" class="form-control border-right-0"
+                      aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" placeholder="Search">
+                    <div class="input-group-append">
+                      <button class="btn btn-sm btn-outline-secondary " type="button"
+                        style="border-color: #cacaca;border-left: none;border-right: none;"
+                        (click)="filterSearch(false, '#searchshop')" id="button-addon1"><i
+                          class="fa fa-search"></i></button>
+                    </div>
+                    <div class="input-group-append">
+                      <button class="btn btn-sm btn-outline-secondary" type="button"
+                        (click)="filterSearch(true, '#searchshop')" style="border-color: #cacaca;border-left: none;">
+                        <i class="fa fa-times"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="pl-2">
+                <div class="d-flex justify-content-start" style="align-items: center;">
+                  <pagination-controls [id]="shopListConfig.id" (pageChange)="shopList_PageChanged($event)">
+                  </pagination-controls>
+                  <span class="text-muted ml-2" style="font-size: x-small;">
+                    {{shopListConfig.currentPage*shopListConfig.itemsPerPage}} of {{shopListConfig.totalItems}}</span>
+                </div>
+
+                <div class="table-responsive text-nowrap">
+                  <table class="table" style="font-size: 13px;">
+                    <thead>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let d of searchshopsyskey | paginate: shopListConfig; let i = index;">
+
+                        <td class="col-sm-1">
+                        </td>
+                        <td class="col-sm-11 align-middle">
+                          <ul>
+                            <li style="margin-left:-20px">
+                              <mat-checkbox [(ngModel)]="d.checkFlag" id="{{d.shopSysKey}}"
+                                (change)="changeCheckedStore($event, d, i)">{{d.shopName}}
+                              </mat-checkbox>
+                            </li>
+                            <li class="ml-1 text-muted">{{d.shopCode}}</li>
+                            <li class="ml-1 text-muted text-wrap">
+                              {{d.address}}
+                            </li>
+                          </ul>
+
+
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col w-50">
+              <div class="d-flex bd-highlight px-2 py-3">
+                <div class="p-2 flex-grow-1 bd-highlight">
+                  <h6>Selected Store list</h6>
+                </div>
+                <div class="p-2 bd-highlight">
+                  <!-- <div class="text-truncate"  style="display: inline-block ">
+                    {{excel.name}}
+                  </div> -->
+                  <input [value]="excel.name" id="excel-name">
+                </div>
+                <div class="p-2 bd-highlight">
+
+                  <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
+                    <button type="button" class="btn btn-success rounded-left" [disabled]="excel.file.length == 0"
+                      (click)="confirmExcelImport()">
+                      <i class="fa fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-secondary" *ngIf="excel.file.length != 0"
+                      (click)="clearExcel()">
+                      <i class="fa fa-times"></i>
+                    </button>
+                    <button type="button" class="btn btn-success rounded-right" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      <i class="fa fa-file-excel-o"></i>
+
+                    </button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" (click)="excel_upload.click()">Browse Excel File</a>
+                      <a class="dropdown-item" (click)="exampleExcelDownload()">Sample Excel Download</a>
+
+                    </div>
+                    <input type="file" hidden #excel_upload id="file-so" (change)="excelImportChange($event)"
+                      id="excel_import" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+
+                  </div>
+                </div>
+                <div class="p-2 bd-highlight">
+                  <div class="input-group input-group-sm searchbox">
+                    <input (keypress)="filter1($event)" type="text" id="searchshop1" class="form-control border-right-0"
+                      aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" placeholder="Search">
+                    <div class="input-group-append">
+                      <button class="btn btn-sm btn-outline-secondary " type="button"
+                        style="border-color: #cacaca;border-left: none;border-right: none;"
+                        (click)="filterSearch(false, '#searchshop1')" id="button-addon1"><i
+                          class="fa fa-search"></i></button>
+                    </div>
+                    <div class="input-group-append">
+                      <button class="btn btn-sm btn-outline-secondary" type="button"
+                        (click)="filterSearch(true, '#searchshop1')" style="border-color: #cacaca;border-left: none;">
+                        <i class="fa fa-times"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="d-flex justify-content-start" style="align-items: center;">
+                  <pagination-controls [id]="assignShopListConfig.id" (pageChange)="assignShopList_PageChanged($event)">
+                  </pagination-controls>
+                  <span class="text-muted ml-2" style="font-size: x-small;">
+                    {{assignShopListConfig.currentPage*assignShopListConfig.itemsPerPage}} of
+                    {{searchassignshop.length}}</span>
+                </div>
+
+                <div class="table-responsive text-nowrap overflow-auto">
+                  <table class="table" style="font-size: 13px;">
+                    <thead>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let d of searchassignshop | paginate: assignShopListConfig; let i = index;">
+                        <td class="col-sm-1">
+                          <button class="btn btn-sm rounded-circle btn-outline-danger" style="font-size: small;"
+                            (click)="removeShop(d, i)">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                          </button>
+                        </td>
+                        <td class="col-sm-11 align-middle">
+                          <ul>
+                            <li>{{d.shopName}}</li>
+                            <li class="ml-1 text-muted">{{d.shopCode}}</li>
+                            <li class="ml-1 text-muted text-wrap">
+                              {{d.address}}
+                            </li>
+                          </ul>
+                        </td>
+
+
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</ion-content>
+<div class="modal" tabindex="-1" id="model-padding" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Preview</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+        <strong class="mb-3">The folowing campaigns will be overwitten with given stores</strong>
+        <ul>
+          <li class="ml-3" *ngFor="let c of invalidCampaign; let i = index">{{i+1}}.{{c.name}}</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-overwrite-no" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary btn-overwrite">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

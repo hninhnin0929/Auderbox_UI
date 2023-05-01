@@ -1,0 +1,847 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="d-flex justify-content-start mb-2">
+      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="list-rus-tab" data-toggle="tab" href="#list-rus" role="tab" aria-controls="list"
+            aria-selected="true" (click)="listTabClick()">List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="new-rus-tab" data-toggle="tab" href="#new-rus" role="tab" aria-controls="new"
+            (click)="newTabClick()" aria-selected="false">New</a>
+        </li>
+      </ul>
+      <button type="button" class="btn btn-primary  header-btn" *ngIf="button.save.get()" (click)="save()">Save</button>
+    </div>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade" id="list-rus" role="tabpanel" aria-labelledby="list-rus-tab">
+        <mat-accordion class="example-headers-align ">
+          <mat-expansion-panel class="border rounded advance-search-panel mb-1">
+            <mat-expansion-panel-header class="advance-search-panel-header">
+              <mat-panel-title class="text-primary">
+                <span>Advance</span>
+              </mat-panel-title>
+              <mat-panel-description>
+                <small></small>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <form [formGroup]="list_header_fg">
+              <div class="row row-cols-3">
+                <div class="col px-5">
+                  <div class="form-group row">
+                    <label for="date" class="col-sm-3 col-form-label col-form-label-sm">From</label>
+                    <div class="col-sm">
+                      <div class="input-group input-group-sm" style="width: 200px;">
+                        <input class="form-control" matInput class="form-control" formControlName="from-date" id="searchbox-fromdate"
+                          [matDatepicker]="pickers3" placeholder="Select Date" name="date" readonly>
+                        <div class="input-group-append">
+
+                          <i class="input-group-text fa fa-calendar rounded-right" aria-hidden="true" (click)="pickers3.open()"></i>
+                          <mat-datepicker #pickers3 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                          </mat-datepicker>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col px-5">
+                  <div class="form-group row">
+                    <label for="date" class="col-sm-3 col-form-label col-form-label-sm">To</label>
+                    <div class="col-sm">
+                      <div class="input-group input-group-sm" style="width: 200px;">
+                        <input class="form-control" matInput class="form-control" formControlName="to-date" id="searchbox-todate"
+                          [matDatepicker]="pickersToDate" placeholder="Select Date" name="date" readonly>
+                        <div class="input-group-append">
+
+                          <i class="input-group-text fa fa-calendar rounded-right" aria-hidden="true"
+                            (click)="pickersToDate.open()"></i>
+                          <mat-datepicker #pickersToDate displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                          </mat-datepicker>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col px-5">
+                  <div class="form-group row">
+                    <label for="cri-dateoptions" class="col-sm-3 col-form-label col-form-label-sm">Date Options</label>
+                    <div class="col-sm">
+                      <select class="custom-select custom-select-sm" formControlName="date-option" style="width: 200px;"
+                        name="cri-dateoptions" id="cri-dateoptions" (change)="dateOptionsChange()">
+                        <option value="0" selected>-</option>
+                        <option value="today">
+                          Today
+                        </option>
+                        <option value="yesterday">
+                          Yesterday
+                        </option>
+                        <option value="this_week">
+                          This Week
+                        </option>
+                        <option value="last_week">
+                          Last Week
+                        </option>
+                        <option value="this_month">
+                          This Month
+                        </option>
+                        <option value="last_month">
+                          Last Month
+                        </option>
+                      </select>
+
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col px-5">
+                  <div class="form-group row">
+                    <label for="shop-code" class="col-sm-3 col-form-label col-form-label-sm">Shop Code</label>
+                    <div class="col-sm">
+                      <input type="text" id="shop-code" name="shop-code" class="form-control form-control-sm"
+                        style="width: 200px;" formControlName="shop-code">
+                    </div>
+                  </div>
+                </div>
+                <div class="col px-5">
+                  <div class="form-group row">
+                    <label for="shop-name" class="col-sm-3 col-form-label col-form-label-sm">Shop Name</label>
+                    <div class="col-sm">
+                      <input type="text" id="shop-name" name="shop-name" class="form-control form-control-sm" matInput
+                        style="width: 200px;" formControlName="shop-name">
+                      <!-- <mat-autocomplete #auto="matAutocomplete">
+                        <mat-option *ngFor="let shop of shoplist1" [value]="shop.shopName" style="font-size: small;">
+                          {{shop.shopName}}
+                        </mat-option>
+                      </mat-autocomplete> -->
+                    </div>
+                  </div>
+                </div>
+                <div class="col px-5">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label col-form-label-sm">Type</label>
+                    <div class="col-sm">
+                      <select class="custom-select custom-select-sm" id="cri_id" formControlName="type"
+                        style="width: 200px;">
+                        <option value="" selected>-</option>
+                        <option [value]="1">Order</option>
+                        <option [value]="2">Delivery</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col px-5">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label col-form-label-sm" for="sSyskey">State</label>
+                    <div class="col-sm">
+                      <select class="custom-select custom-select-sm" id="sSyskey" name="sSyskey" formControlName="sSyskey"
+                        style="width: 200px;" (change)="getDistrictList()">
+                          <option value="" selected>-</option>
+                          <option [value]="slist.syskey" *ngFor="let slist of stateList">{{slist.t2}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col px-5">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label col-form-label-sm" for="dSyskey">District</label>
+                    <div class="col-sm" (change)="getTownshipList()">
+                      <select class="custom-select custom-select-sm" id="dSyskey" name="dSyskey" formControlName="dSyskey"
+                        style="width: 200px;">
+                          <option value="" selected>-</option>
+                          <option [value]="dlist.syskey" *ngFor="let dlist of districtList">{{dlist.t2}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col px-5">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label col-form-label-sm" for="tsSyskey">Township</label>
+                    <div class="col-sm">
+                      <select class="custom-select custom-select-sm" id="tsSyskey" name="tsSyskey" formControlName="tsSyskey"
+                        style="width: 200px;">
+                          <option value="" selected>-</option>
+                          <option [value]="tslist.syskey" *ngFor="let tslist of townshipList">{{tslist.t2}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="d-flex justify-content-start">
+                    <div class="btn-group" role="group" style="height: 35px;">
+                      <button (click)="getAll(0)" type="button" class="btn btn-primary">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                      </button>
+                      <button (click)="refreshSearchBox4()" type="button" class="btn btn-primary">
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <div class="d-flex justify-content-start">
+                      <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                        <button (click)="print()" type="button" class="btn btn-success">
+                          <span *ngIf="!expLoadFlag">Export</span>
+                          <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="expLoadFlag">
+                            <span class="sr-only"></span>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </mat-expansion-panel>
+        </mat-accordion>
+
+        <pagination-controls class="my-pagination" (pageChange)="pageChangedList($event)" id="list-pagination">
+        </pagination-controls>
+        <div class="table-responsive text-nowrap  mt-1">
+          <table class="table table-hover table-bordered" style="font-size: 13px;">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col" class="sticky-top">No</th>
+                <th scope="col" class="sticky-top">Date</th>
+                <th scope="col" class="sticky-top">Shop Name</th>
+                <th scope="col" class="sticky-top">Address</th>
+                <th scope="col" class="sticky-top">Type</th>
+                <th scope="col" class="sticky-top">Active/Inactive</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let d of list_header_fg.get('list').value | paginate: paginatin_list_config; let i = index;">
+                <td scope="row" class="align-middle">
+                  <b>
+                    {{d.no+1}}
+                  </b>
+                </td>
+                <td class="align-middle">{{d.date | date :'dd/MM/yyyy'}}</td>
+
+                <td class="align-middle">{{d.shopName}}</td>
+                <td class="align-middle">
+                  <p class="text-truncate" style="width: 400px;margin-bottom: -2px;" [matTooltip]="d.address">
+                    {{d.address}}
+                  </p>
+                </td>
+                <td class="align-middle">{{d.type}}</td>
+                <td style="width: 16% !important;" class="align-middle">
+                  <!-- <div *ngIf="d.type == 'Order' || (d.type=='Delivery' && d.n1==0) && d.dateCheck == false; else btnDisable"> -->
+                  <div>
+                    <div class="custom-control custom-switch" style="width: 50px;">
+                      <input type="checkbox" class="custom-control-input" [checked]="d.n2==0? true:false"
+                        [id]="'switch-'+d.syskey" (click)="updateStatusList(i, d)">
+                      <label class="custom-control-label" style="width: 0px;" [for]="'switch-'+d.syskey">
+                      </label>
+                    </div>
+
+                  </div>
+                  <ng-template #btnDisable>
+                    <span class="text-muted">-</span>
+                  </ng-template>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="new-rus" role="tabpanel" aria-labelledby="new-rus-tab">
+        <div class="card mb-3">
+          <div class="card-body">
+            <form [formGroup]='detail_header_fg'>
+              <div class="row row-cols-2">
+                <div class="col">
+                  <div class="form-group form-group-sm " style="max-width: 200px;">
+                    <label for="tran-type">Type</label>
+
+                    <select class="custom-select" id="tran-type" formControlName="tran-type">
+                      <option value="1">Order</option>
+                      <option value="2">Delivery</option>
+                    </select>
+
+                  </div>
+                </div>
+                <div [class]="(detail_header_fg.get('tran-type').value == '2' && 
+                detail_header_fg.get('is-use-ordertran').value == true) ? 'col' : 'col disabled'">
+                  <div class="form-group form-group-sm" style="max-width: 200px;">
+                    <label for="modifiedDate">Visited Date</label>
+                    <div class="input-group">
+                      <input class="form-control" matInput [matDatepicker]="date_picker_vsdate"
+                        formControlName="so-routing-date" placeholder="Select Date" id="modifiedDate" readonly>
+                      <div class="input-group-append">
+
+                        <button class="btn btn-sm btn-outline-secondary " type="button"
+                          (click)="date_picker_vsdate.open()"
+                          style="border-color: #cacaca;border-left: none;border-right: none;"><i class="fa fa-calendar"
+                            aria-hidden="true"></i></button>
+                        <mat-datepicker #date_picker_vsdate displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                        </mat-datepicker>
+                      </div>
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary " type="button"
+                          (click)="detail_header_fg.get('so-routing-date').setValue('')"
+                          style="border-color: #cacaca;border-left: none;border-right: none;">
+                          <i class="fa fa-times" aria-hidden="true"></i></button>
+                      </div>
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary " type="button" (click)="searchByTranDate()"
+                          style="border-color: #cacaca;border-left: none;"><i class="fa fa-search"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col" *ngIf="detail_header_fg.get('tran-type').value == '2'">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="is-use-ordertran"
+                      formControlName="is-use-ordertran">
+                    <label class="form-check-label" for="is-use-ordertran">Use order transaction</label>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+        <div class="saleorder-routing" *ngIf="detail_header_fg.get('tran-type').value == '1'">
+          <div class="row">
+            <div class="col so-store-to-visit-col border-right">
+              <form [formGroup]='so_store_to_visit_fg'>
+                <div class="d-flex bd-highlight">
+                  <div class="p-2 flex-grow-1 bd-highlight">
+                    <h6>Stores to visit</h6>
+                  </div>
+                  <div class="p-2 bd-highlight">
+                    <div class="d-flex justify-content-start">
+                      <span class="ml-2 text-muted align-middle form-control-sm">
+                        {{delivery_store_to_visit_fg.get('excel').value.name}}
+                      </span>
+                      <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
+                        <button type="button" class="btn btn-success rounded-left" (click)="checkExcel()"
+                          [disabled]="delivery_store_to_visit_fg.get('excel').value.name == ''">
+                          <i class="fa fa-check"></i>
+                        </button>
+                        <button type="button" class="btn btn-success rounded-right" data-toggle="dropdown"
+                          aria-haspopup="true" aria-expanded="false">
+                          <i class="fa fa-file-excel-o"></i>
+
+                        </button>
+                        <div class="dropdown-menu">
+                          <a class="dropdown-item" (click)="uploadExcelClick(excel_upload)">Browse Excel File</a>
+                          <a class="dropdown-item" (click)="sampleExcelDownload()">Sample Excel Download</a>
+
+                        </div>
+                        <input type="file" hidden #excel_upload (change)="uploadExcel($event)" id="file-so"
+                          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+
+                      </div>
+                      <div class="mr-2">
+                        <div class="input-group input-group-sm">
+                          <input type="text" class="form-control border-right-0 setall-datepicker-so"
+                            placeholder="Search" readonly formControlName="set-all-date" matInput
+                            [matDatepicker]="dp_setalldate" [min]="MIN_DATE" placeholder="Choose a date"
+                            [attr.id]="'dp_setalldate1'">
+                          <div class="input-group-append">
+                            <button class="btn btn-sm btn-secondary rounded-left" type="button"
+                              (click)="dp_setalldate.open()">
+                              {{so_store_to_visit_fg.get('set-all-date').value | date:'dd-MM-yyyy'}} 
+                              <i class="fa fa-calendar"></i></button>
+                          </div>
+                          <div class="input-group-append">
+                            <button class="btn btn-sm btn-secondary" type="button"
+                              (click)="updateSetDateToAllTran()">
+                              <i class="fa fa-check"></i></button>
+                          </div>
+                        </div>
+                        <mat-datepicker #dp_setalldate>
+                        </mat-datepicker>
+                      </div>
+                      <button type="button" class="btn btn-danger btn-sm" (click)="deleteAllStoreToVisit()"
+                        data-toggle="tooltip" data-placement="top" title="Delete all">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                      </button>
+                    </div>
+
+                  </div>
+
+                </div>
+              </form>
+              <pagination-controls id="so_routing_pagination_store_to_visit"
+                (pageChange)="pageChangedSoStoreToVisit($event)">
+              </pagination-controls>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col-1">No</th>
+                    <th scope="col-5">Name</th>
+                    <th scope="col-2">Routing Date</th>
+                    <th scope="col-1"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr id="delpage-store-name"
+                    *ngFor="let sotran of so_store_to_visit_fg.get('stores-to-visit').value | paginate : pagination_so_store_to_visit_config; let i = index; let no = index">
+                    <td scope="row">{{no+1}}</td>
+                    <td>
+                      <a>{{sotran.shop_name}}
+                        <br>{{sotran.shop_code}}
+                        <span id="delpage-so-address" class="text-muted text-wrap">
+                          <br>{{sotran.shop_address}}
+                        </span>
+                      </a>
+                    </td>
+                    <td class="align-middle">
+                      <input class="datepicker" matInput [matDatepicker]="i" [min]="MIN_DATE"
+                        placeholder="Choose a date" [attr.id]="DTPICKER_SO + no" readonly required (click)="i.open()"
+                        [(ngModel)]="sotran.delivery_date">
+                      <mat-datepicker #i></mat-datepicker>
+                    </td>
+                    <td class="align-middle">
+                      <button class="btn btn-sm rounded-circle btn-outline-danger" style="font-size: small;"
+                        (click)="removeAssignStoreSo(no)">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- store list by user -->
+            <div class="col so-store-by-user-col">
+              <form [formGroup]='so_store_by_user_fg'>
+                <div class="d-flex bd-highlight">
+                  <div class="p-2 flex-grow-1 bd-highlight">
+                    <h6>Stores
+                      <span class="spinner-border spinner-border-sm" id="spinner-ordertype-store" role="status"
+                        aria-hidden="true"></span>
+                    </h6>                    
+                  </div>
+                  <div class="p-2 bd-highlight" id="user-selected-input">
+                    <select class="form-control form-control-sm" formControlName="user-selected">
+                      <option class="mb-2" value="">-</option>
+                      <option class="mb-2" [ngValue]="data"
+                        *ngFor="let data of so_store_by_user_fg.get('user-list').value">
+                        {{data.userName}}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="p-2 bd-highlight">
+                    <div class="input-group input-group-sm searchbox">
+                      <input type="text" class="form-control border-right-0 searchbox-input" (focus)="focus(1)"
+                        (focusout)="getSoStoresByUser(0)" (keyup.enter)="getSoStoresByUser(0)" placeholder="Search"
+                        formControlName="store-search">
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary " type="button"
+                          style="border-color: #cacaca;border-left: none;border-right: none;"
+                          (click)="getSoStoresByUser(0)" id="button-addon1"><i class="fa fa-search"></i></button>
+                      </div>
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="refreshSearchBox3()"
+                          style="border-color: #cacaca;border-left: none;">
+                          <i class="fa fa-times"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <div class="pg-so-all">
+                <pagination-controls id="so-routing-pagination-store-by-user"
+                  (pageChange)="pageChangedSoStoreByUser($event)"
+                  (pageBoundsCorrection)="pageBoundsCorrectionSo($event)">
+                </pagination-controls>
+              </div>
+
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width: 5px;">No</th>
+                    <th scope="col" style="width: 200px!important;">Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr id="sopage-store-name"
+                    *ngFor="let sotran of so_store_by_user_fg.get('stores-by-user').value | paginate : pagination_so_store_by_user_config; let i = index">
+                    <td style="width: 5px;">{{sotran.no+1}}</td>
+                    <td style="width: 200px!important;">
+                      <ul style="list-style: none;padding-left: 25px;">
+                        <li style="margin-left: -25px;">
+                          <mat-checkbox labelPosition='after'
+                            (change)="changeCheckedStore_orderTran($event.checked,sotran)" [(ngModel)]="sotran.check">
+                            {{sotran.shop_name}}
+                          </mat-checkbox>
+                        </li>
+                        <li>{{sotran.shop_code}}</li>
+                        <li> <span id="delpage-so-address" class="text-muted text-wrap" style="width: 200px!important;">
+                            {{sotran.shop_address}}
+                          </span></li>
+                      </ul>
+                    </td>
+
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+        <div class="delivery-routing" *ngIf="detail_header_fg.get('tran-type').value == '2'">
+          <div class="row">
+            <div class="col store-tovisit-col border-right">
+              <form [formGroup]='delivery_store_to_visit_fg'>
+                <div class="d-flex bd-highlight">
+                  <div class="p-2 flex-grow-1 bd-highlight">
+                    <div class="d-flex justify-content-start ">
+                      <h6>Stores to visit</h6>
+                      <span class="spinner-border spinner-border-sm" id="spinner-storetovisit" role="status"
+                        aria-hidden="true"></span>
+                    </div>
+                  </div>                  
+                  <div class="pl-2 bd-highlight " *ngIf="!detail_header_fg.get('is-use-ordertran').value">
+                    <span class="ml-2 text-muted align-middle form-control-sm">
+                      {{delivery_store_to_visit_fg.get('excel').value.name}}
+                    </span>
+                  </div>
+                  <div class="pl-2 bd-highlight" *ngIf="!detail_header_fg.get('is-use-ordertran').value">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+                      <button type="button" class="btn btn-success rounded-left" (click)="checkExcel()"
+                        data-toggle="tooltip" data-placement="top" title="Import selected excel"
+                        [disabled]="delivery_store_to_visit_fg.get('excel').value.name == ''">
+                        <i class="fa fa-check"></i>
+                      </button>
+                      <button type="button" class="btn btn-success rounded-right" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-file-excel-o"></i>
+
+                      </button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" role="button" (click)="uploadExcelClick(excel_upload2)">Browse
+                          Excel File</a>
+                        <a class="dropdown-item" role="button" (click)="sampleExcelDownload()">Sample Excel
+                          Download</a>
+
+                      </div>
+                      <input type="file" hidden #excel_upload2 (change)="uploadExcel($event)" id="file-del"
+                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+
+                    </div>
+                  </div>
+                  <!-- add order user -->
+                  <div class="pl-2 bd-highlight" id="so-active-user">
+                    <div class="input-group input-group-sm searchbox">
+                      <mat-select class="form-control searchbox-input" id="so-user" name="so-user" 
+                      [(ngModel)]="criteria.soUsers"  [ngModelOptions]="{standalone: true}" multiple>                       
+                        <mat-option  [value]="-1" #triggerAllSOUserSelectOption (click)="toggleSOUserAllSelect()">
+                        Select All
+                        </mat-option>
+                        <mat-option  [value]="data.userSysKey" *ngFor="let data of delivery_store_to_visit_fg.get('so-users').value">
+                          {{data.userName}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary " type="button"
+                          style="border-color: #cacaca;border-left: none;"
+                          (click)="getSaleOrderTran(0)" id="btn-shop-name-search"><i class="fa fa-search"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pl-2 bd-highlight" *ngIf="detail_header_fg.get('is-use-ordertran').value">
+                    <div class="input-group input-group-sm searchbox">
+                      <input type="text" class="form-control border-right-0 searchbox-input" 
+                        (focusout)="getSaleOrderTran(0)" (keyup.enter)="getSaleOrderTran(0)" placeholder="Shop Name Search"
+                        formControlName="shop-name">
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary " type="button"
+                          style="border-color: #cacaca;border-left: none;border-right: none;"
+                          (click)="getSaleOrderTran(0)" id="btn-shop-name-search"><i class="fa fa-search"></i></button>
+                      </div>
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="refreshSearchBox5()"
+                          style="border-color: #cacaca;border-left: none;">
+                          <i class="fa fa-times"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pl-2 bd-highlight" *ngIf="detail_header_fg.get('is-use-ordertran').value">
+                    <div class="input-group input-group-sm">
+                      <input type="text" class="form-control border-right-0 setall-datepicker-so"
+                        placeholder="Search" readonly formControlName="set-all-date-deli" matInput
+                        [matDatepicker]="dp_setalldatedeli" [min]="MIN_DATE" placeholder="Choose a date"
+                        [attr.id]="'dp_setalldate1'">
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-secondary rounded-left" type="button"
+                          (click)="dp_setalldatedeli.open()">
+                          {{delivery_store_to_visit_fg.get('set-all-date-deli').value | date:'dd-MM-yyyy'}} 
+                          <i class="fa fa-calendar"></i></button>
+                      </div>
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-secondary" type="button"
+                          (click)="updateSetDateToAllDeliTran()">
+                          <i class="fa fa-check"></i></button>
+                      </div>
+                    </div>
+                    <mat-datepicker #dp_setalldatedeli>
+                    </mat-datepicker>
+                  </div>
+                  <div class="pl-2 bd-highlight" *ngIf="detail_header_fg.get('is-use-ordertran').value">
+                    <button type="button" class="btn btn-primary btn-sm " data-toggle="tooltip" data-placement="top"
+                      title="Filter with date and check shop" (click)="filterDate()">
+                      <i class="fa fa-filter"></i>
+                    </button>
+                  </div>
+                  <div class="pl-2 bd-highlight">
+                    <button type="button" class="btn btn-danger btn-sm " data-toggle="tooltip" data-placement="top"
+                      title="Delete all" (click)="deleteAllStoreToVisit()">
+                      <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+              <div class="d-flex justify-content">
+                <pagination-controls id="delivery-routing-pagination-sotran"
+                  (pageChange)="pageChangedDelRouteSoTran($event)"
+                  (pageBoundsCorrection)="pageBoundsCorrectionDel($event)">
+                </pagination-controls>
+                <span
+                  class="ml-2 text-muted align-middle form-control-sm">{{delivery_store_to_visit_fg.get('so-trans').value.length}}</span>
+                  <div class="mr-3" style="position: absolute;right: 0;" *ngIf="detail_header_fg.get('is-use-ordertran').value">
+                    <!-- <mat-checkbox labelPosition='after' (change)="checkAllSaleOrderTran($event)" formControlName="chk-all">
+                      Select All
+                    </mat-checkbox> -->
+                    <mat-checkbox labelPosition='after' (change)="checkAllSaleOrderTran($event)">
+                      Select All
+                    </mat-checkbox>
+                  </div>
+              </div>         
+
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col-1">No</th>
+                    <th scope="col-5">Name</th>
+
+                    <th scope="col-1" *ngIf="detail_header_fg.get('is-use-ordertran').value">
+                      OrderNo</th>
+                    <th scope="col-2" *ngIf="detail_header_fg.get('is-use-ordertran').value">OrderDate</th>
+                    <th scope="col-2">RoutingDate</th>
+                    <th scope="col-1"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr id="delpage-store-name"
+                    *ngFor="let sotran of delivery_store_to_visit_fg.get('so-trans').value | paginate : pagination_delivery_so_config; let i = index; let no = index">
+                    <td scope="row">{{no+1}}</td>
+                    <td style="width: 400px!important;" *ngIf="detail_header_fg.get('is-use-ordertran').value">
+                      <ul style="list-style: none;padding-left: 25px;">
+                        <li style="margin-left: -25px;">
+                          <mat-checkbox labelPosition='after' [(ngModel)]="sotran.check"
+                            (change)="changeCheckedStore_UseOdrTran($event)">
+                            {{sotran.shop_name}}
+                          </mat-checkbox>
+                        </li>
+                        <li>{{sotran.shop_code}}</li>
+                        <li> <span id="delpage-so-address" class="text-muted text-wrap" style="width: 200px!important;">
+                            {{sotran.shop_address}}
+                          </span></li>
+                      </ul>
+                    </td>
+                    <td *ngIf="!detail_header_fg.get('is-use-ordertran').value">
+                      <a>{{sotran.shop_name}}
+                        <br>{{sotran.shop_code}}
+                        <span id="delpage-so-address" class="text-muted text-wrap">
+                          <br>{{sotran.shop_address}}
+                        </span>
+                      </a>
+                    </td>
+                    <td class="align-middle" *ngIf="detail_header_fg.get('is-use-ordertran').value">
+                      {{sotran.order_no}}</td>
+                    <td class="align-middle" *ngIf="detail_header_fg.get('is-use-ordertran').value">
+                      {{sotran.order_date | date : 'd/M/y'}}
+                    </td>
+                    <td class="align-middle">
+                      <input class="datepicker" matInput [matDatepicker]="i" [min]="MIN_DATE"
+                        placeholder="Choose a date" [attr.id]="DTPICKER_DEL + no" readonly required (click)="i.open()"
+                        [(ngModel)]="sotran.delivery_date">
+                      <mat-datepicker #i></mat-datepicker>
+                    </td>
+                    <td class="align-middle">
+                      <button class="btn btn-sm rounded-circle btn-outline-danger" style="font-size: small;"
+                        (click)="removeAssignStoreDel(sotran)">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="delivery_store_to_visit_fg.get('so-trans').value.length==0">
+                    <td colspan="6"><a class="text-muted">No records</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- undelivered sale order by user  -->
+            <div class="col undel-so-col" *ngIf="detail_header_fg.get('is-use-ordertran').value">
+
+              <form [formGroup]='delivery_undelivered_order_fg'>
+                <div class="d-flex bd-highlight">
+                  <div class="p-2 flex-grow-1 bd-highlight">
+                    <h6>Undelivered orders by store
+                      <span class="spinner-border spinner-border-sm" id="spinner-undeliveredso" role="status"
+                        aria-hidden="true"></span>
+                    </h6>
+                  </div>
+                  <div class="p-2 bd-highlight" id="del-active-user-input">
+                    <select class="form-control form-control-sm" formControlName="active-user">
+                      <option class="mb-2" [ngValue]="data"
+                        *ngFor="let data of delivery_undelivered_order_fg.get('users').value">
+                        {{data.userName}}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="p-2 bd-highlight">
+                    <div class="input-group input-group-sm">
+                      <input type="text" class="form-control border-right-0" (focus)="focus(2)" (focusout)="getUndeliveredSo(0)"
+                        (keyup.enter)="getUndeliveredSo(0)" placeholder="Search" formControlName="store-search">
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary " type="button"
+                          style="border-color: #cacaca;border-left: none;border-right: none;"
+                          (click)="getUndeliveredSo(0)" id="button-addon1"><i class="fa fa-search"></i></button>
+                      </div>
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary" type="button"
+                          style="border-color: #cacaca;border-left: none;" (click)="refreshSearchBox1()">
+                          <i class="fa fa-times"></i></button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </form>
+              <div class="pg-store-undelivered">
+                <pagination-controls id="delivery-routing-pagination-undelstores"
+                  (pageChange)="pageChangedDelUndelStores($event)">
+                </pagination-controls>
+              </div>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col">No</th>
+                    <th scope="col" style="width:400px!important;">Name</th>
+
+                    <th scope="col">OrderNo</th>
+                    <th scope="col">OrderDate</th>
+                    <th scope="col">DeliveryDate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr id="delpage-store-name"
+                    *ngFor="let sotran of delivery_undelivered_order_fg.get('stores-byuser').value | paginate : pagination_delivery_undel_stores_config; let i = index">
+                    <td></td>
+                    <td>{{sotran.no+1}}</td>
+                    <td style="width: 400px!important;">
+                      <ul style="list-style: none;padding-left: 25px;">
+                        <li style="margin-left: -25px;">
+                          <mat-checkbox labelPosition='after' [(ngModel)]="sotran.check"
+                            (change)="changeCheckedStore($event.checked,sotran)">
+                            {{sotran.shop_name}}
+                          </mat-checkbox>
+                        </li>
+                        <li>{{sotran.shop_code}}</li>
+                        <li> <span id="delpage-so-address" class="text-muted text-wrap" style="width: 200px!important;">
+                            {{sotran.shop_address}}
+                          </span></li>
+                      </ul>
+
+                    </td>
+                    <td class="align-middle">{{sotran.order_no}}</td>
+                    <td class="align-middle">{{sotran.order_date | date : 'd/M/y' }}</td>
+                    <td class="align-middle">{{sotran.delivery_date | date : 'd/M/y' }}</td>
+                  </tr>
+                  <tr *ngIf="delivery_undelivered_order_fg.get('stores-byuser').value.length==0">
+                    <td colspan="6"><a class="text-muted">No records</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- store list by user -->
+            <div class="col allstore-col" *ngIf="!detail_header_fg.get('is-use-ordertran').value">
+
+              <form [formGroup]='delivery_stores_fg'>
+                <div class="d-flex bd-highlight">
+                  <div class="p-2 flex-grow-1 bd-highlight">
+                    <h6>Stores
+                      <span class="spinner-border spinner-border-sm" id="spinner-allstore-del" role="status"
+                        aria-hidden="true"></span>
+                    </h6>
+                  </div>
+                  <div class="p-2 bd-highlight" id="active-user-unused-so-tran-input">
+                    <select class="form-control form-control-sm" formControlName="active-user-unused-so-tran">
+                      <option class="mb-2" value="">-</option>
+                      <option class="mb-2" [ngValue]="data"
+                        *ngFor="let data of delivery_stores_fg.get('users-unused-so-tran').value">
+                        {{data.userName}}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="p-2 bd-highlight">
+                    <div class="input-group input-group-sm searchbox">
+                      <input type="text" class="form-control border-right-0 searchbox-input" (focus)="focus(2)" (focusout)="getStoresByUser(0)"
+                        (keyup.enter)="getStoresByUser(0)" placeholder="Search" formControlName="store-search">
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary " type="button"
+                          style="border-color: #cacaca;border-left: none;border-right: none;"
+                          (click)="getStoresByUser(0)" id="button-addon1"><i class="fa fa-search"></i></button>
+                      </div>
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary" type="button"
+                          style="border-color: #cacaca;border-left: none;" (click)="refreshSearchBox2()">
+                          <i class="fa fa-times"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <div class="pg-store-undelivered">
+                <pagination-controls id="delivery-routing-pagination-allstores"
+                (pageChange)="pageChangedDelAllStores($event)">
+              </pagination-controls></div>
+
+              
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width: 5px;">No</th>
+                    <th scope="col" style="width: 200px!important;">Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr id="delpage-store-name"
+                    *ngFor="let sotran of delivery_stores_fg.get('stores').value | paginate : pagination_delivery_allstores_config; let i = index">
+                    <td style="width: 5px;">{{sotran.no+1}}</td>
+                    <td>
+                      <ul style="list-style: none;padding-left: 25px;">
+                        <li style="margin-left: -25px;">
+                          <mat-checkbox labelPosition='after' [(ngModel)]="sotran.check"
+                            (change)="changeCheckedStore($event.checked,sotran)">
+                            {{sotran.shop_name}}
+                          </mat-checkbox>
+                        </li>
+                        <li>{{sotran.shop_code}}</li>
+                        <li> <span class="text-muted text-wrap" style="width: 200px!important;">
+                            {{sotran.shop_address}}
+                          </span></li>
+                      </ul>
+                    </td>
+
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

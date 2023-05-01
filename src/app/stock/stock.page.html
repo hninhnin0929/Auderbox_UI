@@ -1,0 +1,826 @@
+<ion-content>
+    <form #form>
+        <div [class]="spinner ? 'myOuterContainer disabled' : 'myOuterContainer'">
+            <div class="d-flex justify-content-start optionNavBar">
+                <ul class="nav nav-pills mb-3 " id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link" id="stockList-tab" data-toggle="pill" href="#stockList" role="tab"
+                            aria-controls="stockList" (click)="stockListTab();btn=false" aria-selected="true">List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="stockNew-tab" data-toggle="pill" href="#stockNew" role="tab"
+                            aria-controls="stockNew" (click)="newstockTab();" aria-selected="false">New</a>
+                    </li>
+                </ul>
+
+                <button type="button" class="btn btn-primary header-btn" *ngIf="btn" [disabled]="form.invalid"
+                    (click)="save()">{{model.syskey=='' || model.syskey=='0' ? 'Save':'Update' }}</button>
+                <button type="button" class="btn btn-primary header-btn btndelete" *ngIf="btn" [disabled]="model.syskey=='0'"
+                    (click)="goDelete()">Delete</button>
+            </div>
+
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade" id="stockList" role="tabpanel" aria-labelledby="stockList-tab">
+                    <mat-accordion class="example-headers-align ">
+                        <mat-expansion-panel class="border rounded advance-search-panel mb-1">
+                            <mat-expansion-panel-header class="advance-search-panel-header">
+                                <mat-panel-title class="text-primary">
+                                    <span *ngIf="!spinner">Advance</span>
+                                    <div class="spinner-border text-primary" role="status" id="spinner-advsearch"
+                                        *ngIf="spinner">
+                                        <span class="sr-only"></span>
+                                    </div>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    <small></small>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group row">
+                                        <label for="stock-code" class="col-sm-4 col-form-label col-form-label-sm">
+                                            Stock Code
+                                        </label>
+                                        <div class="col-sm">
+                                            <input type="text" id="cri-shop2" matInput
+                                                class="form-control form-control-sm" [(ngModel)]="criteria.skuCode"
+                                                [formControl]="stockCodeSearch" [matAutocomplete]="auto">
+                                            <mat-autocomplete #auto="matAutocomplete">
+                                                <mat-option *ngFor="let stk2 of stockList2" [value]="stk2.skuCode"
+                                                    style="font-size: small;">
+                                                    {{stk2.skuCode}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="brand-name" class="col-sm-4 col-form-label col-form-label-sm">
+                                            Brand Name
+                                        </label>
+                                        <div class="col-sm">
+                                            <select [(ngModel)]="criteria.brandName"
+                                                class="custom-select custom-select-sm" name="cri-brand" id="cri-brand"
+                                                [disabled]="brandList1.length==0">
+                                                <option value="" selected>-</option>
+                                                <option [value]="brand.syskey" *ngFor="let brand of brandList1">
+                                                    {{brand.t2}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="spSKUCode" class="col-sm-4 col-form-label col-form-label-sm">
+                                            Brand SKU Code
+                                        </label>
+                                        <div class="col-sm">
+                                            <input [(ngModel)]="criteria.spSKUCode" type="text" 
+                                                class="form-control form-control-sm" id="spSKUCode" name="spSKUCode">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" [hidden]="!isUseSAP">
+                                        <label for="sapstock" class="col-sm-4 col-form-label col-form-label-sm">
+                                            SAP Stock
+                                        </label>
+                                        <div class="col-sm">
+                                            <select [(ngModel)]="criteria.isSAPStk" class="custom-select custom-select-sm"
+                                                name="sapstock" id="sapstock">
+                                                <option value="" selected>All</option>
+                                                <option value="0">NO</option>
+                                                <option value="1">YES</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group row">
+                                        <label for="stock-name" class="col-sm-4 col-form-label col-form-label-sm">
+                                            Stock Name
+                                        </label>
+                                        <div class="col-sm">
+                                            <input type="text" id="cri-shop" matInput
+                                                class="form-control form-control-sm" [(ngModel)]="criteria.skuName"
+                                                [formControl]="stockNameSearch" [matAutocomplete]="auto1">
+
+                                            <mat-autocomplete #auto1="matAutocomplete">
+                                                <mat-option *ngFor="let stk of stockList1" [value]="stk.skuName"
+                                                    style="font-size: small;">
+                                                    {{stk.skuName}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="owner-name" class="col-sm-4 col-form-label col-form-label-sm">
+                                            BrandOwner
+                                        </label>
+                                        <div class="col-sm">
+                                            <select [(ngModel)]="criteria.ownerName"
+                                                class="custom-select custom-select-sm" name="cri-owner" id="cri-owner"
+                                                [disabled]="ownerList1.length==0">
+                                                <option value="" selected>-</option>
+                                                <option [value]="owner.syskey" *ngFor="let owner of ownerList1">
+                                                    {{owner.t2}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="cri-ordering" class="col-sm-4 col-form-label col-form-label-sm">
+                                            List Sorting
+                                        </label>
+                                        <div class="col-sm">
+                                            <select [(ngModel)]="criteria.ordering"
+                                                class="custom-select custom-select-sm" name="cri-ordering"
+                                                id="cri-ordering">
+                                                <option value="asc">Ascending</option>
+                                                <option value="desc">Descending</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" [hidden]="!isUseSAP">
+                                        <label for="cri-ordering" class="col-sm-4 col-form-label col-form-label-sm">
+                                            Stock Info Status
+                                        </label>
+                                        <div class="col-sm">
+                                            <select [(ngModel)]="criteria.stkinfoStat" class="custom-select custom-select-sm"
+                                                name="cri-ordering" id="cri-ordering">
+                                                <option value="">All</option>
+                                                <option value="0">Complete</option>
+                                                <option value="1">Partial</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col">
+                                    <div class="form-group row">
+                                        <label for="category-name" class="col-sm-4 col-form-label col-form-label-sm">
+                                            Category
+                                        </label>
+                                        <div class="col-sm">
+                                            <!-- <select [(ngModel)]="criteria.categoryName"
+                                                class="custom-select custom-select-sm" name="cri-cat" id="cri-cat"
+                                                [disabled]="categoryList1.length==0">
+                                                <option value="" selected>-</option>
+                                                <option [value]="cat.syskey" *ngFor="let cat of categoryList1">
+                                                    {{cat.t2}}
+                                                </option>
+                                            </select> -->
+                                            <mat-select class="form-control form-control-sm" [(ngModel)]="searchCriteria.categoryName"
+                                            name="cri-cat" id="cri-cat" [disabled]="categoryList1.length==0" multiple>
+                                                <mat-option [value]="" [disabled]="true">-</mat-option>
+                                                <mat-option [value]="cat.syskey" *ngFor="let cat of categoryList1; let i = index" [value]="cat">
+                                                    {{cat.t2}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="subcategory-name" class="col-sm-4 col-form-label col-form-label-sm">
+                                            Sub Category
+                                        </label>
+                                        <div class="col-sm">
+                                            <select [(ngModel)]="criteria.subCategoryName"
+                                                class="custom-select custom-select-sm" name="cri-subCat" id="cri-subCat"
+                                                [disabled]="subCategoryList1.length==0">
+                                                <option value="" selected>-</option>
+                                                <option [value]="subCat.syskey" *ngFor="let subCat of subCategoryList1">
+                                                    {{subCat.t2}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="cri-ordering" class="col-sm-4 col-form-label col-form-label-sm">
+                                            Status
+                                        </label>
+                                        <div class="col-sm">
+                                            <select [(ngModel)]="criteria.status" class="custom-select custom-select-sm"
+                                                name="cri-ordering" id="cri-ordering">
+                                                <option value="">All</option>
+                                                <option value="0">Active</option>
+                                                <option value="1">Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="d-flex justify-content-start">
+                                        <div class="btn-group" role="group" style="height: 35px;">
+                                            <button (click)="search()" type="button" class="btn btn-primary"
+                                                [disabled]="spinner">
+                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                            </button>
+                                            <button (click)="advanceSearchReset()" type="button"
+                                                class="btn btn-primary">
+                                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        <div class="d-flex justify-content-start">
+                                            <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                                                <button (click)="print()" type="button" class="btn btn-primary"
+                                                    [disabled]="stockList.length == 0">
+                                                    Export
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                    <pagination-controls (pageChange)="pageChanged($event)" id="pg-stocklist"></pagination-controls>
+                    <div class="table-responsive text-nowrap mt-1">
+                        <table class="table table-hover" style="font-size: 12px;">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="sticky-top" scope="col" style="width: 5px;">
+                                        #
+                                    </th>
+                                    <th class="sticky-top" scope="col asc" (click)="sortCol(1)">
+                                        AB SKU Code
+                                    </th>
+                                    <th class="sticky-top" scope="col" (click)="sortCol(2)">
+                                        Stock Name
+                                    </th>
+                                    <th class="sticky-top" scope="col asc" (click)="sortCol(1)" [hidden]="!isUseSAP">
+                                        Brand SKU Code
+                                    </th>
+                                    <th class="sticky-top" scope="col asc" (click)="sortCol(1)" [hidden]="!isUseSAP">
+                                        Brand SKU Name
+                                    </th>
+                                    <th class="sticky-top" scope="col" (click)="sortCol(7)">
+                                        Brand Name
+                                    </th>
+                                    <th class="sticky-top" scope="col" (click)="sortCol(5)">
+                                        Category
+                                    </th>
+                                    <th class="sticky-top" scope="col" (click)="sortCol(6)">
+                                        Sub Category
+                                    </th>
+                                    <th class="sticky-top" scope="col" (click)="sortCol(9)">
+                                        Price
+                                    </th>
+                                    <th class="sticky-top" scope="col asc" (click)="sortCol(11)">
+                                        Created Date
+                                    </th>
+                                    <th class="sticky-top" scope="col">
+                                        Status
+                                    </th>
+                                    <th class="sticky-top" scope="col" [hidden]="!isUseSAP">
+                                        SAP Stock
+                                    </th>
+                                    <th class="sticky-top" scope="col" [hidden]="!isUseSAP">
+                                        Stock Info Status
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of stockList | paginate: config; let i = index">
+                                    <td scope="row" (click)="detail(item);">{{i+1}}</td>
+                                    <td scope="row" (click)="detail(item);">{{item.Code}}</td>
+                                    <td scope="row" (click)="detail(item);">{{item.Name}}</td>
+                                    <td scope="row" (click)="detail(item);" [hidden]="!isUseSAP">{{item.spSKUCode}}</td>
+                                    <td scope="row" (click)="detail(item);" [hidden]="!isUseSAP">{{item.SAPSKUDesc}}</td>
+                                    <td scope="row" (click)="detail(item);">{{item.BrandName}}</td>
+                                    <td scope="row" (click)="detail(item);">{{item.CategoryName}}</td>
+                                    <td scope="row" (click)="detail(item);">{{item.SubCategoryName}}</td>
+                                    <td scope="row" (click)="detail(item);">{{item.Price}}</td>
+                                    <td scope="row" (click)="detail(item);">{{item.CreatedDate}}</td>
+                                    <td scope="row" class="d-flex flex-row">
+                                        <div class="custom-control custom-switch" style="width: 50px;">
+                                            <input type="checkbox" class="custom-control-input"
+                                                [id]="'active-switch-'+item.Syskey"
+                                                [name]="'active-switch-'+item.Syskey" [(ngModel)]="item.Status"
+                                                (change)="stockStatusChange(item)">
+                                            <label class="custom-control-label" [for]="'active-switch-'+item.Syskey"
+                                                style="width: 0px;"></label>
+                                        </div>
+                                        <span class="text-muted" 
+                                        style="margin-left: -20px;
+                                        margin-top: 2px;">{{item.Status? 'Active':'Inactive'}}</span>
+                                    </td>
+                                    <td scope="row" (click)="detail(item);" [hidden]="!isUseSAP">{{item.ISSAP}}</td>
+                                    <td scope="row" (click)="detail(item);" [hidden]="!isUseSAP">{{item.StkInfoStat}}</td>                                    
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                </div>
+                <div class="tab-pane fade " id="stockNew" role="tabpanel" aria-labelledby="stockNew-tab">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-header  bg-transparent text-primary border-bottom-0">Stock Detail</div>
+                                <div class="card-body row">
+                                    <div class="col">
+                                        <div class="form-group row">
+                                            <label for="stkdesc"
+                                                class="col-sm-4 col-form-label col-form-label-sm">Description</label>
+                                            <div class="col-sm">
+                                                <input [(ngModel)]="model.desc" type="text"
+                                                    class="form-control form-control-sm" id="stkdesc" name="stkdesc"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="wh"
+                                                class="col-sm-4 col-form-label col-form-label-sm">WareHouse</label>
+                                            <div class="col-sm">
+                                                <select [disabled]="update" class="custom-select custom-select-sm"
+                                                    [(ngModel)]="model.whid" id="wh" name="stkwh">
+                                                    <option value="" disabled selected hidden>{{defSelect}}</option>
+                                                    <option [value]="i.syskey" *ngFor="let i of wareHouseList">
+                                                        {{i.desc}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="cat"
+                                                class="col-sm-4 col-form-label col-form-label-sm">Category</label>
+                                            <div class="col-sm">
+                                                <select [disabled]="update" class="custom-select custom-select-sm"
+                                                    name="stkcat" [(ngModel)]="model.catid" id="cat"
+                                                    (change)="catChage(true)">
+                                                    <option value="" disabled selected hidden>{{defSelect}}</option>
+                                                    <option [value]="i.syskey" *ngFor="let i of categoryList">
+                                                        {{i.t2}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="subcat" class="col-sm-4 col-form-label">Sub-Category</label>
+                                            <div class="col-sm">
+                                                <select class="custom-select custom-select-sm" (change)="subCatChange()"
+                                                    name="stksubcat" [(ngModel)]="model.subcatid" id="subcat"
+                                                    [disabled]="update ">
+                                                    <option value="" selected>-</option>
+                                                    <option [value]="i.syskey" *ngFor="let i of subCategoryList">
+                                                        {{i.t2}}</option>
+                                                </select>
+                                                <span class="spinner-grow spinner-grow-sm" role="status"
+                                                    aria-hidden="true" *ngIf="subcat"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="spSKUCode1" class="col-sm-4 col-form-label col-form-label-sm">Brand
+                                                SKU
+                                                Code</label>
+                                            <div class="col-sm">
+                                                <input [(ngModel)]="model.spSKUCode" type="text" 
+                                                    class="form-control form-control-sm" id="spSKUCode1"
+                                                    name="spSKUCode1" (focus)="focusFunction()" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="bottype" class="col-sm-4 col-form-label col-form-label-sm">
+                                                Returnable Packaging Type
+                                            </label>
+                                            <div class="col-sm">
+                                                <mat-radio-group aria-label="Select an option" style="flex-direction: row; display: flex;" [(ngModel)]="obj.n31" [ngModelOptions]="{standalone: true}">
+                                                    <mat-radio-button value="1" class="mr-4">YES</mat-radio-button>
+                                                    <mat-radio-button value="0">NO</mat-radio-button>
+                                                </mat-radio-group>                                                       
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group row">
+                                            <label for="bo" class="col-sm-4 col-form-label col-form-label-sm">Brand
+                                                Owner</label>
+                                            <div class="col-sm">
+                                                <select [disabled]="update " class="custom-select custom-select-sm"
+                                                    name="stkbo" (change)="brandOwnerChange()"
+                                                    [(ngModel)]="model.brandownerid" id="bo">
+                                                    <option value="" selected>-</option>
+                                                    <option [value]="i.syskey" *ngFor="let i of brandOwnerList">
+                                                        {{i.t2}}
+                                                    </option>
+                                                </select>
+                                                <span class="spinner-grow spinner-grow-sm" role="status"
+                                                    aria-hidden="true" *ngIf="bo"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="b"
+                                                class="col-sm-4 col-form-label col-form-label-sm">Brand</label>
+                                            <div class="col-sm">
+                                                <select [disabled]="update " class="custom-select custom-select-sm"
+                                                    name="stkbrad" (change)="brandChange()" [(ngModel)]="model.brandid"
+                                                    id="b">
+                                                    <option value="" selected>-</option>
+                                                    <option [value]="i.syskey" *ngFor="let i of brandList">{{i.t2}}
+                                                    </option>
+                                                </select>
+                                                <span class="spinner-grow spinner-grow-sm" role="status"
+                                                    aria-hidden="true" *ngIf="b"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="pt" class="col-sm-4 col-form-label col-form-label-sm">Pack
+                                                Type</label>
+                                            <div class="col-sm">
+                                                <select [disabled]="update" class="custom-select custom-select-sm"
+                                                    name="stkpt" (change)="ptChange()" [(ngModel)]="model.ptid"
+                                                    id="stkpt">
+                                                    <option value="" selected>-</option>
+                                                    <option [value]="i.syskey" *ngFor="let i of packTypeList">
+                                                        {{i.description}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="ps" class="col-sm-4 col-form-label col-form-label-sm">Pack
+                                                Size</label>
+                                            <div class="col-sm">
+                                                <select [disabled]="update" class="custom-select custom-select-sm"
+                                                    name="stkps" (change)="psChange()" [(ngModel)]="model.psid"
+                                                    id="stkps">
+                                                    <option value="" selected>-</option>
+                                                    <option [value]="i.syskey" *ngFor="let i of packSizeList">
+                                                        {{i.description}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="fl" class="col-sm-4 col-form-label col-form-label-sm">Product
+                                                Character</label>
+                                            <div class="col-sm">
+                                                <select [disabled]="update" class="custom-select custom-select-sm"
+                                                    name="stkprodc" (change)="flChange()" [(ngModel)]="model.flid"
+                                                    id="stkprodc">
+                                                    <option value="" selected>-</option>
+                                                    <option [value]="i.syskey" *ngFor="let i of floverList">
+                                                        {{i.description}}</option>
+                                                </select>
+                                            </div>
+                                        </div>   
+                                        <div class="form-group row" [hidden]="!isUseSAP || model.n40==1">
+                                            <label for="cri-ordering" class="col-sm-4 col-form-label col-form-label-sm">
+                                                SAP SKU Mapping
+                                            </label>
+                                            <div class="col-sm">
+                                                <div class="form-group input-group flex-nowrap rounded-right">
+                                                    <input type="text"  id="sapsku"  [formControl]="sapskuname"  class=" custom-select custom-select-sm flex-nowrap rounded-right" (keyup.enter)="model.n13='';getSAPSKU()" [(ngModel)]="sapskuModel"   placeholder="Search and Enter..."  [matAutocomplete]="auto2">
+                                                    <mat-autocomplete #auto2="matAutocomplete" [displayWith]="getSapSkuAutoComplete" (optionSelected)="onSkuSelectionChange()">
+                                                      <mat-option *ngFor="let sapsku of SAPSKUList" [value]="sapsku" 
+                                                        style="font-size: small;">
+                                                        {{sapsku.SAPdesc}}
+                                                      </mat-option>
+                                                    </mat-autocomplete>
+                                                    <div class="input-group-append rounded-right align-middle border rounded-right">                                           
+                                                      <span class="spinner-border" role="status"
+                                                          style="margin-top: 3px;margin-right: 4px;" id="spinner-shop">
+                                                          <span class="sr-only">Loading...</span>
+                                                      </span>             
+                                                    </div>
+                                                  </div>
+                                            </div>
+    
+                                        </div>                                   
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-header  bg-transparent text-primary border-bottom-0">Stock Image</div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+
+                                            <div class="form-group row">
+                                                <label for="stkdesc"
+                                                    class="col-sm-4 col-form-label col-form-label-sm">Stock
+                                                    Image</label>
+                                                <div class="col">
+                                                    <div class="input-group input-group-sm" style="width:200px">
+                                                        <input #stockfileinput type="file" class="custom-file-input"
+                                                            name="stkimg" id="imginput"
+                                                            (change)="inputFileChange($event)" hidden>
+
+                                                        <input type=text class="form-control" #stockfileinputlabel
+                                                            style=" cursor: pointer;" (click)="stockfileinput.click()"
+                                                            [placeholder]="stockfileinput.value == '' ? 'Click to select': stockfileinput.value" />
+                                                        <div class="input-group-prepend">
+                                                            <button (click)="clearStockImage()"
+                                                                class="btn btn-outline-secondary rounded-right"
+                                                                type="button" id="inputGroupFileAddon09">Clear</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="card" style="width: 13rem; margin: auto">
+                                                <img id="showImg" [src]="stockImg" (click)="previewStockImage()">
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-header  bg-transparent text-primary border-bottom-0">Stock Unit</div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group row">
+                                                <label for="pt"
+                                                    class="col-sm-4 col-form-label col-form-label-sm">Barcode</label>
+                                                <div class="col-sm ">
+                                                    <div class="input-group input-group-sm" style="width: 200px;">
+                                                        <input [(ngModel)]="barcode" type="text" class="form-control"
+                                                            name="stkbarcode" aria-label="Insert Barcode Here"
+                                                            placeholder="Insert Barcode Here"
+                                                            aria-describedby="button-addon4">
+                                                        <div class="input-group-append">
+                                                            <button (click)="addBarcode()"
+                                                                class="btn btn-outline-secondary" type="button"
+                                                                id="button-addon4">Add</button>
+                                                        </div>
+                                                        <div class="input-group-append">
+                                                            <button (click)="showBarcodeList()"
+                                                                class="btn btn-outline-secondary" type="button"
+                                                                id="button-addon2">List
+                                                                <span
+                                                                    class="badge badge-info">{{obj.stockbarcode.length}}</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="pt" class="col-sm-4 col-form-label col-form-label-sm">Stock
+                                                    Unit</label>
+                                                <div class="col-sm">
+                                                    <select class="custom-select custom-select-sm" id="stkstockunit"
+                                                        name="stkstockunit" [(ngModel)]="model.stockuom.syskey"
+                                                        (change)="stockUomChange()">
+                                                        <option [value]="i.syskey" [disabled]="i.disable"
+                                                            *ngFor="let i of uomList">{{i.t2}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="standPrice"
+                                                    class="col-sm-4 col-form-label col-form-label-sm">Standard
+                                                    Price</label>
+                                                <div class="col-sm">
+                                                    <input style="text-align: end;" [(ngModel)]="obj.n22" type="text"
+                                                        name="stkprice" class="form-control form-control-sm"
+                                                        id="standPrice">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="standPrice" class="col-sm-4 col-form-label col-form-label-sm">UOM Conversion</label>
+                                                <div class="col-sm">  
+                                                    <select class="custom-select custom-select-sm" [(ngModel)]="obj.ratio" name="uomratio" id="uomratio"
+                                                     (change)="selectUOMChange()" style="max-width: 200px;">
+                                                        <!-- <option value="1" selected></option> -->
+                                                        <option [value]="r.ratio" *ngFor="let r of UOMRatioList">{{r.desc}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group row">
+                                                <label for="stkdesc"
+                                                    class="col-sm-4 col-form-label col-form-label-sm">Unit Of
+                                                    Measure</label>
+                                                <div class="col-sm ">
+                                                    <div class="input-group input-group-sm" style="width: 200px;">
+                                                        <input disabled type="text" class="form-control" name="stkuom"
+                                                            placeholder="Additional UOM"
+                                                            aria-label="Recipient's username"
+                                                            aria-describedby="button-addon6">
+                                                        <div class="input-group-append">
+                                                            <button (click)="additionalUom()"
+                                                                class="btn btn-outline-secondary" type="button"
+                                                                id="button-addon6">Add</button>
+                                                        </div>
+                                                        <div class="input-group-append">
+                                                            <button (click)="addAddUom()"
+                                                                class="btn btn-outline-secondary" type="button"
+                                                                id="button-addon7">Show</button>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- </form> -->
+                </div>
+            </div>
+        </div>
+    </form>
+</ion-content>
+
+<div class="modal fade" id="barcodeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Barcode List</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ion-list class="overflow-auto">
+
+                    <ion-item-sliding *ngFor="let b of obj.stockbarcode;let i = index" [disabled]="b.n2==0 || b.n2==1">
+                        <ion-item [hidden]="b.recordStatus==4">
+                            <ion-label class="text-uppercase">{{b.t1}}</ion-label>
+                        </ion-item>
+                        <ion-item-options side="end">
+                            <ion-item-option (click)="deleteBarcode(i)" color="danger" expandable>
+                                Delete
+                            </ion-item-option>
+                        </ion-item-options>
+                    </ion-item-sliding>
+                    <ion-item *ngIf="obj.stockbarcode.length == 0">
+                        <ion-label>No Data</ion-label>
+                    </ion-item>
+                </ion-list>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="uomModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Uom List</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <ion-list>
+                        <h5>Unit</h5>
+                        <div class="form-group row">
+                            <div class="col-sm">
+                                <select [(ngModel)]="uomjun.n2" class="custom-select" id="unit" (change)="unitChange()">
+                                    <option [value]="i.syskey" *ngFor="let i of uomList">{{i.t2}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="margin-top: 5px;margin-bottom: 10px;" class="dropdown-divider"></div>
+                        <h5>Conversion Ratio</h5>
+                        <p>One {{unitCode}} is made of:</p>
+                        <div class="form-group row">
+                            <div class="col-sm">
+                                <input type="number" style="text-align: end;" [(ngModel)]="uomjun.n3" type="text"
+                                    class="form-control" id="ratio">
+                            </div>
+                        </div>
+                        <div style="margin-top: 5px;margin-bottom: 10px;" class="dropdown-divider"></div>
+                        <h5>Price Basic</h5>
+                        <ion-radio-group [(ngModel)]="pricebasicSpec">
+
+                            <ion-item>
+                                <ion-label>Multiple of Stock Unit</ion-label>
+                                <ion-radio slot="start" color="success" [value]="false"></ion-radio>
+                            </ion-item>
+
+                            <ion-item>
+                                <ion-label>Specific Price</ion-label>
+                                <ion-radio slot="start" color="tertiary" [value]="true"></ion-radio>
+                            </ion-item>
+                        </ion-radio-group>
+
+                        <div class="form-group row">
+                            <div class="col-sm">
+                                <input [disabled]="!pricebasicSpec" type="number" style="text-align: end;"
+                                    [(ngModel)]="uomjun.n6" type="number" class="form-control" id="ratio">
+                            </div>
+                        </div>
+                        <div style="margin-top: 5px;margin-bottom: 10px;" class="dropdown-divider"></div>
+                        <!-- <h5>Apply Module</h5> -->
+                    </ion-list>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button (click)="saveUomModel()" type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="uomModelList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <table class="table table-hover table-striped" style="font-size: 13px;">
+                        <thead class="thead-dark">
+                            <tr>
+
+                                <th scope="col">Name</th>
+                                <th scope="col">Ratio</th>
+                                <th scope="col">Price Basic</th>
+                                <th scope="col">Operation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of baseStockUom">
+
+                                <td scope="row">{{item.t5}}</td>
+                                <td scope="row">One {{item.t4}} is made of {{item.n3}} {{item.t4}}</td>
+                                <td scope="row">{{item.n5==1?'Multiple of Stock Unit':'Specific Price'}}</td>
+                                <td scope="row"></td>
+                            </tr>
+                            <tr *ngFor="let item of obj.stockuomjun ;let i = index">
+                                <td scope="row btn" (click)="detailUomTable(item)">{{item.t5}}</td>
+                                <td scope="row">One {{item.t5}} is made of {{item.n3}} {{item.t4}}</td>
+                                <td scope="row">{{item.n5==1?'Multiple of Stock Unit':'Specific Price'}}</td>
+                                <td scope="row" (click)="delUomTable(i)" style="color: royalblue;">Delete</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+<!-- <div class="modal fade" id="imgcrp" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modified image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" [hidden]="!croperReady">
+                <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" format="png"
+                    (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()"
+                    autoCrop="false">
+                </image-cropper>
+            </div>
+            <div class="modal-footer">
+                <button type="button" (click)="cropImageCencel()" class="btn btn-secondary"
+                    data-dismiss="modal">Close</button>
+                <button type="button" (click)="cropImage()" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div> -->
+<div id="previewStockImgModel" class="modal" tabindex="-1">
+    <span class="close" (click)="previewModelClose()">&times;</span>
+    <img [src]="stockImg" class="previewStockImgModel-content" id="img01">
+    <div id="caption"></div>
+</div>

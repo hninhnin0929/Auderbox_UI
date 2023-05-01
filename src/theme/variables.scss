@@ -1,0 +1,283 @@
+// Ionic Variables and Theming. For more info, please see:
+// http://ionicframework.com/docs/theming/
+
+/** Ionic CSS Variables **/
+
+:root {
+    /** primary **/
+    --ion-color-primary: #3171e0;
+    --ion-color-primary-rgb: 56, 128, 255;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-primary-contrast-rgb: 255, 255, 255;
+    --ion-color-primary-shade: #3171e0;
+    --ion-color-primary-tint: #4c8dff;
+    /** secondary **/
+    --ion-color-secondary: #3dc2ff;
+    --ion-color-secondary-rgb: 61, 194, 255;
+    --ion-color-secondary-contrast: #ffffff;
+    --ion-color-secondary-contrast-rgb: 255, 255, 255;
+    --ion-color-secondary-shade: #36abe0;
+    --ion-color-secondary-tint: #50c8ff;
+    /** tertiary **/
+    --ion-color-tertiary: #5260ff;
+    --ion-color-tertiary-rgb: 82, 96, 255;
+    --ion-color-tertiary-contrast: #ffffff;
+    --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+    --ion-color-tertiary-shade: #4854e0;
+    --ion-color-tertiary-tint: #6370ff;
+    /** success **/
+    --ion-color-success: #2dd36f;
+    --ion-color-success-rgb: 45, 211, 111;
+    --ion-color-success-contrast: #ffffff;
+    --ion-color-success-contrast-rgb: 255, 255, 255;
+    --ion-color-success-shade: #28ba62;
+    --ion-color-success-tint: #42d77d;
+    /** warning **/
+    --ion-color-warning: #ffc409;
+    --ion-color-warning-rgb: 255, 196, 9;
+    --ion-color-warning-contrast: #000000;
+    --ion-color-warning-contrast-rgb: 0, 0, 0;
+    --ion-color-warning-shade: #e0ac08;
+    --ion-color-warning-tint: #ffca22;
+    /** danger **/
+    --ion-color-danger: #eb445a;
+    --ion-color-danger-rgb: 235, 68, 90;
+    --ion-color-danger-contrast: #ffffff;
+    --ion-color-danger-contrast-rgb: 255, 255, 255;
+    --ion-color-danger-shade: #cf3c4f;
+    --ion-color-danger-tint: #ed576b;
+    /** dark **/
+    --ion-color-dark: #222428;
+    --ion-color-dark-rgb: 34, 36, 40;
+    --ion-color-dark-contrast: #ffffff;
+    --ion-color-dark-contrast-rgb: 255, 255, 255;
+    --ion-color-dark-shade: #1e2023;
+    --ion-color-dark-tint: #383a3e;
+    /** medium **/
+    --ion-color-medium: #92949c;
+    --ion-color-medium-rgb: 146, 148, 156;
+    --ion-color-medium-contrast: #ffffff;
+    --ion-color-medium-contrast-rgb: 255, 255, 255;
+    --ion-color-medium-shade: #808289;
+    --ion-color-medium-tint: #9d9fa6;
+    /** light **/
+    --ion-color-light: #f4f5f8;
+    --ion-color-light-rgb: 244, 245, 248;
+    --ion-color-light-contrast: #000000;
+    --ion-color-light-contrast-rgb: 0, 0, 0;
+    --ion-color-light-shade: #d7d8da;
+    --ion-color-light-tint: #f5f6f9;
+
+    --ion-font-family: "Roboto", sans-serif !important;
+
+    ion-content {
+        font-family: "Roboto", sans-serif !important;
+    }
+
+    .nav-pills {
+        background-color: white;
+    }
+    .mouse-hover:hover,
+    .mouse-hover:focus {
+        color: rgb(38, 125, 255);
+        text-decoration: none;
+        cursor: pointer;
+        // box-shadow: 5px 10px 13px rgb(255, 255, 255, 0.6);
+    }
+    .v-divider {
+        border-left: 2px solid #ededed;
+        height: 100%;
+        position: absolute;
+        left: 50%;
+        margin-left: -3px;
+        top: 0;
+    }
+    .btn-style:hover {
+        cursor: pointer;
+    }
+    .myInnerContainer {
+        padding: 20px;
+    }
+    .myOuterContainer {
+        padding: 10px;
+    }
+    #btnGroup > ion-button {
+        float: right;
+    }
+    td:hover {
+        cursor: pointer;
+    }
+    ion-toast.info {
+        --max-width: 300px !important;
+    }
+
+    .spinner-border {
+        margin-left: 20px;
+        width: 20px;
+        height: 20px;
+    }
+    .card-full {
+        width: 100%;
+        height: 100%;
+    }
+    .optionNavBar {
+        background-color: white;
+        margin-bottom: -7px;
+    }
+    .card-one {
+        max-width: 500px;
+    }
+    .header-btn {
+        height: 37px;
+        margin-left: 5px !important;
+    }
+    #btnGroup > ion-button {
+        float: right;
+    }
+  
+    font-size: 15px;
+    font-family: "Courier New";
+    ion-label {
+        font-size: 15px;
+    }
+    ion-input {
+        font-size: 15px;
+    }
+
+    .ngx-pagination > li {
+        margin-bottom: 0px;
+        border: 1px solid #e9e9e9;
+        border-radius: 3px;
+    }
+    .ngx-pagination {
+        margin: 0px;
+        padding: 0px;
+    }
+    .ngx-pagination > .pagination-previous {
+        width: 100px;
+    }
+    .ngx-pagination > .pagination-previous {
+        width: 100px;
+    }
+    .ngx-pagination > .current {
+        background-color: #007bff;
+    }
+    .table {
+        border-left: 1px solid #e9e9e9;
+        border-right: 1px solid #e9e9e9;
+        border-top: 1px solid #e9e9e9;
+    }
+    mat-form-field.mat-form-field {
+        font-size: 12px;
+    }
+    .mat-form-field-wrapper {
+        padding-bottom: 0em !important;
+    }
+    .url:hover {
+        color: rgba(0, 38, 209, 0.849);
+        text-decoration: underline;
+    }
+    .my-pagination {
+        margin-bottom: 3px;
+    }
+    .mat-radio-container {
+        height: 16px;
+        width: 16px;
+    }
+    .mat-radio-outer-circle {
+        height: 15px;
+        width: 15px;
+    }
+    .mat-radio-inner-circle {
+        height: 15px;
+        width: 15px;
+    }
+    .mat-checkbox-layout {
+        margin-bottom: 0px !important;
+    }
+
+    .advance-form {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    .fa-close:hover {
+        color: red;
+    }
+    .fa-trash:hover {
+        color: red;
+    }
+    .disabled {
+        pointer-events: none; //This makes it not clickable
+        opacity: 0.6; //This grays it out to look disabled
+    }
+    .disabled:hover{
+        cursor: not-allowed;
+    }
+    .browse-tab-btn {
+        right: 0;
+        position: absolute;
+    }
+    .order-detail-btn > li:last-child {
+        right: 0;
+        position: absolute;
+    }
+    .ld-township-expansionpanel > .mat-expansion-panel {
+        box-shadow: none !important;
+        
+    }
+    .ld-township-expansionpanel > .mat-expansion-panel > .mat-expansion-panel-header {
+        height: 35px!important;
+    }
+ 
+    .advance-search-panel{
+        box-shadow: none !important;
+    }
+    .advance-search-panel-header{
+        height: 35px !important;
+    }
+    .advance-search-panel-header.mat-expanded {
+        height: 48px !important;
+    }
+    .table {
+        border-left: none; 
+        border-right: none; 
+        border-top: 1px solid #e9e9e9; 
+    }
+    .cdk-overlay-container {
+        position: fixed;
+        z-index: 1602;
+    }
+    .dot{
+        width: .625rem;
+        height: .625rem;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: .5rem;
+      
+    }
+    input.mat-input-element {
+        margin-top: 0;
+    }
+    .cri-input{
+        max-width: 200px !important;
+    }
+    input:focus,
+    select:focus,
+    textarea:focus,
+    button:focus {
+        outline: none !important;
+    }
+    .form-control:focus,
+    .btn:focus,
+    .btn::before {
+        outline: none !important;
+    }
+    a:not([href]):hover {
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer; 
+    }
+    .border,.border-right{
+        border-color: #495057;
+    }
+}

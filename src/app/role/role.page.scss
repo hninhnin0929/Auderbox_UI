@@ -1,0 +1,27 @@
+
+.btn-group{
+    width: 100%;
+}
+#btnGroup > ion-button{
+    
+    float: right;
+}
+.form-control{
+    width: 170px;
+}
+
+.btndelete {
+
+    background-color: rgb(189, 51, 80);
+
+    color: white;
+
+  }
+
+.btndelete:hover {
+
+    background-color:  #740110;
+
+    color: white;
+
+  }

@@ -1,0 +1,62 @@
+.form-control-sm,
+.custom-select-sm,
+.input-group-sm {
+    width: 170px;
+}
+.ld-spinner-browseShops:not(.show) {
+    display: none;
+}
+.ld-spinner-browseShops.show {
+    display: inline-block;
+    cursor: not-allowed;
+}
+.ul-shoplist > li > label:hover {
+    color: #3d73dd;
+}
+button :focus{
+    outline: none;
+    box-shadow: none;
+    stroke-opacity: unset;
+}
+.cri_mat_expansion
+{
+    box-shadow: none !important; 
+}
+// :host ::ng-deep .mat-expansion-panel {
+//     box-shadow: none !important;
+    
+// }
+// :host ::ng-deep .mat-expansion-panel-header {
+//     height: 35px!important;
+ 
+// }
+:host ::ng-deep .mat-expansion-panel-header.mat-expanded {
+     // note that we're transitioning transform, not height!
+    height: 48px!important;
+}
+.spinner-header-active{
+    display: none;
+}
+mat-radio-group.ng-invalid.ng-touched{
+  #error-text{
+      display: inline-block;
+  }   
+}
+#error-text{
+    display: none;
+}  
+.btndelete {
+
+    background-color: rgb(189, 51, 80);
+
+    color: white;
+
+  }
+
+.btndelete:hover {
+
+    background-color:  #740110;
+
+    color: white;
+
+  }

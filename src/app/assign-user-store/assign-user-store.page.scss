@@ -1,0 +1,37 @@
+.form{
+    max-width: 200px;
+}
+#progress-bar-assign-store,#progress-bar-avaliable-store{
+    display: none;
+}
+:host ::ng-deep .mat-expansion-panel {
+    box-shadow: none !important;
+    
+}
+:host ::ng-deep .mat-expansion-panel-header {
+    height: 35px!important;
+ 
+}
+:host ::ng-deep .mat-expansion-panel-header.mat-expanded {
+     // note that we're transitioning transform, not height!
+    height: 48px!important;
+}
+.remove:hover{
+    cursor: pointer;
+    
+}
+.btndelete {
+
+    background-color: rgb(189, 51, 80);
+
+    color: white;
+
+  }
+
+.btndelete:hover {
+
+    background-color:  #740110;
+
+    color: white;
+
+  }

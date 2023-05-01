@@ -1,0 +1,9 @@
+.overflow-auto {
+    overflow-y: scroll;
+}
+
+.photo {
+     ::-webkit-scrollbar {
+        display: none;
+    }
+}

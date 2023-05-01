@@ -1,0 +1,470 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="d-flex justify-content-start optionNavBar">
+      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="merchandise-list-tab" data-toggle="tab" href="#merchandise-new-tablist" role="tab"
+            aria-controls="list" aria-selected="true" (click)="btn=false;listTabClick($event)">List</a>
+        </li>
+        <li class="nav-item" [hidden]="!btn" disabled>
+          <a class="nav-link" id="merchandise-new-tab" data-toggle="tab" href="#merchandise-new-tabnew" role="tab"
+            aria-controls="new" aria-selected="false" >Detail</a> <!-- (click)="newTabClick($event);" -->
+        </li>
+      </ul>
+      <button type="button" class="btn btn-primary header-btn" *ngIf="btn" (click)="save()">Save</button>
+      <button type="button" class="btn btn-primary header-btn btndelete" *ngIf="btn" (click)="goDelete()">Delete</button>
+    </div>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade" id="merchandise-new-tablist" role="tabpanel" aria-labelledby="merchandise-list-tab">
+        <div class="card sticky-top" style="margin-bottom: 7px;">
+          <div class="card-header bg-transparent advance-form">
+            {{spinner? 'Loading list':'Advance'}}
+            <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+              [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true"></i>
+            <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+          <div class="card-body" *ngIf="searchtab" id="advance-card">
+            <div class="row">
+              <div class="col">
+                <div class="form-group row">
+                  <label for="fd" class="col-sm-5 col-form-label col-form-label-sm">From Date</label>
+                  <div class="col-sm">
+                    <div class="input-group input-group-sm">
+                      <input required [(ngModel)]="searchObj.fromdate" class="form-control form-control-sm" matInput
+                        [matDatepicker]="pickers11" placeholder="Select Date" name="fd" id="fd"
+                        (dblclick)="dblClickFunc1()" (dateChange)="dateChange1($event)" readonly>
+                      <div class="input-group-append date-form" style="width: fit-content;">
+                        <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers11.open()"></i>
+                        <mat-datepicker #pickers11 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                        </mat-datepicker>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="cri-shopcode" class="col-sm-5 col-form-label col-form-label-sm">Store ID</label>
+                  <div class="col-sm">
+                      <input type="text" id="cri-shopcode" matInput class="form-control form-control-sm"
+                       style="max-width: 200px;" [(ngModel)]="searchObj.shopcode">
+                  </div>
+                
+              </div>
+                
+                <div class="form-group row">
+                  <label for="shop-email" class="col-sm-5 col-form-label col-form-label-sm">Campaign</label>
+                  <div class="col-sm">
+                    <select [(ngModel)]="searchObj.campaignsyskey" class="custom-select custom-select-sm"
+                      name="cri-campaign" id="cri-campaign" [disabled]="campaignstatus">
+                      <option value="" selected>-</option>
+                      <option [value]="c.syskey" *ngFor="let c of campaignlist"> {{c.t2}}
+                      </option>
+                    </select>
+                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" *ngIf="campaignstatus">
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="shop-phno" class="col-sm-5 col-form-label col-form-label-sm">Brand Owner</label>
+                  <div class="col-sm">
+                    <select [(ngModel)]="searchObj.bosyskey" class="custom-select custom-select-sm" name="cri-bo"
+                      id="cri-bo" [disabled]="bostatus">
+                      <option value="" selected>-</option>
+                      <option [value]="bo.syskey" *ngFor="let bo of bolist"> {{bo.t2}}
+                      </option>
+                    </select>
+                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" *ngIf="bostatus"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <!-- <div class="form-group row">
+                  <label for="td" class="col-sm-4 col-form-label col-form-label-sm">To Date</label>
+                  <div class="col-sm">
+                    <div class="input-group">
+                      <input required [(ngModel)]="searchObj.todate" class="form-control" matInput 
+                        [matDatepicker]="pickers1" placeholder="Select Date" name="td" id="td"
+                        (dblclick)="dblClickFunc2()" (dateChange)="dateChange2($event)" readonly>
+                      <div class="input-group-append">
+                        <mat-datepicker-toggle matSuffix [for]="pickers1" class="input-group-append">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #pickers1 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                        </mat-datepicker>
+                      </div>
+                    </div>
+                  </div>
+                </div> -->
+                <div class="form-group row">
+                  <label for="td" class="col-sm-5 col-form-label col-form-label-sm">To Date</label>
+                  <div class="col-sm">
+                    <div class="input-group input-group-sm">
+                      <input required [(ngModel)]="searchObj.todate" class="form-control form-control-sm" matInput
+                        [matDatepicker]="pickers12" placeholder="Select Date" name="td" id="td"
+                        (dblclick)="dblClickFunc1()" (dateChange)="dateChange1($event)" readonly>
+                      <div class="input-group-append date-form" style="width: fit-content;">
+                        <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers12.open()"></i>
+                        <mat-datepicker #pickers12 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                        </mat-datepicker>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--<div class="form-group row">
+                  <label for="shop-oname" class="col-sm-5 col-form-label col-form-label-sm">User Name</label>
+                  <div class="col-sm">
+                    <select [(ngModel)]="searchObj.usersyskey" class="custom-select custom-select-sm" name="cri-user"
+                      id="cri-user" [disabled]="userstatus">
+                      <option value="" selected>-</option>
+                      <option [value]="data.syskey" *ngFor="let data of userlist"> {{data.userName}}
+                      </option>
+                    </select>
+                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+                      *ngIf="userstatus"></span>
+                  </div>
+                </div>-->
+                <div class="form-group row">
+                  <label for="cri-shop" class="col-sm-5 col-form-label col-form-label-sm">Store</label>
+                  <div class="col-sm">
+                    <input type="text" id="cri-shop" matInput class="form-control form-control-sm"
+                      [(ngModel)]="advSearchObjTmp.adv_shopsyskey">
+                    <!-- <input type="text" id="cri-shop" matInput class="form-control form-control-sm"
+                      [(ngModel)]="searchObj.shopName"> -->
+                       <!-- [formControl]="shopNameSearch" 
+                      [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete">
+                      <mat-option *ngFor="let shop of shoplist" [value]="shop.shopName" style="font-size: small;">
+                        {{shop.shopName}}
+                      </mat-option>
+                    </mat-autocomplete> -->
+                  </div>
+                </div>
+              
+              <div class="form-group row">
+                  <label for="cri-rateScale" class="col-sm-5 col-form-label col-form-label-sm">Rating Scale</label>
+                  <div class="col-sm">
+                    <select [(ngModel)]="searchObj.ratingScale" class="custom-select custom-select-sm"
+                      name="cri-rateScale" id="cri-rateScale">
+                      <option value="" selected>-</option>
+                      <option value="0" >0</option>
+                      <option value="1" >1</option>
+                      <option value="2" >2</option>
+                      <option value="3" >3</option>
+                      <option value="4" >4</option>
+                      <option value="5" >5</option>
+                      <option value="6" >6</option>
+                      <option value="7" >7</option>
+                      <option value="8" >8</option>
+                      <option value="9" >9</option>
+                      <option value="10" >10</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="cri-user" class="col-sm-5 col-form-label col-form-label-sm">User</label>
+                  <div class="col-sm">
+                    <mat-select class="form-control form-control-sm" [formControl]="toppings" 
+                      [(ngModel)]="searchObj.usersyskey"  multiple>
+                        <mat-option [value]="" [disabled]="true">-</mat-option>
+                      <mat-option [value]="user.syskey"  *ngFor="let user of userlist; let i = index" [value]="user" >
+                        {{user.userName}}
+                      </mat-option>
+                    </mat-select>
+                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+                      *ngIf="userlist.length==0"></span>
+                    
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <label for="cri-dateoptions" class="col-sm-5 col-form-label col-form-label-sm">Date Options</label>
+                  <div class="col-sm">
+                    <select [(ngModel)]="searchObj.dateOptions" class="custom-select custom-select-sm"
+                      name="cri-dateoptions" id="cri-dateoptions" (change)="dateOptionsChange()">
+                      <option value="0" selected>-</option>
+                      <option value="today">
+                        Today
+                      </option>
+                      <option value="yesterday">
+                        Yesterday
+                      </option>
+                      <option value="this_week">
+                        This Week
+                      </option>
+                      <option value="last_week">
+                        Last Week
+                      </option>
+                      <option value="this_month">
+                        This Month
+                      </option>
+                      <option value="last_month">
+                        Last Month
+                      </option>
+                    </select>
+
+                  </div>
+                </div>
+              
+                <div class="form-group row">
+                  <label for="cri-status" class="col-sm-5 col-form-label col-form-label-sm">Status</label>
+                  <div class="col-sm">
+                    <select [(ngModel)]="searchObj.status" class="custom-select custom-select-sm" name="cri-status"
+                      id="cri-status">
+                      <option value="" selected>-</option>
+                      <option value="0" >Unchecked</option>
+                      <option value="1" >Approved</option>
+                      <option value="2" >Reject</option>
+                    </select>
+                  </div>
+                </div>
+                <!-- <div class="form-group row">
+                  <label for="td" class="col-sm-4 col-form-label col-form-label-sm">To date</label>
+                  <div class="col-sm">
+                    <input [(ngModel)]="searchObj.todate" [disabled]="searchObj.fromdate==''" matInput
+                      [min]="searchObj.fromdate" [max]="maxDate" (click)="myDatepicker2.open()"
+                      [matDatepicker]="myDatepicker2" class="form-control form-control-sm inputdate" name="td" id="td">
+                    <mat-datepicker #myDatepicker2></mat-datepicker>
+                  </div>
+                </div> -->
+                <div class="form-group row">
+                  <label for="cri-status" class="col-sm-5 col-form-label col-form-label-sm">Active Status</label>
+                  <div class="col-sm">
+                    <select [(ngModel)]="searchObj.activeStatus" class="custom-select custom-select-sm" name="cri-status"
+                      id="cri-status">
+                      <option value="" selected>-</option>
+                      <option value="0" >Active</option>
+                      <option value="1" >In Active</option>
+                    </select>
+                  </div>
+                </div>              
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="d-flex justify-content-start">
+                  <div class="btn-group" role="group">
+                    <button (click)="search(0, true)" type="button" class="btn btn-primary btn-sm" [disabled]="spinner">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                    <button (click)="advanceSearchReset()" type="button" class="btn btn-primary btn-sm">
+                      <i class="fa fa-refresh" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="d-flex justify-content-start">
+                    <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                      <button (click)="print()" type="button" class="btn btn-primary">
+                        Export
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        <div class="table-responsive text-nowrap overflow-auto" style="height: 380px;">
+          <table class="table table-hover  mt-2" style="font-size: 13px;">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col" [class]="searchtab? '':'sticky-top'" style="width: 5px">#</th>
+                <th scope="col-2" [class]="searchtab? '':'sticky-top'">Date</th>
+                <th scope="col-2" [class]="searchtab? '':'sticky-top'">BrandOwner</th>
+                <th scope="col-2" [class]="searchtab? '':'sticky-top'">Campaign</th>
+                <th scope="col" [class]="searchtab? '':'sticky-top'">Task Name</th>
+                <th scope="col" [class]="searchtab? '':'sticky-top'">Store ID</th>
+                <th scope="col" [class]="searchtab? '':'sticky-top'">Store</th>
+                <th scope="col" [class]="searchtab? '':'sticky-top'">Township</th>
+                <th scope="col" [class]="searchtab? '':'sticky-top'">User Name</th>
+                <th scope="col" [class]="searchtab? '':'sticky-top'">Rating Scale</th>
+                <th scope="col" [class]="searchtab? '':'sticky-top'">Status</th>
+                <th scope="col" [class]="searchtab? '':'sticky-top'">Approved By</th>
+                <!-- <th scope="col" [class]="searchtab? '':'sticky-top'">Photo Status</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let d of tasklist | paginate: config;let i = index" (click)="btn=true;detail(d)">
+                <th scope="row">{{i+1}}</th>
+                <td>{{d.d | date:'d/M/y'}}</td>
+                <td>{{d.boname}}</td>
+                <td>{{d.camname}}</td>
+                <td>{{d.name}}</td>
+                <td>{{d.shopcode}}</td>
+                <td>{{d.shopname}}</td>
+                <td>{{d.townshipDesc}}</td>
+                <td>{{d.username}}</td>
+                <td>{{d.rate}}</td>
+                <td>{{d.status}}</td>
+                <td>{{d.approveUser}}</td>
+                <!-- <td>{{d.photoDesc === 'NotAvailable'? 'Not Applicable' : d.photoDesc}}</td> -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="merchandise-new-tabnew" role="tabpanel" aria-labelledby="merchandise-new-tab">
+        <div class="card mb-2">
+          <div class="card-body">
+            <div class="row">
+              <div class="col">
+                <dl class="row">
+                  <dt class="col-sm-3">Date</dt>
+                  <dd class="col-sm-9">{{headerDate | date:'d/M/y'}}</dd>
+                  <dt class="col-sm-3">User</dt>
+                  <dd class="col-sm-9">{{headerObj.username}}</dd>
+                  <dt class="col-sm-3">Shop</dt>
+                  <dd class="col-sm-9">{{headerObj.shopname}}</dd>
+
+                </dl>
+              </div>
+              <div class="col">
+                <dl class="row">
+                  <dt class="col-sm-3">Campaign</dt>
+                  <dd class="col-sm-9">{{headerObj.camname}}<span class="ml-2"><small>
+                        ({{headerObj.camcode}})</small></span></dd>
+                  <dt class="col-sm-3">BrandOwner</dt>
+                  <dd class="col-sm-9">{{headerObj.boname}}<span class="ml-2"><small>
+                        ({{headerObj.bocode}})</small></span>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card mb-2" style="width: 100%;height: 100%;" *ngFor="let t of taskObjList;let i=index;">
+          <h5 class="card-header">{{t.code}}</h5>
+          <div class="card-body bg-transparent">
+            <div class="row">
+              <div class="col">
+                <p class="card-text text-primary">{{t.name}}</p>
+                <p class="card-text text-muted">
+                  <input [(ngModel)]="t.obj.date" matInput [matDatepicker]="i" placeholder="Choose a date"
+                    class="form-control form-control-sm form-control-plaintext" (click)="i">
+                  <mat-datepicker #i></mat-datepicker>
+                </p>
+              </div>
+              <div class="form-group row">
+                <div class="col">
+                  <p class="card-text text-primary">Comment</p>
+                  <textarea type="textarea" name="name" class="form-control" id="note" rows="3"
+                  [(ngModel)]="t.comment"></textarea>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <div class="col-sm">
+                    <!-- <select [(ngModel)]="t.obj.n3" class="custom-select custom-select-sm float-right" name="vendor"
+                      id="vendor" style="max-width: 50px;">
+                      <option value="1" selected>1</option>
+                      <option value="2" selected>2</option>
+                      <option value="3" selected>3</option>
+                      <option value="4" selected>4</option>
+                      <option value="5" selected>5</option>
+                      <option value="6" selected>6</option>
+                      <option value="7" selected>7</option>
+                      <option value="8" selected>8</option>
+                      <option value="9" selected>9</option>
+                      <option value="10" selected>10</option>
+                    </select>
+                    <small class="float-right mr-2 mt-2">Rate </small> -->
+                    <div class=" float-right">
+                      <!-- <input type="range" [(ngModel)]="t.obj.n3" class="form-control-range" min="0" max="10"
+                        id="formControlRange"> -->
+                        <mat-button-toggle-group [(ngModel)]="t.obj.n3" name="fontStyle"  >
+                          <mat-button-toggle [value]="v" *ngFor="let v of ratenum" >{{v}}</mat-button-toggle>
+                          <!-- <mat-button-toggle value="2">2</mat-button-toggle>
+                          <mat-button-toggle value="3">3</mat-button-toggle>
+                          <mat-button-toggle value="4">4</mat-button-toggle>
+                          <mat-button-toggle value="5">5</mat-button-toggle>
+                          <mat-button-toggle value="6">6</mat-button-toggle>
+                          <mat-button-toggle value="7">7</mat-button-toggle>
+                          <mat-button-toggle value="8">8</mat-button-toggle>
+                          <mat-button-toggle value="9">9</mat-button-toggle>
+                          <mat-button-toggle value="10">10</mat-button-toggle> -->
+                        </mat-button-toggle-group>
+                        
+                    </div>
+                     <span class="mr-2 float-right" style="margin-top: -2px;">Rating Scale  </span>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm">
+                    <!-- <input type="checkbox" [(ngModel)]="t.obj.syncStatus" class="float-right" >
+                    <small class="float-right mr-2">Completed</small> -->
+                    <div class=" float-right ">
+                      <mat-radio-group aria-label="Select an option" [(ngModel)]="t.obj.syncStatus">
+                        <mat-radio-button value="0">Unchecked</mat-radio-button>
+                        <mat-radio-button value="1">Approve</mat-radio-button>
+                        <mat-radio-button value="2">Reject</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent">
+            <div class="flexbin flexbin-margin">
+              <a *ngFor="let pic of t.pics; let j=index" (click)="detailPhoto(pic, t.name, t.comment)">
+                <img [src]="url + pic.t3" *ngIf="pic.t3!='' && pic.t2!='NotAvailable'" />
+                <span *ngIf="pic.t3=='' && pic.t2=='NotAvailable'">Not Applicable</span>
+                <!-- <span *ngIf="pic.t3==''">Not Applicable</span> -->
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+<div id="previewMerchandiseImgModel" class="modal" tabindex="-1">
+  <span class="close" (click)="previewModelClose()">&times;</span>
+  <img [src]="url + rightSideImg.t3" class="previewMerchandiseImgModel-content" id="img01">
+  <div id="caption"></div>
+</div>
+<div class="modal fade" id="pic-model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Photo Detail</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row no-gutters">
+          <div class="col-md-4">
+            <img [src]="url+rightSideImg.t3" (click)="previewImage()" class="card-img" />
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">{{bindname}}</h5> <!-- headerObj.name -->
+              <!-- <p class="card-text"><small class="text-muted">{{headerObj.name}}</small></p> -->
+              <p class="card-text"><small class="text-muted">{{headerObj.username}}</small></p>
+              <p class="card-text" id="model-datepicker">
+                <small class="text-muted">
+                  {{rightSideImg.modifiedDate | date }}</small>
+
+                <!-- <input [(ngModel)]="picdate" matInput (click)="myDatepicker7.open()" [matDatepicker]="myDatepicker7"
+                  class="form-control form-control-sm form-control-plaintext">
+                <mat-datepicker #myDatepicker7  
+                ></mat-datepicker> -->
+              </p>
+              <div class="dropdown-divider"></div>
+              <p class="card-text"><textarea type="textarea" class="form-control" rows="5"
+                  [(ngModel)]="comment"></textarea></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="savePic()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,219 @@
+<div class="card mb-2">
+  <form [formGroup]="filterBoxFormGroup">
+    <div class="card-body pb-0">
+      <div class="row">
+        <div class="col">
+          <div class="form-group row">
+            <label for="fd" class="col-sm-5 col-form-label col-form-label-sm">From Date</label>
+            <div class="col-sm">
+              <div class="input-group  input-group-sm">
+                <input matInput [(ngModel)]="criteria.fromDate" [matDatepicker]="fromDatePicker_inv" placeholder="Select Date" class="form-control"
+                  formControlName="fromDate" [disabled]="criteria.checkAll" readonly>
+                  <!-- <input [(ngModel)]="criteria.fromDate" [min]="criteria.fromDate" matInput [matDatepicker]="fromDatePicker" placeholder="Select Date" class="form-control"
+                  [disabled]="true" [ngModelOptions]="{standalone: true}" readonly> -->
+                <div class="input-group-append date-form"
+                  style="width: fit-content;" (click)="fromDatePicker_inv.open()">
+                  <i class="input-group-text fa fa-calendar" aria-hidden="true "></i>
+                  <mat-datepicker #fromDatePicker_inv></mat-datepicker>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group row">
+            <label for="fd" class="col-sm-5 col-form-label col-form-label-sm">To Date</label>
+            <div class="col-sm">
+              <div class="input-group  input-group-sm">
+                <input  matInput [(ngModel)]="criteria.toDate" [matDatepicker]="toDatePicker_inv" placeholder="Select Date" class="form-control"
+                  formControlName="toDate" [disabled]="criteria.checkAll" readonly>
+ 
+                  <!-- <input [(ngModel)]="criteria.toDate" [min]="criteria.toDate" matInput [matDatepicker]="toDatePicker" placeholder="Select Date" class="form-control"
+                  [disabled]="true" [ngModelOptions]="{standalone: true}" readonly> -->
+                <div class="input-group-append date-form"
+                  style="width: fit-content;" (click)="toDatePicker_inv.open()">
+                  <i class="input-group-text fa fa-calendar" aria-hidden="true "></i>
+                  <mat-datepicker #toDatePicker_inv></mat-datepicker>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group row">
+            <label class="col-sm-5 col-form-label col-form-label-sm">
+              <input type="checkbox" [(ngModel)]="criteria.checkAll" [ngModelOptions]="{standalone: true}">&nbsp;All
+            </label>
+          </div>
+        </div>
+
+        <!--         
+        <div class="col">
+          <div class="form-group row">
+            <label  class="col-sm-5 col-form-label col-form-label-sm">Date Options</label>
+            <div class="col-sm">
+              <select [(ngModel)]="criteria.dateOptions" class="custom-select custom-select-sm"
+                name="cri-dateopt-inv" id="cri-dateopt-inv" (change)="dateOptionsChange()" [ngModelOptions]="{standalone: true}">
+                <option value="0" selected>-</option>
+                <option value="today">
+                  Today
+                </option>
+                <option value="yesterday">
+                  Yesterday
+                </option>
+                <option value="this_week">
+                  This Week
+                </option>
+                <option value="last_week">
+                  Last Week
+                </option>
+                <option value="this_month">
+                  This Month
+                </option>
+                <option value="last_month">
+                  Last Month
+                </option>
+              </select>
+            </div>
+          </div>
+        </div> 
+        -->
+        <!-- <div class="col" id="shop">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Shop</label>
+            <div class="col-sm">
+              <select class="custom-select">
+                <option>Shop1</option>
+              </select>
+            </div>
+          </div>
+        </div> -->
+
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group row">
+            <label  class="col-sm-5 col-form-label col-form-label-sm">Shop Code</label>
+            <div class="col-sm">
+              <input type="text" id="inv-retsku-shop" matInput class="form-control form-control-sm"
+              [(ngModel)]="criteria.shopCode" formControlName="shop">
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group row">
+            <label for="dischaninv" class="col-sm-5 col-form-label col-form-label-sm">Distribution Channel</label>
+            <div class="col-sm">
+              <mat-select class="form-control form-control-sm" id="dischaninvretsku" name="dischaninv"
+              [(ngModel)]="criteria.disChanSyskey"  [ngModelOptions]="{standalone: true}" multiple>                       
+                <mat-option [value]="-1" #triggerAllDisChanSelectOption (click)="toggleDisChanAllSelect()">
+                  Select All
+                </mat-option>
+                <mat-option [value]="dischan.syskey" *ngFor="let dischan of disChanList; let i = index"
+                          >
+                          {{dischan.desc}}
+                </mat-option>
+            </mat-select>
+            <!-- <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+              *ngIf="disChanList.length==0"></span>               -->
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group row">
+          </div>
+        </div>
+      </div>
+      <!-- <div class="row row-cols-1 row-cols-sm-2 ">
+        <div class="col">
+          <fieldset class="form-group row">
+            <legend class="col-form-label col-sm-3 float-sm-left pt-0">Type</legend>
+            <div class="col-sm">
+              <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1" formControlName="log">
+                <label class="form-check-label" for="exampleCheck1">log file</label>
+              </div>
+            </div>
+          </fieldset>
+
+        </div>
+      </div> -->
+    </div>
+    <div class="card-footer d-flex bg-light border-top-0">
+      <!-- <button class="btn btn-primary mr-3" id="btn-invsearch" (click)="search(false)">
+        <i class="fa fa-search mr-1"></i>
+        Search
+      </button>  -->
+      <button class="btn btn-primary mr-3" id="btn-invretskupreview" (click)="search(false)">
+        <i class="fa fa-eye mr-1"></i>
+        Preview
+      </button>
+      <button class="btn btn-primary mr-3" id="btn-invretskupost" (click)="printToExport()">
+        <i class="fa fa-upload mr-1"></i>
+        Export SAP Template
+      </button>
+      <button class="btn btn-primary mr-3" id="btn-invretskureset" (click)="resetToExport()">
+        <i class="fa fa-undo mr-1"></i>
+        Reset Export Status
+      </button>
+      <button class="btn btn-primary ml-auto" id="btn-invretskuupload" (click)="upload()" [hidden]="true">
+        <i class="fa fa-upload mr-1"></i>
+        Upload
+      </button>  
+    </div>
+    <div class="progress" style="width: 100%;" id="progress-bar-return-sku">
+      <div class="progress-bar progress-bar-success progress-bar-striped active progress-bar-animated" role="progressbar" aria-valuenow="83"
+      aria-valuemin="0" aria-valuemax="100" style="width:100%">
+      </div>
+    </div>  
+  </form>
+</div>
+<div id="no-log-retsku-tab">
+  <div class="border rounded py-3 px-2 mb-2 pl-4" id="return-sku-upload-result">
+    <i class="fa fa-check"></i>
+    Success!
+  </div>
+  <div class="card col-sm mb-1" id="return-sku-search-result">
+    <span class="text-dark btn"> <strong>{{retSKUDataList.length}}</strong> Records are found to upload. 
+    </span>
+    <!-- <button class="btn btn-link " (click)="upload()">Yes</button> -->
+    <button class="btn btn-link ml-2" id="btn-show-retsku-detail" (click)="printToPreview()">Preview Download</button>
+
+  </div>
+  <div id="return-sku-detail-table" class="table-responsive text-nowrap overflow-auto mt-2">
+    <pagination-controls id="retskupagi" (pageChange)="pageChanged($event)">
+    </pagination-controls>
+    <table class="table table-hover" style="font-size: 13px;">
+      <thead class="thead-dark">
+        <tr class="bg-light">
+          <th>No.</th>
+          <th>CUSTOMER_ID</th>
+          <th>DOC_TYPE</th>
+          <th>RETURN_DOC_NO</th>
+          <th>INVOICE_REFERENCE</th>
+          <th>RETURN_DATE</th>
+          <th>MATERIAL</th>
+          <th>RETURN_QTY</th>
+          <th>UOM</th>
+          <th>RETURN_PRICE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let inv of retSKUDataList | paginate : config; let i = index">
+          <td>{{i+1}}</td>
+          <td>{{inv.customerId}}</td>
+          <td>{{inv.docType}}</td>
+          <td>{{inv.returnDocNum}}</td>
+          <td>{{inv.invRef}}</td>
+          <td>{{inv.returnDate}}</td>
+          <td>{{inv.material}}</td>
+          <td>{{inv.returnQTY}}</td>
+          <td>{{inv.uom}}</td>
+          <td>{{inv.returnPrice}}</td>
+        </tr>
+      </tbody>
+    </table>    
+  </div>
+
+</div>

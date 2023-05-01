@@ -1,0 +1,131 @@
+.card {
+    margin-bottom: 5px;
+}
+.overflow-auto {
+    max-height: 400px;
+}
+.link:hover {
+    text-decoration: underline;
+}
+.form-control-sm,.custom-select-sm,.input-group{
+    width: 170px;
+}
+.form-label,
+.col-form-label,
+.input-group-text,
+option {
+    font-size: 13px;
+}
+.spinner-border {
+    margin-left: 20px;
+    width: 20px;
+    height: 20px;
+}
+.disablediv {
+    pointer-events: none;
+    opacity: 0.4;
+}
+#stockimg {
+    width: 50px;
+    height: 50px;
+}
+.price-align {
+    text-align: right;
+}
+.tabel-detail > .form-control-sm {
+    border-color: rgb(172, 172, 172);
+}
+.input-group-append {
+    width: 49px;
+}
+//fadein
+.fade-in {
+    animation: fadeIn ease 20s;
+    -webkit-animation: fadeIn ease 20s;
+    -moz-animation: fadeIn ease 20s;
+    -o-animation: fadeIn ease 20s;
+    -ms-animation: fadeIn ease 20s;
+}
+
+#adminPannel > .col-form-label{
+    font-size: small;
+}
+// .header-btn{
+//     display: none;
+// }
+.header-btn.show{
+    display: block;
+}
+:host ::ng-deep .mat-expansion-panel {
+    box-shadow: none !important;
+    
+}
+:host ::ng-deep .mat-expansion-panel-header {
+    height: 35px!important;
+ 
+}
+:host ::ng-deep .mat-expansion-panel-header.mat-expanded {
+     // note that we're transitioning transform, not height!
+    height: 48px!important;
+}
+#progress-bar-getdiscount {
+    display: none;
+}
+#order_detail{
+    display: none;
+}
+.dropdown-toggle::after {
+    display: none;
+}
+.fa.fa-sort:hover{
+    color: rgb(118, 178, 255);
+}
+#createddatePickerInput,#rec-date{
+    border: none;
+    font-size: small;
+    margin-left: -3px;
+    cursor: pointer;
+    outline: none;
+    margin-top: 4px;
+}
+#createddatePickerInput::placeholder{
+    color: #007bff;
+}
+
+#shopnamesearch-progressbar{
+    display: none;
+}
+input:disabled{
+    background-color: transparent;
+}
+#hoverShop{
+    cursor: pointer;
+}
+#hoverShop:hover{
+    text-decoration: underline;
+}
+
+#rec-date:hover {
+    color: #7079ac !important;
+}
+.btndelete {
+
+    background-color: rgb(189, 51, 80);
+
+    color: white;
+
+  }
+
+.btndelete:hover {
+
+    background-color:  #740110;
+
+    color: white;
+
+  }
+// ion-toast.info1 {
+//     position: fixed;
+//      --max-width: 300px !important;
+//     z-index: 99999 !important; 
+//     background-color: chartreuse;
+// }

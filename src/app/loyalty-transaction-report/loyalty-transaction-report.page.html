@@ -1,0 +1,173 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="tab-content" id="nav-tabContent">
+     
+      <div class="card sticky-top" style="margin-bottom: 8px; width: 100%;">
+        <div class="card-header bg-transparent advance-form" style="width: 100%;">
+          {{spinner? 'Loading order list':'Advance'}}
+          <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+            [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true">
+          </i>
+          <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+            <span class="sr-only"></span>
+          </div>
+        </div>
+        <div class="card-body" *ngIf="searchtab" id="advance-card">
+          <div class="row">
+            <div class="col">
+              <div class="form-group row">
+                <label for="date" class="col-sm-4 col-form-label col-form-label-sm">From Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                      <input required [(ngModel)]="criteria.fromdate" class="form-control" matInput 
+                          [matDatepicker]="pickers" placeholder="Select Date" name="fromdate" 
+                          (dblclick)="dblClickFunc()" readonly>
+                      <div class="input-group-append">
+                          <i class="input-group-text fa fa-calendar btn" aria-hidden="true" (click)="pickers.open()"></i>
+                          <mat-datepicker #pickers displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                          </mat-datepicker>
+                      </div>
+                  </div>
+                </div>
+              </div>
+             
+            
+              <div class="form-group row">
+                <label for="code" class="col-sm-4 col-form-label col-form-label-sm">Shop Code</label>
+                <div class="col-sm">
+                  <input class="form-control form-control-sm text-monospace bg-transparent" id="code" 
+                    style="font-size: small;" [(ngModel)]="criteria.shopCode" >
+                </div>
+              </div>
+               
+            </div>
+
+            <div class="col">
+              <div class="form-group row">
+                <label for="date" class="col-sm-4 col-form-label col-form-label-sm">To Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                      <input required [(ngModel)]="criteria.todate" class="form-control" matInput 
+                          [matDatepicker]="picker" placeholder="Select Date" name="todate" 
+                          (dblclick)="dblClickFunc()" readonly>
+                      <div class="input-group-append">
+                          <i class="input-group-text fa fa-calendar btn" aria-hidden="true" (click)="picker.open()"></i>
+                          <mat-datepicker #picker displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                          </mat-datepicker>
+                      </div>
+                  </div>
+                </div>
+              </div>       
+              
+              
+              <div class="form-group row">
+                <label for="shop-name" class="col-sm-4 col-form-label col-form-label-sm">Shop Name</label>
+                <div class="col-sm ">
+                  <input type="text" matInput class="form-control form-control-sm" 
+                    [(ngModel)]="criteria.shopname" [formControl]="shopNameSearch" [matAutocomplete]="auto">
+                  <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let shop of shoplist" [value]="shop.shopName" style="font-size: small;">
+                      {{shop.shopName}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col">
+              <div class="form-group row">
+                <label for="owner-name" class="col-sm-4 col-form-label col-form-label-sm">Brand Owner</label>
+                <div class="col-sm">
+                  <select [(ngModel)]="criteria.brandOwner" class="custom-select custom-select-sm"
+                    name="owner-name" id="owner-name" [disabled]="ownerList1.length==0">
+                    <option value="" selected>-</option>
+                    <option [value]="owner.syskey" *ngFor="let owner of ownerList1">
+                      {{owner.t2}}
+                    </option>
+                  </select>
+                </div>
+              </div> 
+              <div class="form-group row">
+                <label for="cri-dateoptions" class="col-sm-4 col-form-label col-form-label-sm">Date Options</label>
+                <div class="col-sm">
+                  <select [(ngModel)]="criteria.dateOptions" class="custom-select custom-select-sm"
+                    name="cri-dateoptions" id="cri-dateoptions" (change)="dateOptionsChange()">
+                    <option value="0" selected>-</option>
+                    <option value="today">
+                      Today
+                    </option>
+                    <option value="yesterday">
+                      Yesterday
+                    </option>
+                    <option value="this_week">
+                      This Week
+                    </option>
+                    <option value="last_week">
+                      Last Week
+                    </option>
+                    <option value="this_month">
+                      This Month
+                    </option>
+                    <option value="last_month">
+                      Last Month
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col">
+              <div class="d-flex justify-content-start">
+                <div class="btn-group" role="group" style="height: 35px;">
+                  <button (click)="search(0)" type="button" class="btn btn-primary" [disabled]="spinner">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+
+                   <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                  </button> 
+                </div>
+                <div class="d-flex justify-content-start">
+                  <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                    <button (click)="print()" type="button" class="btn btn-primary">
+                      Export
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="max-height: 457px; width: 100%;"> 
+        <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+      <table class="table table-hover " style="font-size: 13px;">
+         
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col" style="width: 5px">#</th>
+            <th scope="col">Date</th>
+            <th scope="col">Shop Name</th>
+            <th scope="col">Brand Owner</th>
+            <th scope="col">Invoice Amount</th>
+            <th scope="col">Net Invoice Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+              <tr *ngFor="let d of loyaltyList | paginate: config;let i = index" >
+            <th scope="row">{{i+1}}</th>
+            <td>{{d.date}}</td> 
+            <td>{{d.brandowner}}</td> 
+            <td>{{d.shopname}}</td>
+            <td>{{d.invoicamt}}</td> 
+            <td>{{d.netamt}}</td> 
+          </tr>
+        </tbody>
+      </table>    
+    </div>            
+    </div>
+  </div>
+ 
+</ion-content>

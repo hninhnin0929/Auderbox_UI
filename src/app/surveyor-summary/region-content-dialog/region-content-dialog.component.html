@@ -1,0 +1,109 @@
+<h2 mat-dialog-title>{{val.RegionDesc}}
+  &nbsp;
+  <span class="badge badge-info badge-pill"> {{val.Shop.AssignShopCount}}</span>
+  <button class="close" mat-stroked-button mat-dialog-close color="primary">Close</button>
+</h2>
+<mat-dialog-content>
+  <div class="s_header">
+    <pagination-controls id="region-content-id" class="my-pagination" (pageChange)="config.currentPage = $event">
+    </pagination-controls>
+
+    <!-- <div class="spacer">
+      <div class="input-group mb-3">
+        <input [(ngModel)]="searchterm" (ngModelChange)="searchRegion()" class="form-control" placeholder="Search"
+          aria-label="Search" style="margin-left: 5px;">
+        <div class="input-group-append">
+          <span class="input-group-text">
+            <div>
+              <button mat-icon-button class="filtermenuIconbtn" [matMenuTriggerFor]="beforeMenu">
+                <mat-icon>filter_alt</mat-icon>
+              </button>
+              <mat-menu #beforeMenu="matMenu" xPosition="before">
+                <button mat-menu-item>
+                  <span>Surveyor Name</span>
+                  <mat-icon>done</mat-icon>
+                </button>
+              </mat-menu>
+            </div>
+          </span>
+        </div>
+      </div>
+    </div> -->
+  </div>
+  <div class="card regionshop" *ngFor="let shop of val.Shop.AssignShop| paginate: config;let i = index;">
+    <div class="card-header bg-transparent text-primary border-bottom-0">
+      {{shop.ShopName}}
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-5 ">
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold">
+              Inprogress Surveys
+              <span class="badge badge-danger badge-pill">{{shop.Header.statusCount.InProgress}}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold">
+              Pending Surveys
+              <span class="badge badge-warning badge-pill">{{shop.Header.statusCount.Pending}}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold">
+              Approved Surveys
+              <span class="badge badge-info badge-pill">{{shop.Header.statusCount.Approved}}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold">
+              Complete Surveys
+              <span class="badge badge-success badge-pill">{{shop.Header.statusCount.Complete}}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="col-sm-7">
+
+          <ul class="list-group">
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-sm-3 col-md-4 col-5">
+                  <span>Name</span>
+                </div>
+                <div class="col-md-8 col-6">
+                  <span class="font-weight-bold">{{shop.ShopName}}</span>
+                </div>
+              </div>
+
+            </li>
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-sm-3 col-md-4 col-5">
+                  <span>MM Name</span>
+                </div>
+                <div class="col-md-8 col-6">
+                  <span class="font-weight-bold">{{shop.ShopNameMM}}</span>
+                </div>
+              </div>
+
+            </li>
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-sm-3 col-md-4 col-5">
+                  <span>Phone Number</span>
+                </div>
+                <div class="col-md-8 col-6">
+                  <span class="font-weight-bold">{{shop.ShopPhNo}}</span>
+                </div>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-sm-3 col-md-4 col-5">
+                  <span>Owner Phone Number</span>
+                </div>
+                <div class="col-md-8 col-6">
+                  <span class="font-weight-bold">{{shop.ShopOwnerPhNo}}</span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>

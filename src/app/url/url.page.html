@@ -1,0 +1,33 @@
+<div id="div" *ngIf="!_showLan">
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Setting</ion-label>
+    </ion-list-header>
+    <ion-item detail="true" style="margin-left: 20px; margin-right: 20px" button (click)="gotoConfig()">
+      <ion-label>URL</ion-label>
+    </ion-item>
+    <ion-item detail="true" lines="none" style="margin-left: 20px; margin-right: 20px" button (click)="showLanguage()">
+      <ion-label>Language</ion-label>
+    </ion-item>
+  </ion-list>
+</div>
+<div id="div" *ngIf="_showLan">
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Language</ion-label>
+    </ion-list-header>
+    <ion-radio-group [(ngModel)]="_lan" (ionChange)="changeLan()">
+      <ion-item>
+        <ion-label>English</ion-label>
+        <ion-radio slot="start" color="tertiary" value="E" checked ="_checked.E">
+        </ion-radio>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-label>မြန်မာ</ion-label>
+        <ion-radio slot="start" color="tertiary" value="M" checked ="_checked.M">
+        </ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+</div>

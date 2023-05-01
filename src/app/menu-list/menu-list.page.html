@@ -1,0 +1,57 @@
+<ion-content>
+    <div class="myOuterContainer">
+        <ul class="nav nav-pills mb-1" id="pills-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="mnlist-tab" data-toggle="pill" href="#mnlist" role="tab" aria-controls="mnList" aria-selected="true">List</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="mnnew-tab" data-toggle="pill" href="#mnnew" role="tab" aria-controls="mnNew" (click)="gonew()" aria-selected="false">New</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade overflow-auto" id="mnlist" role="tabpanel" aria-labelledby="mnlist-tab">
+                <ion-list *ngIf="mobile">
+                    <table class="table table-hover" style="font-size: 13px;">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col" style="width: 5px">#</th>
+                                <th scope="col">Code</th>
+                                <th scope="col">Description</th>
+                                <th scope="col-2">Link</th>
+                                <th scope="col">ParentMenu</th>
+                                <!-- <th scope="col">Option</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let d of menulistdata;let i = index" (click)="detail(d.syskey)">
+                                <th scope="row">{{i+1}}</th>
+                                <td>{{d.t1}}</td>
+                                <td>{{d.t2}}</td>
+                                <td>{{d.t3}}</td>
+                                <td>{{d.parent==''? 'Parent Item': d.parent}}</td>
+                                <!-- <td (click)="delete(d.syskey,d.parent)">Delete</td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </ion-list>
+                <ion-list *ngIf="!mobile">
+                    <ion-item *ngFor="let d of menulistdata;let i = index" button (click)="detail(d.syskey)">
+                        <ion-list>
+                            <ion-label>{{d.t1}}</ion-label>
+                            <ion-label>{{d.t2}}</ion-label>
+                            <ion-label>{{d.t3}}</ion-label>
+                            <ion-label>{{d.parent}}</ion-label>
+                        </ion-list>
+                    </ion-item>
+                </ion-list>
+            </div>
+            <div class="tab-pane fade overflow-auto" id="mnnew" role="tabpanel" aria-labelledby="mnnew-tab">
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+</ion-content>

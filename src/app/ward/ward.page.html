@@ -1,0 +1,342 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="d-flex justify-content-start mb-2">
+      <ul class="nav nav-pills " id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="wardlist-tab" data-toggle="tab" href="#wardlist" role="tab" aria-controls="list"
+            aria-selected="true" (change)="tab($event);" (click)="listTab($event); btn=false ">List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="wardnew-tab" data-toggle="tab" href="#wardnew" role="tab" aria-controls="new"
+            aria-selected="false" (click)="newTabClick($event); btn=true">New</a>
+        </li>
+      </ul>
+      <button type="button" class="btn btn-primary  header-btn" (click)="save()"
+        *ngIf="btn">{{wardobj.syskey=='' || wardobj.syskey=='0'? 'Save':'Update' }}</button>
+      <button type="button" class="btn btn-primary  header-btn btndelete" [disabled]="wardobj.syskey=='' || wardobj.syskey=='0'"
+        *ngIf="btn" (click)="gotoDelete()">Delete</button>
+    </div>
+    <div class="tab-content" id="pills-tabContent">
+      <div class="tab-pane fade overflow-auto" id="wardlist" role="tabpanel" aria-labelledby="wardlist-tab">
+        <div class="card mb-1">
+          <div class="card-header bg-transparent advance-form">
+            {{spinner? 'Loading order list':'Advance'}}
+            <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+              [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true"></i>
+            <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+          <div class="card-body" *ngIf="searchtab" id="advance-card">
+            <div class="row">
+              <div class="col">
+                <div class="form-group row">
+                  <label for="cri-districtname" class="col-sm-4 col-form-label col-form-label-sm">State Name</label>
+                  <div class="col-sm">
+                    <input type="text" id="cri-statename" matInput class="form-control form-control-sm"
+                      [(ngModel)]="criteria.statename" [formControl]="stateNameSearch" [matAutocomplete]="auto1">
+                    <mat-autocomplete #auto1="matAutocomplete">
+                      <mat-option *ngFor="let place of _stateList1" [value]="place.t2" style="font-size: small;">
+                        {{place.t2}} </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="cri-districtname" class="col-sm-4 col-form-label col-form-label-sm">State Code</label>
+                  <div class="col-sm">
+                    <input type="text" id="cri-statecode" matInput class="form-control form-control-sm"
+                      [(ngModel)]="criteria.statecode" [formControl]="stateCodeSearch" [matAutocomplete]="auto2">
+                    <mat-autocomplete #auto2="matAutocomplete">
+                      <mat-option *ngFor="let place of _stateList2" [value]="place.t1" style="font-size: small;">
+                        {{place.t1}} </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="cri-districtname" class="col-sm-4 col-form-label col-form-label-sm">District Name</label>
+                  <div class="col-sm">
+                    <input type="text" id="cri-districtname" matInput class="form-control form-control-sm"
+                      [(ngModel)]="criteria.districtname" [formControl]="districtNameSearch" [matAutocomplete]="auto3">
+                    <mat-autocomplete #auto3="matAutocomplete">
+                      <mat-option *ngFor="let place of _districtList1" [value]="place.t2" style="font-size: small;">
+                        {{place.t2}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="cri-districtcode" class="col-sm-4 col-form-label col-form-label-sm">District Code</label>
+                  <div class="col-sm">
+                    <input type="text" id="cri-shop2" matInput class="form-control form-control-sm"
+                      [(ngModel)]="criteria. districtcode" [formControl]="districtCodeSearch" [matAutocomplete]="auto4">
+                    <mat-autocomplete #auto4="matAutocomplete">
+                      <mat-option *ngFor="let place of _districtList2" [value]="place.t1" style="font-size: small;">
+                        {{place.t1}} </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="cri-tspcode" class="col-sm-4 col-form-label col-form-label-sm">Township Name</label>
+                  <div class="col-sm">
+                    <input type="text" id="cri-shop2" matInput class="form-control form-control-sm"
+                      [(ngModel)]="criteria.tspname" [formControl]="tspNameSearch" [matAutocomplete]="auto5">
+                    <mat-autocomplete #auto5="matAutocomplete">
+                      <mat-option *ngFor="let place of _tspList1" [value]="place.t2" style="font-size: small;">
+                        {{place.t2}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="cri-tspcode" class="col-sm-4 col-form-label col-form-label-sm">Township Code</label>
+                  <div class="col-sm">
+                    <input type="text" id="cri-shop2" matInput class="form-control form-control-sm"
+                      [(ngModel)]="criteria.tspcode" [formControl]="tspCodeSearch" [matAutocomplete]="auto6">
+                    <mat-autocomplete #auto6="matAutocomplete">
+                      <mat-option *ngFor="let place of _tspList2" [value]="place.t1" style="font-size: small;">
+                        {{place.t1}} </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <label for="cri-townname" class="col-sm-4 col-form-label col-form-label-sm">Town/Villagetract
+                    Name</label>
+                  <div class="col-sm">
+                    <input type="text" id="cri-shop2" matInput class="form-control form-control-sm"
+                      [(ngModel)]="criteria.townname" [formControl]="townNameSearch" [matAutocomplete]="auto7">
+                    <mat-autocomplete #auto7="matAutocomplete">
+                      <mat-option *ngFor="let place of _townList1" [value]="place.t2" style="font-size: small;">
+                        {{place.t2}} </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="cri-towncode" class="col-sm-4 col-form-label col-form-label-sm">Town/Villagetract
+                    Code</label>
+                  <div class="col-sm">
+                    <input type="text" id="cri-shop2" matInput class="form-control form-control-sm"
+                      [(ngModel)]="criteria.towncode" [formControl]="townCodeSearch" [matAutocomplete]="auto8">
+                    <mat-autocomplete #auto8="matAutocomplete">
+                      <mat-option *ngFor="let place of _townList2" [value]="place.t1" style="font-size: small;">
+                        {{place.t1}} </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="cri-wardname" class="col-sm-4 col-form-label col-form-label-sm">Ward/Village Name</label>
+                  <div class="col-sm">
+                    <input type="text" id="cri-shop2" matInput class="form-control form-control-sm"
+                      [(ngModel)]="criteria.wardname" [formControl]="wardNameSearch" [matAutocomplete]="auto9">
+                    <mat-autocomplete #auto9="matAutocomplete">
+                      <mat-option *ngFor="let place of _wardList1" [value]="place.t2" style="font-size: small;">
+                        {{place.t2}} </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="cri-wardcode" class="col-sm-4 col-form-label col-form-label-sm">Ward/Village Code</label>
+                  <div class="col-sm">
+                    <input type="text" id="cri-shop2" matInput class="form-control form-control-sm"
+                      [(ngModel)]="criteria.wardcode" [formControl]="wardCodeSearch" [matAutocomplete]="auto10">
+                    <mat-autocomplete #auto10="matAutocomplete">
+                      <mat-option *ngFor="let place of _wardList2" [value]="place.t1" style="font-size: small;">
+                        {{place.t1}} </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="d-flex justify-content-start">
+                  <div class="btn-group" role="group" style="height: 35px;">
+                    <button (click)="search()" type="button" class="btn btn-primary" [disabled]="spinner">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                    <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                      <i class="fa fa-refresh" aria-hidden="true"></i>
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+
+        <div class="table-responsive text-nowrap overflow-auto mt-1" style="max-height: 380px !important;">
+          <table class="table table-hover" style="font-size: 13px;">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col" style="width: 10px;" class="sticky-top">#</th>
+                <th scope="col" class="sticky-top">Ward/Village Code</th>
+                <th scope="col" class="sticky-top">Ward/Village Name</th>
+                <th scope="col" class="sticky-top">Town Name</th>
+                <th scope="col" class="sticky-top">Township Name</th>
+                <th scope="col" class="sticky-top">District Name</th>
+                <th scope="col" class="sticky-top">State Name</th>
+              </tr>
+
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of _wardList | paginate: config;let i = index" (click)="detail(item)">
+                <td scope="row">{{i+1}}</td>
+                <td scope="row">{{item.t1}}</td>
+                <td scope="row">{{item.t2}}</td>
+                <td scope="row">{{item.townname}}</td>
+                <td scope="row">{{item.townshipname}}</td>
+                <td scope="row">{{item.districtname}}</td>
+                <td scope="row">{{item.statename}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-pane fade " id="wardnew" role="tabpanel" aria-labelledby="wardnew-tab">
+
+        <div class="card">
+          <div class="card-header">Ward and VillageTract</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col">
+                <div class="form-group row">
+                  <label for="staid" class="col-sm-4 col-form-label col-form-label-sm">State</label>
+                  <div class="col-sm">
+                    <select slot="end" [disabled]="wardobj.syskey!=='0'" name="sta"
+                      class="custom-select custom-select-sm" [(ngModel)]="staobj.syskey" id="sta"
+                      (change)="stateChange()">
+                      <option value="" selected>-</option>
+                      <option [value]="i.syskey" *ngFor="let i of _stateList">{{i.t2}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="disid" class="col-sm-4 col-form-label col-form-label-sm">District</label>
+                  <div class="col-sm">
+                    <select [disabled]="wardobj.syskey!=='0'" class="custom-select custom-select-sm" name="dis"
+                      [(ngModel)]="disobj.syskey" id="dis" (change)="districtChange()">
+                      <option value="" selected>-</option>
+                      <option [value]="i.syskey" *ngFor="let i of _districtList">{{i.t2}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="tspid" class="col-sm-4 col-form-label col-form-label-sm">TownShip</label>
+                  <div class="col-sm">
+
+                    <select [disabled]="wardobj.syskey!=='0'" name="tsp" class="custom-select custom-select-sm"
+                      [(ngModel)]="tspobj.n3" id="tspid" (change)="townshipChange()">
+                      <option value="" selected>-</option>
+
+                      <option [value]="i.syskey" *ngFor="let i of _tspList">{{i.t2}}
+                      </option>
+                    </select>
+                  </div>
+                  <!-- <ion-radio-group [(ngModel)]="townN2" (ionChange)="tspChange($event)"  (ionSelect)="gotoWard($event)">
+                    <ion-row>
+                      <ion-item>
+                        <ion-label>Town</ion-label>
+                        <ion-radio slot="start" value="1" ></ion-radio>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>VillageTract</ion-label>
+                        <ion-radio slot="start"  value="2" ></ion-radio>
+                      </ion-item>
+                    </ion-row>
+                  </ion-radio-group> -->
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label col-form-label-sm"></label>
+                  <div class="col-sm">
+                    <mat-radio-group aria-label="Select an option"
+                      style="flex-direction: column; display: flex; width: 170px;" [(ngModel)]="townN2"
+                      (change)="tspChange($event)">
+                      <mat-radio-button value="1" class="mr-1">Town</mat-radio-button>
+                      <mat-radio-button value="2">VillageTract</mat-radio-button>
+                    </mat-radio-group>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="townid" class="col-sm-4 col-form-label col-form-label-sm">Town/VillageTract</label>
+                  <div class="col-sm">
+                    <select [disabled]="wardobj.syskey!=='0'" interface="popover" name="town"
+                      class="custom-select custom-select-sm" [(ngModel)]="wardobj.n3" id="townid"
+                      (change)="wardChange()">
+                      <option value="" selected>-</option>
+                      <option [value]="i.syskey" *ngFor="let i of _townList">{{i.t2}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="waborvillage" class="col-sm-4 col-form-label col-form-label-sm"></label>
+                  <div class="col-sm">
+                    <mat-radio-group aria-label="Select an option"
+                      style="flex-direction: column; display: flex; width: 170px;" [(ngModel)]="wardN2"
+                      (change)="wardchange($event)">
+                      <mat-radio-button value="1" class="mr-1">Ward</mat-radio-button>
+                      <mat-radio-button value="2">Village</mat-radio-button>
+                    </mat-radio-group>
+                  </div>
+                </div>
+                <!-- <div>
+                  <ion-radio-group [(ngModel)]="wardN2" (ionChange)="wardchange($event)">
+                    <ion-row>
+                      <ion-item>
+                        <ion-label>Ward</ion-label>
+                        <ion-radio slot="start"  value="1" checked></ion-radio>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>Village</ion-label>
+                        <ion-radio slot="start"  value="2" ></ion-radio>
+                      </ion-item>
+                    </ion-row>
+                  </ion-radio-group>
+                </div> -->
+                <div class="form-group row">
+                  <label for="code" class="col-sm-4 col-form-label col-form-label-sm">Ward/Village Code</label>
+                  <div class="col-sm">
+                    <input type="text" [disabled]="wardobj.syskey!=='0'" name="code" [(ngModel)]="wardobj.t1"
+                      class="form-control  form-control-sm" id="code">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="name" class="col-sm-4 col-form-label col-form-label-sm">Ward/Village Name</label>
+                  <div class="col-sm">
+                    <input type="text" name="name" [(ngModel)]="wardobj.t2" class="form-control form-control-sm"
+                      id="name">
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label-sm col-form-label">Upload Excel</label>
+                  <div class="col">
+                    <input type="file" #fileInput (click)="resetValue()" (change)="onUpload($event)" hidden />
+                    <input class="form-control form-control-sm mb-2" type="text" (click)="fileInput.click()" 
+                    [placeholder]="fileInput.value == ''? 'Click to select': fileInput.value"/>
+                    <button type="button" class="btn btn-primary btn-sm mb-1"  style="width: 170px; display: block;" (click)="process()" [disabled]="!flag1"> Process
+                    </button>
+                    <button type="button" class="btn btn-success btn-sm "  style="width: 170px; display: block;" (click)="sampleExcelDownload()">
+                      Sample Excel Download
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</ion-content>

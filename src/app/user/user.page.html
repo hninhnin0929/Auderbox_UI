@@ -1,0 +1,287 @@
+<ion-content>
+    <div class="myOuterContainer">
+        <div class="d-flex justify-content-start optionNavBar">
+            <ul class="nav nav-pills mb-3 p" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link" id="userslist-tab" data-toggle="pill" href="#userslist" role="tab"
+                        aria-controls="stockList" (click)="listTab()" aria-selected="true">List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="usersnew-tab" data-toggle="pill" href="#usersnew" role="tab"
+                        aria-controls="stockNew" aria-selected="false" (click)="goNew()">New</a>
+                </li>
+            </ul>
+            <button type="button" class="btn btn-primary header-btn" (click)="gotoSave()"
+                [disabled]="!saveBtn_Access && !update">{{update?'Update':'Save'}}</button>
+            <button type="button" class="btn btn-primary header-btn btndelete" [disabled]="_obj.syskey=='0' || !deleteBtn_Access"
+                (click)="goDelete()">Delete</button>
+        </div>
+
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade" id="usersnew" role="tabpanel" aria-labelledby="usersnew-tab">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col border-right ">
+                                <div style="max-width: 550px" class="mx-auto">
+                                    <div class="form-group row">
+                                        <div class="col-sm-4">
+                                            <img id="userImg-user" [src]="userImg" style="width: 8rem; margin: auto"
+                                                (error)="userImg = 'assets/img/not-found.png'">
+
+                                        </div>
+                                        <div class="col-sm">
+                                            <input #userfileinput type="file" hidden name="userimg" id="imginput-user"
+                                                (change)="inputFileChange($event)">
+
+                                            <button class="btn btn-sm btn-primary"
+                                                (click)="userfileinput.click()">Choose
+                                                file</button><a id="imginputLabel-user" class="text-secondary ml-3" style="font-size: small;"></a>
+
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-divider mb-3"></div>
+                                    <div class="form-group row ">
+                                        <label for="userid" class="col-sm-4 col-form-label col-form-label-sm">User
+                                            ID</label>
+                                        <div class="col-sm ">
+
+                                            <div class="input-group  input-group-sm">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="basic-addon1">+95</span>
+                                                </div>
+                                                <input type="text" class="form-control" placeholder="09 * "
+                                                    aria-label="Username" aria-describedby="basic-addon1"
+                                                    (blur)="userIdOnBlur()" [disabled]="update"
+                                                    [(ngModel)]="_obj.userId" (keypress)="numberOnlyValidation($event)"
+                                                    maxlength="11">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="username"
+                                            class="col-sm-4 col-form-label col-form-label-sm">Name</label>
+                                        <div class="col-sm">
+                                            <input [(ngModel)]="_obj.userName" placeholder="In English" type="text"
+                                                class="form-control form-control-sm" id="username">
+                                        </div>
+                                    </div>
+
+                                    <fieldset class="form-group row ">
+                                        <legend class="col-form-label col-sm-4 float-sm-left pt-0 col-form-label-sm">
+                                            User Type</legend>
+                                        <div class="col-sm">
+                                            <div class="form-group form-check" *ngFor="let ut of userType">
+                                                <input type="checkbox" class="form-check-input" [id]="ut.val"
+                                                    name="usertype-detail" [value]="ut.code" [(ngModel)]="ut.check">
+                                                <label class="form-check-label" style="font-size: small;"
+                                                    [for]="ut.val">{{ut.val}}</label>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <div class="form-group row">
+                                        <label for="inactive" class="col-sm-4 col-form-label col-form-label-sm">Team
+                                            Type
+                                        </label>
+                                        <div class="col-sm">
+                                            <select class="custom-select custom-select-sm" [(ngModel)]="_obj.teamtype"
+                                                id="ut">
+                                                <option [value]="team.code" *ngFor="let team of teamType">{{team.val}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" id="team-input">
+                                        <label for="team" class="col-sm-4 col-form-label col-form-label-sm">Team</label>
+                                        <div class="col-sm">
+                                            <select [(ngModel)]="_obj.teamSyskey" class="custom-select custom-select-sm"
+                                                slot="end" id="team">
+                                                <option value="0" selected>-</option>
+                                                <option [value]="team.syskey"
+                                                    *ngFor="let team of teamlist; let i=index">
+                                                    {{team.description}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="inactive"
+                                            class="col-sm-4 col-form-label col-form-label-sm">Active</label>
+                                        <div class="col-sm-3">
+
+                                            <mat-checkbox class="example-margin" [(ngModel)]="_status"
+                                                [disabled]="_obj.syskey!='0' && !activate_Access"></mat-checkbox>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row" *ngIf="isShowMerchandizer">
+                                        <label for="inactive" class="col-sm-4 col-form-label col-form-label-sm">Is
+                                            Merchandizer</label>
+
+                                        <div class="col-sm-3">
+
+                                            <mat-checkbox class="example-margin" [(ngModel)]="merchandizer">
+                                            </mat-checkbox>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" [hidden]="update">
+                                        <label for="userpassword"
+                                            class="col-sm-4 col-form-label col-form-label-sm">Password</label>
+                                        <div class="col-sm">
+                                            <div class="input-group input-group-sm">
+                                                <input [(ngModel)]="_obj.password" [type]="hide ? 'password' : 'text'"
+                                                    class="form-control" aria-label="Recipient's username"
+                                                    aria-describedby="button-addon2">
+                                                <div class="input-group-append">
+                                                    <button (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                                                        [attr.aria-pressed]="hide" class="btn btn-outline-secondary"
+                                                        type="button" id="button-addon2">
+                                                        <i [ngClass]="hide? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" [hidden]="update">
+                                        <label for="confpass" class="col-sm-4 col-form-label col-form-label-sm">Confirm
+                                            Password</label>
+                                        <div class="col-sm">
+                                            <div class="input-group input-group-sm">
+                                                <input [(ngModel)]="temp.confirmPassword" matInput
+                                                    [type]="hide ? 'password' : 'text'" class="form-control"
+                                                    aria-label="Recipient's username" aria-describedby="button-addon2">
+                                                <div class="input-group-append">
+                                                    <button mat-icon-button matSuffix (click)="hide = !hide"
+                                                        [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide"
+                                                        class="btn btn-outline-secondary" type="button"
+                                                        id="button-addon2">
+                                                        <i [ngClass]="hide? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" [hidden]="!update" *ngIf="resetPwd_Access">
+                                        <label for="confpass"
+                                            class="col-sm-4 col-form-label col-form-label-sm">Password</label>
+                                        <div class="col-sm">
+                                            <p class="btn-link" style="font-size: small;" (click)="prompt()">Update?
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="sex" class="col-sm-4 col-form-label col-form-label-sm">Sex</label>
+                                        <div class="col-sm">
+                                            <select class="custom-select custom-select-sm" interface="popover"
+                                                slot="end" [(ngModel)]="_obj.sex" id="sex">
+                                                <option value="M">Male</option>
+                                                <option value="F">Female</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="dob" class="col-sm-4 col-form-label col-form-label-sm">DOB</label>
+                                        <div class="col-sm">
+                                            <input matInput (click)="myDatepicker.open()" [matDatepicker]="myDatepicker"
+                                                [(ngModel)]="_obj.dob" class="form-control form-control-sm"
+                                                (dateChange)="addEvent($event)">
+
+                                            <mat-datepicker #myDatepicker></mat-datepicker>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="confpass"
+                                            class="col-sm-4 col-form-label col-form-label-sm">NRC</label>
+                                        <div class="col-sm input-group input-group-sm">
+
+                                            <select (change)="changeState()" [(ngModel)]="nrc.n1" name="shop"
+                                                class="custom-select " interface="popover" slot="end"
+                                                interface="popover" slot="end" id="dropDownMenuKategorie"
+                                                style="padding: 1%; min-width: 30px; text-align: center;">
+                                                <option *ngFor="let s of stateList; let i = index;" [value]="s.t2">
+                                                    {{s.t2}}
+                                                </option>
+                                            </select>
+
+                                            <select [(ngModel)]="nrc.n2" name="shop" class="form-control"
+                                                interface="popover" slot="end"
+                                                style="padding: 1%; min-width: 100px; text-align: center;">
+                                                <option value="" selected>-</option>
+                                                <option *ngFor="let d of districtList; let i = index;" [value]="d.t2">
+                                                    {{d.t2}}
+                                                </option>
+                                            </select>
+
+                                            <select [(ngModel)]="nrc.n3" name="shop" class="form-control"
+                                                interface="popover" slot="end"
+                                                style="padding: 1%; min-width: 30px; text-align: center;">
+                                                <option *ngFor="let n of nList; let i = index;" [value]="n.t2">
+                                                    {{n.t2}}
+                                                </option>
+                                            </select>
+
+                                            <input [(ngModel)]="nrc.n4" type="tel" maxlength="6" minlength="6"
+                                                class="form-control " data-toggle="tooltip" data-placement="top"
+                                                style="padding: 1%;text-align: center;"
+                                                (keypress)="numberOnlyValidation($event)">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col" [hidden]="!roleFlag">
+                                <div style="max-width: 550px" class="mx-auto">
+                                    <div class="form-group row">
+                                    <label for="dob" class="col-sm-4 col-form-label col-form-label-sm">Roles</label>
+                                    <div class="col-sm pt-2">
+
+
+                                        <div class="form-group form-check"
+                                            *ngFor="let obj of def_roles; let i=index">
+                                            <input type="checkbox" class="form-check-input" [id]=" 'ui-role' + i "
+                                                [(ngModel)]="obj.n2" [disabled]="!isMaster">
+                                            <label class="form-check-label" style="font-size: small;"
+                                                [for]="'ui-role' + i">{{obj.t2}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</ion-content>
+
+<div class="modal fade" id="passportcropmodel" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modified image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" [hidden]="!croperReady">
+                <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" format="png"
+                    (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()"
+                    autoCrop="false">
+                </image-cropper>
+            </div>
+            <div class="modal-footer">
+                <button type="button" (click)="cropImageCencel()" class="btn btn-secondary"
+                    data-dismiss="modal">Close</button>
+                <button type="button" (click)="cropImage()" class="btn btn-primary" data-dismiss="modal">Save
+                    changes</button>
+            </div>
+        </div>
+    </div>
+</div>

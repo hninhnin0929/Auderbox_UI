@@ -1,0 +1,21 @@
+.custom-select-sm,
+.form-control-sm,
+.input-group-sm {
+  max-width: 200px;
+}
+
+:host ::ng-deep .mat-expansion-panel {
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .mat-expansion-panel-header {
+  height: 35px !important;
+}
+
+:host ::ng-deep .mat-expansion-panel-header.mat-expanded {
+  // note that we're transitioning transform, not height!
+  height: 48px !important;
+}
+#spinner-tsp{
+  display: none;
+}

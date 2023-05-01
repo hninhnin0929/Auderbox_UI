@@ -1,0 +1,746 @@
+<ion-content>
+  <mat-progress-bar mode="query" *ngIf="page.spinner"></mat-progress-bar>
+
+  <div [class]="page.spinner ? 'myOuterContainer disabled' : 'myOuterContainer'">
+    <div class="d-flex justify-content-start mb-2">
+      <ul class="nav nav-pills" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="loyalty-list-tab" data-toggle="tab" href="#loyalty-list" role="tab"
+            aria-controls="list" aria-selected="true" (click)="listClick()">List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="loyalty-new-tab" data-toggle="tab" href="#loyalty-new" role="tab" aria-controls="new"
+            aria-selected="false" (click)="detailClick()">New</a>
+        </li>
+      </ul>
+      <button *ngIf="page.btn" type="button" class="btn btn-primary header-btn" (click)="beforeSave()">
+        {{loyaltyHeader.syskey == '0' ? 'Save':'Update'}}
+      </button>
+      <button *ngIf="page.btn" type="button" class="btn btn-primary header-btn btndelete" (click)="deleteHeader()">
+        Delete
+      </button>
+    </div>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="loyalty-list" role="tabpanel" aria-labelledby="loyalty-list-tab">
+        <mat-accordion class="example-headers-align ">
+          <mat-expansion-panel class="border rounded mb-1 cri_mat_expansion">
+            <mat-expansion-panel-header>
+              <mat-panel-title class="text-primary">
+                <span>Advance</span>
+              </mat-panel-title>
+              <mat-panel-description>
+                <small></small>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="row">
+              <div class="col">
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label col-form-label-sm">Start date</label>
+                  <div class="col-sm">
+                    <div class="input-group input-group-sm">
+                      <input [(ngModel)]="searchCri.fromDate" matInput [matDatepicker]="fromDateSearchCriPicker"
+                        placeholder="Select Date" class="form-control inputdate" readonly
+                        (click)="fromDateSearchCriPicker.open()">
+                      <div class="input-group-append date-form" style="width: fit-content;">
+                        <i class="input-group-text fa fa-calendar" aria-hidden="true "
+                          (click)="fromDateSearchCriPicker.open()"></i>
+                        <mat-datepicker #fromDateSearchCriPicker></mat-datepicker>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <label for="cri-name" class="col-sm-4 col-form-label col-form-label-sm">Pro Name</label>
+                  <div class="col-sm">
+                    <input type="text" id="cri-name" class="form-control form-control-sm" [(ngModel)]="searchCri.t2">
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label col-form-label-sm">End date</label>
+                  <div class="col-sm">
+                    <div class="input-group input-group-sm">
+                      <input [(ngModel)]="searchCri.toDate" matInput [matDatepicker]="toDateSearchCriPicker"
+                        placeholder="Select Date" class="form-control inputdate" readonly
+                        (click)="toDateSearchCriPicker.open()">
+                      <div class="input-group-append date-form" style="width: fit-content;">
+                        <i class="input-group-text fa fa-calendar" aria-hidden="true "
+                          (click)="toDateSearchCriPicker.open()"></i>
+                        <mat-datepicker #toDateSearchCriPicker></mat-datepicker>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="d-flex justify-content-start">
+                  <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-primary" (click)="search()">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary" (click)="default()">
+                      <i class="fa fa-refresh" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="d-flex justify-content-start">
+                    <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                      <button (click)="print()" type="button" class="btn btn-primary">
+                        Export
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+
+        </mat-accordion>
+
+        <pagination-controls (pageChange)="pageChanged($event)" [hidden]="loyaltyHeaderList.length == 0">
+        </pagination-controls>
+        <div class="table-responsive text-nowrap overflow-auto mt-1">
+          <table class="table table-hover table-bordered" style="font-size: 13px;">
+            <thead class="thead-dark">
+              <tr>
+                <th class="sticky-top" scope="col" style="width: 5px">#</th>
+                <th class="sticky-top" scope="col">Promotion ID</th>
+                <th class="sticky-top" scope="col">Promotion Name</th>
+                <th class="sticky-top" scope="col">Start Date</th>
+                <th class="sticky-top" scope="col">End Date</th>
+                <th class="sticky-top" scope="col">Active</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let header of loyaltyHeaderList | paginate: config;let i = index">
+                <td scope="row" (click)="getPromotionDetail(header.syskey,i)">{{i+1}}</td>
+                <td (click)="getPromotionDetail(header.syskey,i)">{{header.t1}}</td>
+                <td (click)="getPromotionDetail(header.syskey,i)">{{header.t2}}</td>
+                <td (click)="getPromotionDetail(header.syskey,i)">{{header.t3 | date:'d/M/y'}}</td>
+                <td (click)="getPromotionDetail(header.syskey,i)">{{header.t4 | date:'d/M/y'}}</td>
+                <td class="d-flex flex-row">
+                  <div class="custom-control custom-switch" style="width: 50px;">
+                    <input type="checkbox" class="custom-control-input" [id]="'active-switch-'+header.syskey"
+                      [(ngModel)]="header.n12" (change)="activeHeaderChange(header)">
+                    <label class="custom-control-label" [for]="'active-switch-'+header.syskey"
+                      style="width: 0px;"></label>
+                  </div>
+                  <div class="spinner-border text-primary spinner-header-active" role="status"
+                    [id]="'spinner-header-active-'+header.syskey" style="margin-left: -15px;">
+                    <span class="sr-only"></span>
+                  </div>
+                </td>
+
+              </tr>
+              <tr *ngIf="loyaltyHeaderList.length == 0 && page.spinner == false">
+                <td scope="row" class="text-muted">1</td>
+                <td colspan="4" class="text-muted">No Record</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="loyalty-new" role="tabpanel" aria-labelledby="loyalty-new-tab">
+        <div class="card ">
+          <div class="card-header bg-transparent text-primary border-bottom-0 pb-0">
+            Detail
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col">
+                <div class="form-group row">
+                  <label for="code-input" class="col-sm-4 col-form-label col-form-label-sm" id="code">Promotion
+                    ID</label>
+                  <div class="col-sm">
+                    <input [(ngModel)]="loyaltyHeader.t1" type="text" id="code-input"
+                      class="form-control form-control-sm">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="name-input" class="col-sm-4 col-form-label col-form-label-sm" id="name">Promotion
+                    Name</label>
+                  <div class="col-sm">
+                    <input [(ngModel)]="loyaltyHeader.t2" type="text" id="name-input"
+                      class="form-control form-control-sm">
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label col-form-label-sm">From date</label>
+                  <div class="col-sm">
+                    <div class="input-group input-group-sm">
+                      <input [(ngModel)]="loyaltyHeader.t3" [min]="todayDate" matInput [matDatepicker]="fromDatePicker"
+                        placeholder="Select Date" class="form-control inputdate" readonly
+                        (dateChange)="loyaltyHeader.t4 = loyaltyHeader.t3">
+                      <div class="input-group-append date-form" style="width: fit-content;">
+                        <i class="input-group-text fa fa-calendar" aria-hidden="true "
+                          (click)="fromDatePicker.open()"></i>
+                        <mat-datepicker #fromDatePicker></mat-datepicker>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label col-form-label-sm">To date</label>
+                  <div class="col-sm">
+                    <div class="input-group input-group-sm">
+                      <input [(ngModel)]="loyaltyHeader.t4" [min]="loyaltyHeader.t3" matInput
+                        [matDatepicker]="toDatePicker" placeholder="Select Date" class="form-control inputdate"
+                        readonly>
+                      <div class="input-group-append date-form" style="width: fit-content;">
+                        <i class="input-group-text fa fa-calendar" aria-hidden="true "
+                          (click)="toDatePicker.open()"></i>
+                        <mat-datepicker #toDatePicker></mat-datepicker>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label col-form-label-sm">Invoice From date</label>
+                  <div class="col-sm">
+                    <div class="input-group input-group-sm">
+                      <input [(ngModel)]="loyaltyHeader.t5" matInput [matDatepicker]="invfromDatePicker"
+                        placeholder="Select Date" class="form-control inputdate" readonly>
+                      <div class="input-group-append date-form" style="width: fit-content;">
+                        <i class="input-group-text fa fa-calendar" aria-hidden="true "
+                          (click)="invfromDatePicker.open()"></i>
+                        <mat-datepicker #invfromDatePicker></mat-datepicker>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label col-form-label-sm">Invoice To date</label>
+                  <div class="col-sm">
+                    <div class="input-group input-group-sm">
+                      <input matInput [(ngModel)]="loyaltyHeader.t6" [matDatepicker]="invtoDatePicker"
+                        placeholder="Select Date" class="form-control inputdate" readonly>
+                      <div class="input-group-append date-form" style="width: fit-content;">
+                        <i class="input-group-text fa fa-calendar" aria-hidden="true "
+                          (click)="invtoDatePicker.open()"></i>
+                        <mat-datepicker #invtoDatePicker></mat-datepicker>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="nav nav-tabs mt-2" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="setup-tab" data-toggle="tab" href="#setup-tab-child" role="tab"
+              aria-controls="list" aria-selected="true">Promotion Setup </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="jun-tab" data-toggle="tab" href="#jun-tab-child" role="tab" aria-controls="new"
+              aria-selected="false" (click)="getPromotionJunction()">Customer Applicability</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="setup-tab-child" role="tabpanel" aria-labelledby="setup-tab">
+            <div class="m-2">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="price-discount-form-check"
+                  [value]="discountType.price" [(ngModel)]="loyaltyHeader.n11" checked
+                  [disabled]="loyaltyHeader.detail.length !=0">
+                <label class="form-check-label text-muted" style="font-size: small;" for="price-discount-form-check">
+                  Price Discount
+                </label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="inkind-discount-form-check"
+                  [value]="discountType.inkind" [(ngModel)]="loyaltyHeader.n11"
+                  [disabled]="loyaltyHeader.detail.length !=0">
+                <label class="form-check-label text-muted" style="font-size: small;" for="inkind-discount-form-check">
+                  Inkind Discount
+                </label>
+              </div>
+            </div>
+
+            <div class="table-responsive text-nowrap mt-3 card">
+              <table class="table table-sm border-0 mb-0 table-bordered" style="font-size: small;">
+                <thead>
+                  <tr>
+                    <th class="sticky-top table-active" scope="col" style="width: 5px">#</th>
+                    <th class="sticky-top table-active" scope="col" style="width: 200px;">BrandOwner</th>
+                    <th class="sticky-top table-active" scope="col" style="width: 200px;">Operator</th>
+                    <th class="sticky-top table-active" scope="col">Discount Rate</th>
+                    <!-- <th class="sticky-top table-active" scope="col">First Revenue</th>
+                    <th class="sticky-top table-active" scope="col">Second Revenue</th> -->
+                    <th class="sticky-top table-active" scope="col" *ngIf="loyaltyHeader.n11 == discountType.price">
+                      Discount %</th>
+                    <th class="sticky-top table-active" scope="col" *ngIf="loyaltyHeader.n11 == discountType.inkind">
+                      GiftSku/LuckyDraw</th>
+                    <th class="sticky-top table-active" scope="col" *ngIf="loyaltyHeader.n11 == discountType.inkind">
+                      Item Reward Name</th>
+                    <th class="sticky-top table-active" scope="col" *ngIf="loyaltyHeader.n11 == discountType.inkind"
+                      style="width: 50px;">
+                      Item Reward Qty</th>
+                    <th class="sticky-top table-active" scope="col" style="width: 55px;"></th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let d of loyaltyHeader.detail; let i=index">
+                    <td scope="row" class="align-middle">{{i+1}}</td>
+                    <td scope="row" [class]="d.n2.t1 == 'auderbox' ? 'align-middle font-weight-bold' : 'align-middle'">
+                      {{d.n2.t2}}</td>
+                    <td scope="row" class="align-middle"><a class="ml-2">{{d.n12.desc}}</a></td>
+                    <td scope="row" class="align-middle d-flex justify-content-start">
+                      <input type="number" min="1" class="form-control form-control-sm border-0  mr-2" id="first-rev"
+                        style="width:100px" [(ngModel)]="d.n6">
+                      <span *ngIf="d.n12.code == 32" style="margin-top: 5px;">-> </span>
+                      <input class="form-control form-control-sm border-0 ml-2" style="width:100px"
+                        *ngIf="d.n12.code == 32" [(ngModel)]="d.n7" />
+                      <!-- <span class="ml-1" *ngIf="d.n12.code !== 32" style="margin-top: 5px;">{{d.n7}}</span> -->
+                    </td>
+                    <!-- <td scope="row" class="align-middle">
+                      <input class="form-control form-control-sm border-0" style="width:100px" *ngIf="d.n12.code == 32"
+                        [(ngModel)]="d.n7" />
+                      <span class="ml-1" *ngIf="d.n12.code !== 32">{{d.n7}}</span>
+                    </td> -->
+                    <td scope="row" class="align-middle" *ngIf="loyaltyHeader.n11 == discountType.price">
+                      <input type="number" min="1" max="100" class="form-control form-control-sm border-0"
+                        style="width:70px" [(ngModel)]="d.n8">
+                    </td>
+                    <td scope="row" class="align-middle" *ngIf="loyaltyHeader.n11 == discountType.inkind">{{d.n13.desc}}
+                    </td>
+                    <td scope="row" class="align-middle" *ngIf="loyaltyHeader.n11 == discountType.inkind">{{d.n3.t2}}
+                    </td>
+                    <td scope="row" class="align-middle" *ngIf="loyaltyHeader.n11 == discountType.inkind">
+                      <input class="form-control form-control-sm border-0" [(ngModel)]="d.n14" />
+                    </td>
+                    <td scope="row" class="align-middle">
+                      <button class="btn btn-danger btn-sm rounded-pill" style="font-size: smaller;width: 55px;"
+                        type="button" (click)="deletePromotionDetail(i)">Remove</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td scope="row">
+                    </td>
+                    <td scope="row">
+                      <mat-select #boselect [(ngModel)]="loyaltyDetail.n2" class="form-control form-control-sm border-0"
+                        [placeholder]="page.brandOwnerList.length == 0 ? 'Loading..': 'Select'"
+                        [disabled]="page.brandOwnerList.length==0">
+                        <mat-option [value]="page.auderboxType" [disabled]="loyaltyHeader.n11 == discountType.inkind"
+                          style="font-weight: bold;">{{page.auderboxType.t2}}</mat-option>
+                        <mat-option [value]="bo" *ngFor="let bo of page.brandOwnerList">{{bo.t2}}</mat-option>
+                      </mat-select>
+                    </td>
+                    <td scope="row">
+                      <mat-select [(ngModel)]="loyaltyDetail.n12" class="form-control form-control-sm border-0"
+                        placeholder="Select" name="amount-select" id="amount-select"
+                        [compareWith]="comparisonOperatorFunction">
+                        <mat-option [value]="amount" *ngFor="let amount of page.amountStatus">{{amount.desc}}
+                        </mat-option>
+                      </mat-select>
+                    </td>
+                    <td scope="row" class="d-flex justify-content-start">
+                      <span class="mr-2">
+                        <input type="number" min="1" class="form-control form-control-sm " id="first-rev"
+                          style="width:100px" [(ngModel)]="loyaltyDetail.n6">
+                      </span>
+                      <span *ngIf="loyaltyDetail.n12.code == 32" style="margin-top: 5px;">-> </span>
+                      <span *ngIf="loyaltyDetail.n12.code == 32" class="ml-2">
+                        <input type="number" min="1" class="form-control form-control-sm " id="second-rev"
+                          style="width:100px" [(ngModel)]="loyaltyDetail.n7">
+                      </span>
+                      <!-- [disabled]="loyaltyDetail.n12.code != 32"  -->
+
+                    </td>
+                    <!-- <td scope="row">
+                      <input type="number" min="1" class="form-control form-control-sm border-0" id="second-rev"
+                        style="width:100px" [disabled]="loyaltyDetail.n12.code != 32" [(ngModel)]="loyaltyDetail.n7">
+                    </td> -->
+                    <td scope="row" *ngIf="loyaltyHeader.n11 == discountType.price">
+                      <input type="number" min="1" max="100" class="form-control form-control-sm border-0"
+                        id="discount-percent" style="width:70px" [(ngModel)]="loyaltyDetail.n8">
+                    </td>
+                    <td scope="row" *ngIf="loyaltyHeader.n11 == discountType.inkind">
+                      <mat-select [(ngModel)]="loyaltyDetail.n13" class="form-control form-control-sm border-0"
+                        (selectionChange)="inKindItemTypeChange($event)" placeholder="Select" name="inkind-select"
+                        id="inkind-select">
+                        <mat-option [value]="type" *ngFor="let type of inKindItemType"> {{type.desc}}</mat-option>
+                      </mat-select>
+                    </td>
+                    <td scope="row" *ngIf="loyaltyHeader.n11 == discountType.inkind">
+                      <mat-select [(ngModel)]="loyaltyDetail.n3" class="form-control form-control-sm border-0"
+                        name="inkinditem-select" id="inkinditem-select" placeholder="Select">
+                        <mat-option [value]="gif" *ngFor="let gif of giftList"> {{gif.t2}}</mat-option>
+                      </mat-select>
+                    </td>
+                    <td scope="row" *ngIf="loyaltyHeader.n11 == discountType.inkind">
+                      <input type="number" min="1" class="form-control form-control-sm border-0" id="inkinditem-qty"
+                        [(ngModel)]="loyaltyDetail.n14">
+                    </td>
+                    <td scope="row">
+                      <button class="btn btn-primary btn-sm rounded-pill" style="font-size: smaller;width: 55px;"
+                        type="button" (click)="addLoyaltyDetail()">Add</button>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+          <div class="tab-pane fade" id="jun-tab-child" role="tabpanel" aria-labelledby="jun-tab">
+          
+            <div class="card-body pb-0">
+              <div class="row row-cols-1 row-cols-sm-2">                
+                <div class="col">
+                  <div class="form-group row">
+                    <label for="fd" class="col-sm-3 col-form-label col-form-label-sm">Choose File </label>
+                    <div class="col-sm">
+                      <input type="file" id="filechose" class="custom-file-input form-control-sm" name="filechose" [ngModelOptions]="{standalone: true}"
+                      [ngModel]="importload" #chosefile (click)="resetValue()" (change)="onUpload($event)" >
+                     <label class="custom-file-label col-form-label-sm text-truncate"
+                      matTooltip="chosefile.value == ''? 'Name': chosefile.value"
+                      for="filechose">{{chosefile.value == ''? 'Name': chosefile.value}}</label>
+                    </div>    
+                    <ion-button (click)="appliedExcelShopData()" style="margin: 0px 0px 20px 10px; height: 33px; text-transform: none;"
+                    >Apply</ion-button>       
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row mt-2">
+              <div class="col">
+                <div class="card" style="width: 100%; margin-left: 10px;">
+                  <div class="card-header">
+                    Applied Shops
+                    <span class="float-right" style="margin-bottom: -5px; margin-top: -5px;">
+                      <div class="input-group input-group-sm" style="width: 150px;">
+                        <input type="text" aria-describedby="inputGroup-sizing-sm" id="searchBoxAS"
+                          placeholder="Search" (change)="searchAppliedShop($event)" 
+                          class="form-control" aria-label="Sizing example input">
+                      </div>
+                    </span>
+                  </div>
+                  <pagination-controls 
+                    (pageChange)="assignedShopListPageChanged($event)"
+                    >
+                  </pagination-controls>
+                  <table class="table table-sm ">
+                    <thead>
+                      <tr>
+                        <th scope="col-1">No</th>
+                        <th scope="col-8">Name</th>
+                        <th scope="col-1">Redemption/Rebate</th>
+                        <th scope="col-1">Active</th>
+                        <th scope="col-1"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr id="sopage-store-name"
+                        *ngFor="let sotran of tempShopList | paginate : config1; let i = index">
+                        <td>{{i+1}}</td>
+                        <td>
+                          <ul class="px-0" style="list-style: none;">
+                            <li>
+                              {{sotran.t2}}
+                            </li>
+                            <li>{{sotran.shopCode}}</li>
+                            <li> <span id="delpage-so-address" class="text-muted text-wrap"
+                                style="width: 200px!important;">
+                                {{sotran.address}}
+                              </span></li>
+                          </ul>
+                        </td>
+                        <td class="align-middle">
+                          <div>
+                            <mat-radio-group required style="display: flex;
+                          flex-direction: column;"
+                            [(ngModel)]="sotran.red_reb">
+                            <mat-radio-button [value]="Redemption">
+                              Redemption
+                            </mat-radio-button>
+                            <mat-radio-button [value]="Rebate">
+                              Rebate
+                            </mat-radio-button>
+                            <!-- <span id="error-text">Please select at least one</span> -->
+                          </mat-radio-group>
+                          <!--  -->
+                          </div>
+                          
+  
+                        </td>
+                        <td class="align-middle">
+                          <mat-checkbox labelPosition='after'
+                                [(ngModel)]="sotran.active">
+                          </mat-checkbox>
+                        </td>
+                        <td class="align-middle">
+                          <button class="btn btn-sm rounded-circle btn-outline-danger" style="font-size: small;"
+                          (click)="removeShop($event, i)">
+                          <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- <div class="col">
+                <form [formGroup]='store_formgroup'>
+                  <div class="d-flex bd-highlight">
+                    <div class="p-2 flex-grow-1 bd-highlight">
+                      <h6>Stores</h6>
+                    </div>
+                    <div class="p-2 bd-highlight" id="user-selected-input">
+                      <div class="input-group input-group-sm searchbox">
+                        <input type="text" class="form-control border-right-0 searchbox-input"
+                          (keyup.enter)="searchStores()" placeholder="Search" formControlName="stores-search">
+                        <div class="input-group-append">
+                          <button class="btn btn-sm btn-outline-secondary " type="button"
+                            style="border-color: #cacaca;border-left: none;border-right: none;" (click)="searchStores()"
+                            id="button-addon1"><i class="fa fa-search"></i></button>
+                        </div>
+                        <div class="input-group-append">
+                          <button class="btn btn-sm btn-outline-secondary" type="button" (click)="store_formgroup.get('stores-search').setValue('');getStores(0)"
+                            style="border-color: #cacaca;border-left: none;">
+                            <i class="fa fa-times"></i></button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </form>
+                <div class="pagination-block-stores">
+                  <pagination-controls id="pagination_stores_config"  (pageChange)="pageChangedStores($event)"
+                  (pageBoundsCorrection)="pageBoundsCorrectionStores($event)">
+                </pagination-controls></div>
+                
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th scope="col" style="width: 5px;">No</th>
+                      <th scope="col" style="width: 200px!important;">Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr id="sopage-store-name"
+                      *ngFor="let sotran of store_formgroup.get('stores').value | paginate : pagination_stores_config; let i = index">
+                      <td style="width: 5px;">{{sotran.no+1}}</td>
+                      <td style="width: 200px!important;">
+                        <ul style="list-style: none;padding-left: 25px;">
+                          <li style="margin-left: -25px;">
+                            <mat-checkbox labelPosition='after' (change)="changeCheckedStore($event.checked,sotran)"
+                              [(ngModel)]="sotran.check">
+                              {{sotran.shop_name}}
+                            </mat-checkbox>
+                          </li>
+                          <li>{{sotran.shop_code}}</li>
+                          <li> <span id="delpage-so-address" class="text-muted text-wrap"
+                              style="width: 200px!important;">
+                              {{sotran.shop_address}}
+                            </span></li>
+                        </ul>
+                      </td>
+
+                    </tr>
+                  </tbody>
+                </table>
+              </div> -->
+
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="card" style="width: 96%; margin-left: 10px;">
+                    <div class="card-header">
+                      Shops
+                      <div class="spinner-border text-primary" role="status" id="spinner-advsearch" 
+                        *ngIf="tsLoadingFlag">
+                          <span class="sr-only"></span>
+                      </div>
+                      <span class="float-right">
+                        <div class="btn-group" style="margin-right: 10px;">
+                          <button class="btn btn-primary btn-sm" type="button" (click)="addShop()">
+                            Add Shop
+                          </button>
+                        </div>
+                        <i (click)="dropdown? dropdown=false: dropdown=true" aria-hidden="true" 
+                          [class]="dropdown? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'">
+                        </i>
+                      </span>
+                    </div>
+                    <div class="card-body px-5 border-bottom" id="shopAdvanceForm" *ngIf="dropdown">
+                      <div class="form-group row">
+                        <label for="tempVdShopSearch" class="col-sm-4 col-form-label col-form-label-sm">Shop</label>
+                        <div class="col-sm-8">
+                          <input type="text" id="tempVdShopSearch" class="form-control form-control-sm"
+                            [(ngModel)]="tempSearch.shopDesc">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="tempVdTsSearch" class="col-sm-4 col-form-label col-form-label-sm">Township</label>
+                        <div class="col-sm-8">
+                          <input type="text" id="tempVdTsSearch" class="form-control form-control-sm"
+                            [(ngModel)]="tempSearch.townDesc">
+                        </div>
+                      </div>
+                      <div class="d-flex justify-content-end">
+                        <div class="btn-group" role="group">
+                          <button (click)="searchTownship()" type="button" class="btn btn-primary btn-sm">
+                          <!-- (click)="searchShop('0', 0, '')" -->
+                            Search
+                          </button>
+                        </div>
+                        <!-- <div class="btn-group float-right" style="margin-right: 1px;">
+                          <button class="btn btn-primary btn-sm" type="button" (click)="addShop()"
+                            style="margin-left: 3px;">
+                              Add Shop
+                          </button>
+                        </div> -->
+                      </div>
+                    </div>
+                    <div class="overflow-auto" style="height: 465px;">
+                      <mat-accordion>
+                        <mat-expansion-panel *ngFor="let tsList of townList; let i = index;"
+                        (opened)="openPanel(tsList)" [expanded]="tsList.panelExpanded">
+                          <mat-expansion-panel-header>
+                            <mat-panel-title>
+                              {{tsList.TownDesc}}
+                            </mat-panel-title>
+                            <!-- <mat-panel-title style="float: right;">
+                              <div>
+                                <input type="checkbox" id="{{tsList.TownSyskey}}" (change)="selectTown($event, tsList.TownSyskey)">
+                                Select All
+                              </div>
+                            </mat-panel-title> -->
+                          </mat-expansion-panel-header>
+                          
+                          <div>
+                            <input type="checkbox" id="{{tsList.TownSyskey}}" (change)="selectTown($event, tsList.TownSyskey)">
+                            Select All
+                          </div>
+
+                          <pagination-controls [id]="tsList.shopListConfig.id" (pageChange)="shopListPageChanged($event, tsList)">
+                          </pagination-controls>
+                          <div class="overflow-auto table-responsive text-nowrap">
+                            <table class="table table-hover surveyortable" style="font-size: 13px;">
+                              <thead class="thead-dark">
+                                <tr>
+                                  <th>No</th>
+                                  <th>Shop Code</th>
+                                  <th>Shop Name</th>
+                                  <th>Address</th>
+                                  <th>
+                                    <!-- Select All
+                                    <input type="checkbox" id="{{tsList.TownSyskey}}" (change)="selectTown($event, i)"> -->
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let shopList of tsList.ShopDataList | paginate: tsList.shopListConfig; let j = index;">
+                                  <td>{{j+1}}</td>
+                                  <td>{{shopList.shopCode}}</td>
+                                  <td>{{shopList.shopName}}</td>
+                                  <td>{{shopList.address}}</td>
+                                  <td>
+                                    <!-- <input type="checkbox" id="townCb{{i}}and{{j}}" (change)="selectShop($event, i, j)"> -->
+                                    <input type="checkbox" id="{{shopList.shopSysKey}}" [(ngModel)]="shopList.checkFlag" 
+                                      (change)="selectShop($event, tsList, shopList, false)">
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </mat-expansion-panel>
+                      </mat-accordion>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="ld-browse-shop" tabindex="-1" role="dialog" aria-labelledby="previewToSave-order"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg  modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Stores by township</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label=" Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col">
+              <label class="text-muted ml-2">Selected shops</label>
+              <ul style="list-style: none;">
+                <li *ngFor="let s of page.selectedShops; let y = index">
+                  <div class="row">
+                    <div class="col-2 text-muted">
+                      {{y+1}}
+                    </div>
+                    <div class="col">
+                      {{s.shopName}}
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="col">
+
+              <div class="d-flex flex-row-reverse pr-3 pl-3 mb-2">
+                <input class="form-control w-100 border-success" id="ld-search-shops-input" matInput
+                  [formControl]="shopNameSearch" placeholder="Search shops">
+              </div>
+              <mat-accordion class="ld-township-expansionpanel" multi #browseTownship>
+                <mat-expansion-panel class="border-bottom" *ngFor="let townships of page.townShipsFilter">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title class="text-muted">
+                      {{townships.TownDesc}}
+                    </mat-panel-title>
+                    <mat-panel-description>
+                      <small></small>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <ul style="list-style: none;" class="ul-shoplist">
+                    <li *ngFor="let shop of townships.ShopDataList; let i = index">
+                      <span>
+                        <input type="checkbox" [id]="'checkbox-'+ shop.shopSysKey" class="form-check-input"
+                          [(ngModel)]="shop.check" (change)="selectShops(shop)">
+                      </span>
+                      <label [for]="'checkbox-'+ shop.shopSysKey">{{shop.shopName}}</label>
+
+                    </li>
+                  </ul>
+
+                </mat-expansion-panel>
+
+              </mat-accordion>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary  rounded-pill ld-browseShop-close"
+            data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary  rounded-pill ld-browseShop-save"
+            data-dismiss="modal">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

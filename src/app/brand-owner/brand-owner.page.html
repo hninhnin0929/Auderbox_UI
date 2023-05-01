@@ -1,0 +1,168 @@
+<ion-content>
+    <div class="myOuterContainer">
+        <div class="d-flex justify-content-start mb-2">
+            <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link" id="bolist-tab" data-toggle="tab" href="#bolist" role="tab" aria-controls="list"
+                        aria-selected="true" (change)="tab($event);" (click)="btn=false; listTab()">List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="bonew-tab" data-toggle="tab" href="#bonew" role="tab" aria-controls="new"
+                        aria-selected="false" (click)="newTabClick($event); btn=true">New</a>
+                </li>
+            </ul>
+            <button type="button" class="btn btn-primary  header-btn" (click)="save()"
+                *ngIf="btn">{{obj.syskey=='' || obj.syskey=='0'? 'Save':'Update' }}</button>
+            <button type="button" class="btn btn-primary  header-btn btndelete" [disabled]="obj.syskey=='' || obj.syskey=='0'"
+                *ngIf="btn" (click)="gotoDelete()">Delete</button>
+        </div>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade overflow-auto" id="bolist" role="tabpanel" aria-labelledby="bolist-tab">
+
+                <div class="card">
+                    <div class="card-header bg-transparent advance-form">
+                        Advance
+                        <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+                            [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'"
+                            aria-hidden="true"></i>
+                        <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+                            <span class="sr-only"></span>
+                        </div>
+                    </div>
+                    <div class="card-body" *ngIf="searchtab" id="advance-card">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group row">
+                                    <label for="stock-code"
+                                        class="col-sm-3 col-form-label col-form-label-sm">Code</label>
+                                    <div class="col-md-6">
+                                        <input type="text" id="stockcat-code" name="stock-code" (keyup.enter)="getAll()"
+                                            class="form-control form-control-sm" [(ngModel)]="search_param.code">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group row">
+                                    <label for="stock-name"
+                                        class="col-sm-3 col-form-label col-form-label-sm">Name</label>
+                                    <div class="col-md-6">
+                                        <input type="text" id="stock-name" name="stock-name" (keyup.enter)="getAll()"
+                                            class="form-control form-control-sm" [(ngModel)]="search_param.description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label for="stock-code"
+                                        class="col-sm-3 col-form-label col-form-label-sm">Vendor</label>
+                                    <div class="col-md-6">
+                                        <!-- <input type="text" id="stockcat-code" name="stock-code" (keyup.enter)="getAll()" 
+                                            class="form-control form-control-sm" [(ngModel)]="search_param.code"> -->
+                                        <select name="cambrand" class="custom-select custom-select-sm"
+                                            [(ngModel)]="search_param.vendorSyskey" id="cambrand">
+                                            <option value="" selected>-</option>
+                                            <option value="{{i.syskey}}" *ngFor="let i of _vendorList">{{i.t2}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="d-flex justify-content-start">
+                                    <div class="btn-group" role="group" style="height: 35px;">
+                                        <button (click)="getAll()" type="button" class="btn btn-primary"
+                                            [disabled]="spinner">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                        <button (click)="refresh()" type="button" class="btn btn-primary">
+                                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                     <div class="d-flex justify-content-start">
+                                        <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                                            <button (click)="print()" type="button" class="btn btn-primary">
+                                                Export
+                                            </button>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <table class="table table-hover mt-1" style="font-size: 13px;">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" style="width: 10px;">#</th>
+                            <th scope="col">Code</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Vendor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of list ;let i = index" (click)="detail(item)">
+                            <td scope="row">{{i+1}}</td>
+                            <td scope="row">{{item.t1}}</td>
+                            <td scope="row">{{item.t2}}</td>
+                            <td scope="row">{{item.vendorName}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade " id="bonew" role="tabpanel" aria-labelledby="bonew-tab">
+                <div class="card">
+                    <div class="row">
+                        <div class="col overflow-auto border-right" style="padding-right: 0px;height: 450px;">
+                            <div class="card-header">Brand Owner</div>
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="cambrandid" class="col-sm-4 col-form-label col-form-label-sm">Vendor </label>
+                                    <div class="col-sm">
+                                        <select name="cambrand" class="custom-select custom-select-sm" [(ngModel)]="obj.n1"
+                                            id="cambrand">
+                                            <option value="{{i.syskey}}" *ngFor="let i of _vendorList">{{i.t2}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row"> 
+                                    <label for="code" class="col-sm-4 col-form-label col-form-label-sm">Code</label>
+                                    <div class="col-sm">
+                                        <!-- <input [disabled]="obj.syskey!==''" maxlength="3" type="text" name="code" [(ngModel)]="obj.t1" class="form-control" id="code"> -->
+                                        <input maxlength="3" [disabled]="obj.t1!=='0'" type="text" name="code"
+                                            [(ngModel)]="obj.t1" class="form-control form-control-sm" id="code">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="name" class="col-sm-4 col-form-label col-form-label-sm">Name</label>
+                                    <div class="col-sm">
+                                        <input type="text" name="name" [(ngModel)]="obj.t2" class="form-control form-control-sm"
+                                            id="name">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col overflow-auto" style="padding-left: 0px;height: 450px;">
+                            <div class="card-header">Categories</div>
+                            <ion-list>
+                                <ion-item *ngFor="let obj of catlist; let i=index" lines="none" style="font-size: small;">
+                                    <ion-label>{{obj.t2}}</ion-label>
+                                    <ion-checkbox style="margin-right: 10px;" color="primary" [(ngModel)]="obj.selected"
+                                        slot="start">
+                                    </ion-checkbox>
+                                </ion-item>
+                            </ion-list>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</ion-content>

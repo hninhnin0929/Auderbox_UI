@@ -1,0 +1,415 @@
+
+
+<ion-content>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="mstyleDropDown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-globe" aria-hidden="true"></i> Map
+          </a>
+          <div class="dropdown-menu" aria-labelledby="mstyleDropDown">
+            <form class="px-4 py-2" style="width: 300px;">
+              <div class="form-check">
+                <input class="form-check-input" name="isshopname" type="checkbox" [(ngModel)]="menuBar.mapType.grid"
+                  id="grid" (change)="grid()">
+                <label class="form-check-label-sm ml-1" for="grid">
+                  Grid
+                </label>
+              </div>
+              <div class="dropdown-divider"></div>
+              <div>
+                <mat-radio-group name="regionGroup" class="stl_radio_group" [(ngModel)]="menuBar.mapType.regionVal"
+                  (change)="regionChange()">
+                  <mat-radio-button *ngFor="let rg of menuBar.mapType.region; let i = index" name="i"
+                    [value]="rg.value">
+                    {{rg.desc}}</mat-radio-button>
+                </mat-radio-group>
+                <a class="url text-primary text-mute dropdown-item" (click)="addRegion()">Search</a>
+              </div>
+            </form>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="settingDropDown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-map-marker" aria-hidden="true"></i> Marker
+          </a>
+          <div class="dropdown-menu" aria-labelledby="settingDropDown">
+            <form class="px-4 py-2" style="width: 250px;">
+              <div class="form-check">
+                <mat-radio-group name="mkr_group" class="stl_radio_group" [(ngModel)]="menuBar.marker.type">
+                  <mat-radio-button name="latlng" [value]="type.value" *ngFor="let type of menuBar.marker.list">
+                    {{type.desc}}</mat-radio-button>
+                </mat-radio-group>
+                <ul class="list-unstyled ml-4" *ngIf="menuBar.marker.type == '2'" style="width: 50px;">
+                  <li>
+                    <mat-select name="selectType" [(ngModel)]="currentPosition.pluscode.codeLength"
+                      (selectionChange)="removeAll()">
+                      <mat-option *ngFor="let type of menuBar.marker.pluscodeType" [value]="type.definedLen">
+                        {{type.definedLen}}</mat-option>
+                    </mat-select>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                </ul>
+              </div>
+            </form>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="removeAll()">
+            <i class="fa fa-undo" aria-hidden="true"></i> Restore
+          </a>
+        </li>
+        <li class="nav-item" style="width: 200px; margin-top: -5px;" *ngIf="!progressbar.response">
+          <a class="nav-link">
+            <div class="mx-auto w-100">
+              <small class="text-muted" style="width: 300px;">Loading region .. {{progressbar.progressHund}}%
+              </small>
+              <mat-progress-bar mode="determinate" [value]="progressbar.progressHund"></mat-progress-bar>
+            </div>
+          </a>
+        </li>
+      </ul>
+
+    </div>
+
+    
+    <!-- <form class="form-inline ml-10px"> -->
+    <div class="form-inline ml-10px">
+      <div class="spinner-border text-primary" role="status" id="spinner-advsearch" 
+        *ngIf="searchLoadingFlat" style="margin-right: 10px;">
+          <span class="sr-only"></span>
+      </div>
+
+      <!-- <mat-form-field appearance="outline" class="w-100"> -->
+        <!-- <div class="form-group" *ngIf="menuBar.mapType.regionVal == '' || menuBar.mapType.regionVal == '0'">
+          <input type="text" id="shopL" name="shopL" class="form-control form-control-sm" matInput 
+            [(ngModel)]="criteria.shopName" [formControl]="shopSearch" [matAutocomplete]="auto1"
+            (keypress)="searchAutoComShop($event)">
+
+          <mat-autocomplete #auto1="matAutocomplete">
+            <mat-option *ngFor="let shops of shopList" [value]="shops.shopName" style="font-size: small;">
+              {{shops.shopName}}
+            </mat-option>
+          </mat-autocomplete>
+        </div> -->
+
+        <div class="form-group" *ngIf="menuBar.mapType.regionVal == '' || menuBar.mapType.regionVal == '0'">
+          <input type="text" id="shopL" name="shopL" class="form-control form-control-sm"  
+            [(ngModel)]="criteria.shopName" (keypress)="searchAutoComShop($event)">
+        </div>
+
+        <div class="form-group" *ngIf="menuBar.mapType.regionVal == '1'">
+          <input type="text" id="stateL" name="stateL" class="form-control form-control-sm" 
+            [(ngModel)]="criteria.n20" [formControl]="stateSearch" [matAutocomplete]="auto2" 
+            (keypress)="searchAutoComState($event)">
+            <!-- matInput -->
+
+          <mat-autocomplete #auto2="matAutocomplete" (optionSelected)="onSelectionChange()">
+            <mat-option *ngFor="let states of stateList" [value]="states.syskey" style="font-size: small;">
+              {{states.t2}}
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+
+        <div class="form-group" *ngIf="menuBar.mapType.regionVal == '2'">
+          <input type="text" id="districtL" name="districtL" class="form-control form-control-sm" 
+            [(ngModel)]="criteria.n21" [formControl]="districtSearch" [matAutocomplete]="auto3"
+            (keypress)="searchAutoComDistrict($event)">
+            <!-- matInput -->
+
+          <mat-autocomplete #auto3="matAutocomplete" (optionSelected)="onSelectionChange()">
+            <mat-option *ngFor="let districts of districtList" [value]="districts.syskey" style="font-size: small;">
+              {{districts.t2}}
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+
+        <div class="form-group" *ngIf="menuBar.mapType.regionVal == '3'">
+          <input type="text" id="townshipL" name="townshipL" class="form-control form-control-sm" 
+            [(ngModel)]="criteria.n22" [formControl]="townshipSearch" [matAutocomplete]="auto4"
+            (keypress)="searchAutoComTownship($event)">
+            <!-- matInput -->
+
+          <mat-autocomplete #auto4="matAutocomplete" (optionSelected)="onSelectionChange()">
+            <mat-option *ngFor="let townships of townshipList" [value]="townships.syskey" style="font-size: small;">
+              {{townships.t2}}
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+
+        <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="globalSearch()">
+          <mat-icon>search</mat-icon>
+        </button>
+      <!-- </mat-form-field> -->
+    </div>
+    <!-- </form> -->
+    <!-- (click)="globalSearch(search.value)" -->
+
+    <!-- <form class="form-inline ml-10px">
+      <mat-form-field appearance="outline" class="w-100">
+        <input matInput #search placeholder="Search">
+        <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="globalSearch(search.value)">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+    </form> -->
+  </nav>
+
+  <div id="map" [hidden]="!progressbar.response" #mapContainer></div>
+  <div class="card float-right" style="width: 400px; height: 500px; display: none;" id="detail_col">
+    <div class="card-header bg-transparent border-bottom-0 d-flex justify-content-end">
+      <button type="button" class=" btn btn-sm ml-2 " (click)="max()">
+        <i class="fa fa-window-maximize" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn btn-sm ml-2 " (click)="min()">
+        <i class="fa fa-minus" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="card-body overflow-auto px-2 py-0" style="max-height:500px;" id="detailBody">
+      <mat-card class="mb-2">
+        <!-- <label>Operation type</label> -->
+        <!-- <mat-radio-group name="operationTypeRdgroup" [(ngModel)]="operation.value" class="ml-2 operation-radio-group"
+          (change)="operationChange()">
+          <mat-radio-button class="mr-2" *ngFor="let op of operation.list" name="opList" [value]="op.value">
+            {{op.desc}}
+          </mat-radio-button>
+        </mat-radio-group> -->
+        <div class="d-flex justify-content-start mt-2 mx-auto">
+          <div class="btn-group btn-group-sm mr-2" style="min-width: 150px;">
+            <button type="button" class="btn btn-primary btn-sm" (click)="nearchbySearchClick()">
+              Nearby Search
+              <span *ngIf="nearbySearchSpinner" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span>
+            </button>
+            <button type="button" class="btn  btn-primary  btn-sm dropdown-toggle dropdown-toggle-split"
+              id="nearbySearch" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+              data-reference="parent">
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <form class="dropdown-menu px-3" aria-labelledby="nearbySearch">
+              <mat-form-field appearance="outline" class=" mx-auto">
+                <mat-label>types</mat-label>
+                <mat-select name="selectPlacetype" #placeType [(ngModel)]="nearbySearchTypeSelected">
+                  <mat-option *ngFor="let ptype of nearbySearchTypes; let i=index" [value]="ptype">{{ptype}}
+                  </mat-option>
+                </mat-select>
+                <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="nearbySearchTypeSelected = []">
+                  <mat-icon>clear</mat-icon>
+                </button>
+              </mat-form-field>
+
+            </form>
+          </div>
+          <button class="btn btn-sm btn-primary" (click)="getShopWithinRegion()" style="min-width: 150px;">
+            <span *ngIf="!shopSearchSpinner">Shop In Region</span>
+            <span *ngIf="shopSearchSpinner" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <div class="d-flex justify-content-start mt-2 mx-auto">
+          <button class="btn btn-sm btn-success" (click)="print()" style="min-width: 150px;">
+            <span *ngIf="!exportSpinner">Export</span>
+            <span *ngIf="exportSpinner" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span>
+          </button>
+        </div>
+
+      </mat-card>
+      <mat-accordion class="example-headers-align">
+        <mat-expansion-panel #exmimu>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Detail
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="card border-0 px-3" style="width: 100%;">
+            <div class="row " *ngIf="currentPosition.region !== undefined ">
+              <dt class="col-sm-4 font-weight-normal text-primary">State</dt>
+              <dd class="col-sm">
+                <ul>
+                  <li>{{currentPosition.region.properties.ST}}</li>
+                  <li>{{currentPosition.region.properties.ST_PCODE}}</li>
+                </ul>
+              </dd>
+            </div>
+
+            <div class="row " *ngIf="currentPosition.region !== undefined  ">
+              <dt class="col-sm-4 font-weight-normal text-primary">District</dt>
+              <dd class="col-sm">
+                <ul>
+                  <li>{{currentPosition.region.properties.DT}}</li>
+                  <li>{{currentPosition.region.properties.DT_PCODE}}</li>
+
+                </ul>
+              </dd>
+
+            </div>
+
+
+            <div class="row " *ngIf="currentPosition.region !== undefined  ">
+              <dt class="col-sm-4 font-weight-normal text-primary">Township</dt>
+              <dd class="col-sm">
+                <ul>
+                  <li>{{currentPosition.region.properties.TS}}</li>
+                  <li>{{currentPosition.region.properties.TS_PCODE}}</li>
+                  <li>{{currentPosition.region.properties.TS_MMR4}}</li>
+                </ul>
+              </dd>
+            </div>
+
+          </div>
+          <div class="card border-0 px-3" style="width: 100%;">
+            <div class="row ">
+              <dt class="col-sm-4 font-weight-normal text-primary">Lat Lng</dt>
+              <dd class="col-sm">
+                <ul>
+                  <li>{{currentPosition.latLng.lat}}</li>
+                  <li>{{currentPosition.latLng.lng}}</li>
+                </ul>
+              </dd>
+            </div>
+            <div class="row ">
+              <dt class="col-sm-4 font-weight-normal text-primary">Pluscode</dt>
+              <dd class="col-sm">
+                <ul>
+                  <li>{{currentPosition.pluscode.code}}</li>
+
+                </ul>
+              </dd>
+            </div>
+          </div>
+
+        </mat-expansion-panel>
+        <mat-expansion-panel #exdetail *ngIf="operation.nearBy">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Search<span class="badge badge-primary ml-2">{{nearbySearchList.length}}</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="card border-0 mb-2 card-detail" *ngFor="let d of nearbySearchList; let i=index"
+            (click)="showSearchDetail(i)">
+            <!-- <ul class="list-unstyled" *ngIf="d.shop !== undefined">
+              <li>
+                <h5 class="text-info">{{d.shop.shopName}} {{d.shop.t5 !== '' ? '('+d.shop.t5+')' : ''}}</h5>
+              </li>
+              <li>
+                <small>{{d.shop.personName}}</small>
+              </li>
+              <li>
+                <small>{{d.shop.phno}}</small>
+              </li>
+
+              <li>
+                <small>{{d.shop.locationData.lat}},{{d.shop.locationData.lon}}</small>
+              </li>
+              <li>
+                <small>{{d.shop.locationData.t1}}</small>
+              </li>
+              <li>
+                <small>{{d.shop.locationData.t2}}</small>
+              </li>
+              <li>
+                <small>{{d.shop.address}}</small>
+              </li>
+            </ul> -->
+            <ul class="list-unstyled">
+              <li *ngIf="d.name !== undefined">
+                <h5 [class]="d.syskey == '' ?  'text-dark': 'text-primary' ">{{d.name}}</h5>
+              </li>
+              <li *ngIf="d.plus_code !== undefined">
+                <small>{{d.plus_code.compound_code}}</small>
+              </li>
+              <li *ngIf="d.plus_code !== undefined">
+                <small>{{d.plus_code.global_code}}</small>
+              <li *ngIf="d.vicinity !== undefined">
+                <small>{{d.vicinity}}</small>
+              </li>
+              <li *ngIf="d.formatted_address !== undefined">
+                <small>{{d.formatted_address}}</small>
+              </li>
+            </ul>
+            <mat-divider></mat-divider>
+          </div>
+
+        </mat-expansion-panel>
+        <mat-expansion-panel (opened)="neighbourhoodDetailOpenEvent()" *ngIf="operation.value == '1'" #exnbh>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Neighbourhood
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <mat-tab-group (selectedTabChange)="neighbourhoodTabChange($event)">
+            <mat-tab label="Pluscode" #pluscodeTab>
+              <mat-form-field appearance="outline" class="w-100 mt-3">
+                <mat-label>PlusCode</mat-label>
+                <input matInput #CoePlusCode [(ngModel)]="currentPosition.pluscode.code" disabled>
+                <button mat-button matSuffix mat-icon-button aria-label="Clear"
+                  (click)="getNeighbourhoodTypeByAreaClick()" *ngIf="currentPosition.pluscode.code !== ''">
+                  <mat-icon>search</mat-icon>
+                </button>
+              </mat-form-field>
+              <div class="dropdown-divider"></div>
+              <ul class="list-unstyled" *ngIf="neighbourhood.typeList.length !== 0">
+                <li *ngFor="let n of neighbourhood.typeList; let i=index">
+                  <mat-checkbox class="example-margin" [(ngModel)]="n.check">{{n.t1}}</mat-checkbox>
+                </li>
+                <li>
+                  <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary btn-sm" (click)="saveCoefficientClick()">Save</button>
+                  </div>
+                </li>
+              </ul>
+            </mat-tab>
+            <mat-tab label="Types">
+              <div class="px-4 py-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Select types</mat-label>
+                  <mat-select multiple name="selectType" #selectedNbhTypeList>
+                    <mat-option *ngFor="let n of neighbourhood.typeList; let i=index" [value]="n.syskey">{{n.t1}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <div class="d-flex justify-content-end">
+                  <button mat-button mat-icon-button aria-label="Clear"
+                    (click)="selectedNbhTypeList.value = [];removeAll()">
+                    <mat-icon>clear</mat-icon>
+                  </button>
+                  <button mat-button mat-icon-button aria-label="Clear"
+                    (click)="getCoefficientPlacesByType(selectedNbhTypeList.value)">
+                    <mat-icon>search</mat-icon>
+                  </button>
+                  <button mat-button mat-icon-button aria-label="Clear"
+                    (click)="deleteNeighbourhoodType(selectedNbhTypeList.value)">
+                    <mat-icon>delete_outline</mat-icon>
+                  </button>
+                </div>
+                <div class="dropdown-divider"></div>
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>New Type</mat-label>
+                  <input matInput #newtype>
+                  <button [disabled]="newtype.value == '' " mat-button matSuffix mat-icon-button aria-label="Clear"
+                    (click)="saveNeighbourhoodType(newtype.value,newtype)">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                </mat-form-field>
+
+              </div>
+            </mat-tab>
+
+          </mat-tab-group>
+
+        </mat-expansion-panel>
+
+      </mat-accordion>
+
+    </div>
+  </div>
+</ion-content>

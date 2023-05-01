@@ -1,0 +1,761 @@
+<ion-content [scrollEvents]="true">
+  <div>
+    <div class="d-flex justify-content-start sticky-top optionNavBar">
+      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="shop-list-survey-tab" data-toggle="tab" href="#shop-list-survey" role="tab"
+            aria-controls="list" aria-selected="true" (click)="listTab()">List</a>
+        </li>
+        <!-- <li class="nav-item" *ngIf="detailview">
+          <a class="nav-link" id="region-view-survey-tab" data-toggle="tab" href="#region-view-survey" role="tab"
+            aria-controls="list" aria-selected="true" (click)="detailTab()">Detail</a>
+        </li> -->
+        <li class="nav-item">
+          <a class="nav-link " id="shop-new-survey-tab" data-toggle="tab" href="#shop-new-survey" role="tab"
+            aria-controls="list" aria-selected="true" (click)="newTab()">New</a>
+        </li>
+      </ul>
+      <button *ngIf="btn" type="button" class="btn btn-primary header-btn" (click)="saveSurveyorRoute()">
+        <!-- svrHdrData.n1 => header status -->
+        {{detailFlat ? 'Update': 'Save'}}
+      </button>
+      <button *ngIf="btn" type="button" class="btn btn-primary header-btn"
+        (click)="updateRegionShop()" [disabled]="saveData.syskey == ''">
+          Update Region Shop
+      </button>
+      <button *ngIf="btn" type="button" class="btn btn-primary header-btn btndelete"
+        (click)="gotoDelete()" [disabled]="saveData.syskey == ''">
+          Delete
+      </button>
+    </div>
+
+    <div class="tab-content" id="nav-tabContent">
+      <!-- List tab -->
+      <div class="tab-pane fade" id="shop-list-survey" role="tabpanel" aria-labelledby="shop-list-survey-tab"
+        aria-controls="list">
+
+        <div class="card sticky-top" style="margin-bottom: 8px; width: 100%;">
+          <div class="card-header bg-transparent" style="width: 100%;">
+            {{spinner? 'Loading order list':'Advance'}}
+            <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+              [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true">
+            </i>
+            <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+          <div class="card-body" *ngIf="searchtab" id="svrRoute-advance-card">
+            <div class="row">
+              <div class="col col-sm-3">
+
+                <div class="form-group row">
+                  <label for="fDate" class="col-sm-4 col-form-label col-form-label-sm">From Date</label>
+                  <div class="col-sm">
+                    <div class="input-group input-group-sm">
+                      <input required [(ngModel)]="criteria.fromDate" class="form-control" matInput
+                        [matDatepicker]="pickers3" placeholder="Select Date" name="fDate" id="fDate"
+                        (dblclick)="dblClickFunc3()" (dateChange)="dateChange3($event)" readonly>
+                      <div class="input-group-append">
+                        <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers3.open()"></i>
+                        <mat-datepicker #pickers3 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                        </mat-datepicker>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+              <div class="col col-sm-3">
+
+                <div class="form-group row">
+                  <label for="tDate" class="col-sm-4 col-form-label col-form-label-sm">To Date</label>
+                  <div class="col-sm">
+                    <div class="input-group input-group-sm">
+                      <input required [(ngModel)]="criteria.toDate" class="form-control" matInput
+                        [matDatepicker]="pickers4" placeholder="Select Date" name="tDate" id="tDate"
+                        (dblclick)="dblClickFunc4()" (dateChange)="dateChange4($event)" readonly>
+                      <div class="input-group-append">
+                        <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers4.open()"></i>
+                        <mat-datepicker #pickers4 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                        </mat-datepicker>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="col col-sm-5">
+
+                <div class="form-group row">
+                  <label for="routeName1" class="col-sm-3 col-form-label col-form-label-sm">Route Name</label>
+                  <div class="col-sm">
+                    <input type="text" id="routeName1" name="routeName1" class="form-control form-control-sm" matInput
+                      [(ngModel)]="criteria.routeName" (keyup.enter)="allList()" [formControl]="routeNameSearch" [matAutocomplete]="auto1">
+                    <mat-autocomplete #auto1="matAutocomplete">
+                      <mat-option *ngFor="let routeName of routeNameList" [value]="routeName.t4" style="font-size: small;">
+                        {{routeName.t4}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="d-flex justify-content-start">
+                  <div class="btn-group" role="group" style="height: 35px;">
+                    <button (click)="search(0, true)" type="button" class="btn btn-primary" [disabled]="spinner">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                    <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                      <i class="fa fa-refresh" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <!-- <div class="d-flex justify-content-start">
+                    <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                      <button (click)="print()" type="button" class="btn btn-primary">
+                        Export
+                      </button>
+                    </div>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- region_list -->
+        <pagination-controls [id]="config.id" (pageChange)="pageChanged($event)">
+        </pagination-controls>
+        <table class="table table-hover mt-2 regiontable" style="font-size: 13px;">
+          <thead class="thead-dark">
+            <tr>
+              <th>#</th>
+              <th>Region Name</th>
+              <th>Region Code</th>
+              <th>From Date</th>
+              <th>To Date</th>
+              <!-- <th>Action</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr (click)="detail(r)" 
+              *ngFor="let r of region_list | paginate: config;let i = index">
+              <td nowrap>
+                {{i+1}}
+              </td>
+              <td nowrap>
+                {{r.t4}}
+              </td>
+              <td nowrap>
+                {{r.regioncode}}
+              </td>
+              <td nowrap>
+                {{r.fromdate}}
+              </td>
+              <td nowrap>
+                {{r.todate}}
+              </td>
+              <!-- <td nowrap>
+                <div class="btn-group" role="group">
+                  <button (click)="viewRegion(r)" type="button" class="btn btn-primary">View</button>
+                  <button (click)="updateRegion(r)" type="button" class="btn btn-primary">Edit</button>
+                </div>
+              </td> -->
+            </tr>
+          </tbody>
+          <tbody>
+            <tr *ngIf="region_list.length == 0">
+                <th scope="row" colspan="20" class="text-muted">No record</th>
+
+            </tr>
+        </tbody>
+        </table>
+      </div>
+
+
+      <!-- don't need anymore[FROM HERE] -->
+      <!-- Region View -->
+      <!-- <div class="tab-pane fade" id="region-view-survey" role="tabpanel" aria-labelledby="region-view-survey-tab"
+        aria-controls="list">
+        <div class="card mb-2">
+          <div class="card-body">
+
+            <!-- edit region  ->
+            <!-- <a class="editregionview" (click)="updateRegion(regionview)">Edit Region</a> ->
+            <button mat-button class="editregionview" color="primary" (click)="updateRegion(regionview)">Edit
+              Region</button>
+            <ion-row>
+              <ion-col>
+                <ion-row>
+                  <ion-label color="primary">Region Detail </ion-label>
+                </ion-row>
+
+                <ion-row style="margin-top: 10px;">
+                  <ion-col>Region Name</ion-col>
+                  <ion-col class="region-label">{{regionview.t4}}</ion-col>
+                </ion-row>
+
+                <ion-row>
+                  <ion-col>From Date</ion-col>
+                  <ion-col class="region-label">{{manager.dateFormatCorrector(4,regionview.fromdate)}}</ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>To Date</ion-col>
+                  <ion-col class="region-label">{{manager.dateFormatCorrector(4,regionview.todate)}}</ion-col>
+                </ion-row>
+              </ion-col>
+              <ion-col>
+                <ion-label color="primary">Type of assignment </ion-label>
+
+                <section class="example-section type-section " style="overflow: auto;">
+
+                  <div class="example-margin check-container">
+                    <span [ngClass]="regionview.n8 == 1 ? 'checkmark' : 'checkmarknone'"></span>
+                    <ion-label>New Store</ion-label>
+                  </div>
+
+                  <div class="example-margin check-container">
+                    <span [ngClass]="regionview.n6 == 1 ? 'checkmark' : 'checkmarknone'"></span>
+                    <ion-label> Existing
+                      Store</ion-label>
+                  </div>
+
+                  <div class="example-margin check-container">
+                    <span [ngClass]="regionview.n7 == 1 ? 'checkmark' : 'checkmarknone'"></span>
+                    <ion-label>Flag
+                      Store</ion-label>
+                  </div>
+                </section>
+              </ion-col>
+            </ion-row>
+
+          </div>
+        </div>
+        <ul class="list-group">
+          <li (click)="openDialog(reg,regionview.assignedsurvey)" *ngFor="let reg of regionview.assignedsurveyor"
+            class="list-group-item d-flex justify-content-between align-items-center font-weight-bold  ion-activatable ripple-parent">
+            <div class="region-label">
+              <span> {{manager.dateFormatCorrector(4,reg.date)}}</span>
+              <span *ngIf="reg.status == 1" class="inprogress">inprogress</span>
+              <span *ngIf="reg.status == 2" class="complete">complete</span>
+              <span *ngIf="reg.status == 0" class="notstarted">not started</span></div>
+            <mat-icon>navigate_next</mat-icon>
+            <ion-ripple-effect></ion-ripple-effect>
+          </li>
+        </ul>
+      </div> -->
+      <!-- don't need anymore[TO HERE] -->
+
+
+      <!-- New and Update View -->
+      <div class="tab-pane fade" id="shop-new-survey" role="tabpanel" aria-labelledby="shop-new-survey-tab"
+        aria-controls="new">
+        <div class="container">
+          <div class="card-group">
+            <div class="card">
+              <div class="card-header  text-primary" style="display: flex;justify-content: space-between;">
+                MIMU Region Assignment
+                <div *ngIf="detailFlat">
+                  <span>Region Name - </span>
+                  <span style="color: black;">{{saveData.t4}}</span>
+                </div>
+              </div>
+              <div class="card-body px-4 ">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group row">
+                      <label for="code" class="col-sm-4 col-form-label">Code</label>
+                      <div class="col-sm">
+                        <input type="text" name="code" class="form-control form-control-sm" 
+                          id="code" [(ngModel)]="saveData.t3" [disabled]="true">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group row">
+                      <label for="routeName" class="col-sm-4 col-form-label">Route Name</label>
+                      <div class="col-sm">
+                        <input type="text" id="routeName" [(ngModel)]="saveData.t4" 
+                          name="routeName" class="form-control form-control-sm">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group row">
+                      <label for="fd" class="col-sm-4 col-form-label">From Date</label>
+                      <div class="col-sm">
+                        <div class="input-group">
+                          <input  required class="form-control" [(ngModel)]="saveData.t1" [disabled]="detailFlat"
+                            [matDatepicker]="picker1" placeholder="Select Date" name="fd" id="fd"
+                            (dateChange)="dateChange1($event)" readonly (dblclick)="dblClickFunc1()">
+                          <mat-datepicker #picker1 displayFormat="DD/MM/YYYY" min="getTodayDate()"
+                            pickerFormat="DD/MM/YYYY">
+                          </mat-datepicker>
+                          <div class="input-group-append">
+                            <span class="input-group-text">
+                              <i class="fa fa-calendar" aria-hidden="true" (click)="picker1.open()"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group row">
+                      <label for="td" class="col-sm-4 col-form-label">To Date</label>
+                      <div class="col-sm">
+                        <div class="input-group">
+                          <input  required class="form-control" [(ngModel)]="saveData.t2"
+                            [matDatepicker]="picker2" placeholder="Select Date" name="td" id="td"
+                            (dateChange)="dateChange2($event)" readonly (dblclick)="dblClickFunc2()">
+                          <mat-datepicker #picker2 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                          </mat-datepicker>
+                          <div class="input-group-append">
+                            <span class="input-group-text">
+                              <i class="fa fa-calendar" aria-hidden="true" (click)="picker2.open()"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group row">
+                      <label for="state" class="col-sm-4 col-form-label">State</label>
+                      <div class="col-sm">
+                        <select (change)="stateChange()" [(ngModel)]="surveyrouting.state" class="selectBox"
+                          name="state" id="state">
+                            <option value="" selected>-</option>
+                            <option [value]="s.syskey" *ngFor="let s of statelist">
+                              {{s.t2}}
+                            </option>
+                        </select>
+                        <!-- <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+                          *ngIf="state"></span> -->
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group row">
+                      <label for="district" class="col-sm-4 col-form-label">District</label>
+                      <div class="col-sm">
+                        <select (change)="disChange()" [(ngModel)]="surveyrouting.district" class="selectBox"
+                          name="district" id="district" [disabled]="dis">
+                          <option value="" selected>-</option>
+                          <option [value]="d.syskey" *ngFor="let d of district_list">
+                            {{d.t2}}
+                          </option>
+                        </select>
+                        <!-- <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" *ngIf="dis"></span> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group row">
+                      <label for="tship" class="col-sm-4 col-form-label">Township</label>
+                      <div class="col-sm">
+                        <select (change)="tspChange()" [(ngModel)]="surveyrouting.township" class="selectBox"
+                          name="tship" id="tship" [disabled]="township">
+                            <option value="" selected>-</option>
+                            <option [value]="t.syskey" *ngFor="let t of tsp_list">
+                              {{t.t2}}
+                            </option>
+                        </select>
+                        <!-- <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+                          *ngIf="township"></span> -->
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6" [hidden]="true"><!-- temporary hidden -->
+                    <div class="form-group row">
+                      <label for="townOrVlgtrc" class="col-sm-4 col-form-label ">Town/VillageTract</label>
+                      <div class="col-sm">
+                        <select [(ngModel)]="townvillage" class="selectBox" (change)="selectTownOrVillagetract()"
+                          name="townOrVlgtrc" id="townOrVlgtrc">
+                          <option value="0" selected>-</option>
+                          <option value="1">Town</option>
+                          <option value="2">VillageTract</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" [hidden]="true"><!-- temporary hidden -->
+                  <div class="col-sm-6">
+                    <div class="form-group row">
+                      <label for="townVillageTract"
+                        class="col-sm-4 col-form-label ">{{townvillage == '1' ? 'Town':'VillageTract'}}</label>
+                      <div class="col-sm">
+                        <select (change)="townVillagetractChange()" class="selectBox" 
+                          name="townVillageTract" id="townVillageTract" 
+                          [(ngModel)]="surveyrouting.townorvillagetract" 
+                          [disabled]="town_village">
+                            <option value="" selected>-</option>
+                            <option [value]="t.syskey" *ngFor="let t of town_village_list">
+                              {{t.t2}}
+                            </option>
+                        </select>
+                        <!-- <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+                          *ngIf="town_village"></span> -->
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group row">
+                      <label for="villagewards"
+                        class="col-sm-4 col-form-label">{{townvillage == '1' ? 'Ward': 'Village'}}</label>
+                      <div class="col-sm">
+                        <select class="selectBox" [(ngModel)]="surveyrouting.ward"
+                          name="villagewards" id="villagewards" [disabled]="ward">
+                          <option value="" selected>-</option>
+                          <option [value]="w.syskey" *ngFor="let w of wardlist">
+                            {{w.t2}}
+                          </option>
+                        </select>
+                        <!-- <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" *ngIf="ward"></span> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-group">
+            <div class="card">
+              <div class="card-header card-header-with-toolbar  text-primary">
+                <ion-toolbar style="--background: transparent;">
+                  <ion-label color='primary'>Active Surveyors</ion-label>
+
+                  <ion-chip slot="end" (click)="showaddUserModalForm()"><!-- *ngIf="detailFlat" -->
+                    <ion-icon name="add"></ion-icon>
+                    <ion-label>Add User</ion-label>
+                  </ion-chip>
+                  
+                  <!-- <button slot="end" [disabled]="detailFlat && disNewUser"
+                    (click)="showaddUserModalForm()">
+                      <ion-chip>
+                        <ion-icon name="add"></ion-icon>
+                        <ion-label>Add User</ion-label>
+                      </ion-chip>
+                  </button> -->
+
+                </ion-toolbar>
+                <ion-toolbar style="--background: transparent;padding: 0 10px 0 10px;">
+                  <div class="input-group mb-3">
+                    <!-- simple input -->
+                    <input *ngIf="filterkey !== 3 && filterkey !== 2" class="form-control" [(ngModel)]="searchsurveyor"
+                      (ngModelChange)="searchSurveyor()" placeholder="Search" aria-label="Search"
+                      style="margin-left: 5px;">
+                    <!-- date picker -->
+                    <div *ngIf="filterkey == 2" class="input-group">
+                      <input required class="form-control" [(ngModel)]="searchsurveyor" (dateChange)="searchSurveyor()"
+                        [matDatepicker]="fpicker" placeholder="Select Date" name="td" id="td" readonly
+                        (click)="fpicker.open()">
+                      <mat-datepicker #fpicker displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                      <!-- dropdown -->
+                      <div class="input-group-append">
+                        <span class="input-group-text">
+                          <i class="fa fa-calendar" aria-hidden="true" (click)="fpicker.open()"></i>
+                        </span>
+                      </div>
+
+                      <div class="input-group-append">
+                        <span class="input-group-text">
+                          <div>
+                            <button mat-icon-button class="filtermenuIconbtn" [matMenuTriggerFor]="beforeMenu"
+                              aria-label="Example icon-button with a menu">
+                              <mat-icon>filter_alt</mat-icon>
+                            </button>
+                            <mat-menu #beforeMenu="matMenu" xPosition="before">
+                              <button mat-menu-item (click)="filterkey = 0; searchsurveyor =''; searchSurveyor();">
+                                <span>Surveyor Name</span>
+                                <mat-icon *ngIf="filterkey == 0">done</mat-icon>
+                              </button>
+                              <button mat-menu-item (click)="filterkey = 1; searchsurveyor =''; searchSurveyor();">
+                                <span>Surveyor ID</span>
+                                <mat-icon *ngIf="filterkey == 1">done</mat-icon>
+                              </button>
+                              <button mat-menu-item (click)="filterkey = 2; searchsurveyor =''; searchSurveyor();">
+                                <span>Date</span>
+                                <mat-icon *ngIf="filterkey == 2">done</mat-icon>
+                              </button>
+                              <button mat-menu-item (click)="filterkey = 3; searchsurveyor = 0; searchSurveyor();">
+                                <span>Status</span>
+                                <mat-icon *ngIf="filterkey == 3">done</mat-icon>
+                              </button>
+                            </mat-menu>
+                          </div>
+                        </span>
+                      </div>
+                    </div>
+                    <select (change)="searchSurveyor()" [(ngModel)]="filterstatuskey" *ngIf="filterkey == 3"
+                      class="custom-select" id="inputGroupSelect01">
+                      <option value="0">all</option>
+                      <option value="1">complete</option>
+                      <option value="2">inprogress</option>
+                      <option value="3">not started</option>
+                    </select>
+
+                    <div class="input-group-append" *ngIf="filterkey !== 2">
+                      <span class="input-group-text">
+                        <div>
+                          <button mat-icon-button class="filtermenuIconbtn" [matMenuTriggerFor]="beforeMenu"
+                            aria-label="Example icon-button with a menu">
+                            <mat-icon>filter_alt</mat-icon>
+                          </button>
+                          <mat-menu #beforeMenu="matMenu" xPosition="before">
+                            <button mat-menu-item (click)="filterkey = 0;searchsurveyor = '';searchSurveyor();">
+                              <span>Surveyor Name</span>
+                              <mat-icon *ngIf="filterkey == 0">done</mat-icon>
+                            </button>
+                            <button mat-menu-item (click)="filterkey = 1;searchsurveyor = '';searchSurveyor();">
+                              <span>Surveyor ID</span>
+                              <mat-icon *ngIf="filterkey == 1">done</mat-icon>
+                            </button>
+                            <button mat-menu-item (click)="filterkey = 2;searchsurveyor = '';searchSurveyor();"
+                              *ngIf="detailFlat">
+                              <span>Date</span>
+                              <mat-icon *ngIf="filterkey == 2">done</mat-icon>
+                            </button>
+                            <button mat-menu-item (click)="filterkey = 3;filterstatuskey = 0;searchSurveyor();"
+                              *ngIf="detailFlat">
+                              <span>Status</span>
+                              <mat-icon *ngIf="filterkey == 3">done</mat-icon>
+                            </button>
+                          </mat-menu>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                </ion-toolbar>
+              </div>
+              <div class="table-responsive"
+                style="max-height: 670px !important; overflow-x: auto !important; white-space: nowrap;">
+                <!-- Surveyor New -->
+                <!-- <table *ngIf="!detailFlat" class="table table-hover  mt-2" style="font-size: 13px;">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th>Surveyor Name</th>
+                      <th>Surveyor ID</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let user of _users">
+                      <td nowrap>
+                        <ion-checkbox (ionChange)="userSelected(user)" [(ngModel)]="user.selected"></ion-checkbox>
+                        {{user.userName}}
+                      </td>
+                      <td>{{user.userId}}</td>
+                    </tr>
+                  </tbody>
+                </table> -->
+
+                <!-- Surveyor update --> <!-- and new(updated code) -->
+                <pagination-controls [id]="userConfig.id" (pageChange)="userPageChanged($event)"></pagination-controls>
+                <table class="table table-hover mt-2" style="font-size: 13px;"><!-- *ngIf="detailFlat" -->
+                  <thead class="thead-dark">
+                    <tr>
+                      <th>No</th>
+                      <th>Surveyor Name</th>
+                      <th>Surveyor ID</th>
+                      <th>Assigned Date</th>
+                      <th>Status</th>
+                      <th>Active Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let user of _assignedusers | paginate: userConfig; let i = index;">
+                      <!--  | paginate: userConfig -->
+                      <td nowrap>{{i+1}}</td>
+                      <td nowrap>{{user.username}}</td>
+                      <td>{{user.userid}}</td>
+                      <td>
+                        <span *ngIf="user.date != ''">{{user.date}}</span>
+                        <span *ngIf="user.date == ''">N/A</span>
+                      </td>
+                      <td>
+                        <span *ngIf="user.status == 1" class="inprogress">inprogress</span>
+                        <span *ngIf="user.status == 2" class="complete">complete</span>
+                        <span *ngIf="user.status == 0" class="notstarted">not started</span>
+                      </td>
+                      <td id="statusChangeEvent" style="width: 16% !important;">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                          <button type="button" class="btn btn-success btn-sm mr-1" [disabled]="user.activeStatus != '1'" 
+                            (click)="userActiveStatusChange(user)">
+                              Active
+                          </button>
+                          <button type="button" class="btn btn-danger btn-sm" (click)="userActiveStatusChange(user)"
+                            style="background-color: red; border-color: red;" [disabled]="user.activeStatus != '0'">
+                              Inactive
+                          </button>
+                        </div>
+                      </td>
+                      <td>
+                        <ion-icon (click)="removeUser(i, user)" name="trash" class="close"></ion-icon>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header card-header-with-toolbar  text-primary">
+                <ion-toolbar style="--background: transparent;">
+                  <ion-label color='primary'>Survey Assignment</ion-label>
+                </ion-toolbar>
+                <input class="form-control" (change)="searchSurvey($event)"
+                  placeholder="Search" aria-label="Search">
+              </div>
+              <div class="card-body">
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <ion-label color="primary">Select type of assignment </ion-label>
+                    <section class="example-section type-section " style="overflow: auto;">
+                      <mat-checkbox (change)="typeAssignCheckboxChange1()" color="primary" class="example-margin"
+                        [(ngModel)]="newmodel">
+                          New Store
+                      </mat-checkbox>
+                      <mat-checkbox (change)="typeAssignCheckboxChange2()" color="primary" class="example-margin"
+                        [(ngModel)]="existmodel">
+                          Existing Store
+                      </mat-checkbox>
+                      <mat-checkbox (change)="typeAssignCheckboxChange3()" color="primary" class="example-margin"
+                        [(ngModel)]="flagmodel">
+                          Flag Store
+                      </mat-checkbox>
+                    </section>
+                  </li>
+                </ul>
+                <ion-list class="overflow-auto"
+                  style="max-height: 600px !important; overflow-x: auto !important; white-space: nowrap;">
+                  <div class="card" *ngFor="let obj of surveyorheaderlist; let i=index" style="margin-bottom: 10px;">
+                    <div class="card-header">
+                      <ion-label color="primary">
+                        <mat-checkbox (change)="surveyCheckboxChange(obj)" [(ngModel)]="obj.selected"
+                          color="primary">
+                          <!-- [disabled]="obj.types.length == 0" -->
+                            {{obj.headerDescription}}
+                        </mat-checkbox>
+                      </ion-label>
+                    </div>
+                    <div class="card-body">
+                      <section class="example-section">
+                        <mat-checkbox (change)="surveyTypeCheckboxChange(obj)"
+                          *ngFor="let t of obj.types;let ti = index;" color="primary" class="example-margin"
+                          [(ngModel)]="t.selected">
+                            {{t.name}}
+                        </mat-checkbox>
+                      </section>
+                    </div>
+                  </div>
+                </ion-list>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP when click "ADD USER" [FROM HERE] -->
+  <div class="modal fade" id="userModalList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">User List</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body surveyortable"
+          style="max-height: 400px !important; overflow-x: auto !important; white-space: nowrap;">
+          <div class="d-flex justify-content-center" *ngIf="isLoading">
+            <div class=" spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"
+              id="spinner-advsearch">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+          <table *ngIf="!isLoading" class="table table-hover mt-2" style="font-size: 13px;">
+            <thead class="thead-dark">
+              <tr>
+                <th>Surveyor Name</th>
+                <th>Surveyor ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of _users">
+                <td nowrap>
+                  <ion-checkbox [(ngModel)]="user.selected"></ion-checkbox>
+                  {{user.userName}}
+                </td>
+                <td>{{user.userId}}</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+        <div class="modal-footer">
+          <button (click)="addUser()" type="button" class="btn btn-primary"> Add User</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- POPUP when click "ADD USER" [TO HERE] -->
+
+  <!-- When click VIEW BUTTON, NOW DELETED [FROM HERE] -->
+  <!-- <div class="modal fade" id="moreInfoRegion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Region Detail</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="max-height: 400px !important; overflow-x: auto !important; white-space: nowrap;">
+          <ul class="list-group">
+            <li class="list-group-item">
+              <span class="font-weight-bold">Routing Name</span>
+              <span>-</span>
+              {{_regionmoreinfo.t4}}
+            </li>
+            <li class="list-group-item">
+              <span class="font-weight-bold">Routing Code</span>
+              <span>-</span>
+              {{_regionmoreinfo.t3}}
+            </li>
+            <li class="list-group-item">
+              <span class="font-weight-bold">Region Code</span>
+              <span>-</span>
+              {{_regionmoreinfo.regioncode}}
+            </li>
+            <li class="list-group-item" *ngIf="_regionmoreinfo.fromdate">
+              <span class="font-weight-bold">From Date</span>
+              <span>-</span>
+              {{ manager.dateFormatCorrector(4,_regionmoreinfo.fromdate) }}
+            </li>
+            <li class="list-group-item" *ngIf="_regionmoreinfo.todate">
+              <span class="font-weight-bold">To Date</span>
+              <span>-</span>
+              {{manager.dateFormatCorrector(4,_regionmoreinfo.todate)}}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <!-- When click VIEW BUTTON, NOW DELETED [TO HERE] -->
+</ion-content>

@@ -1,0 +1,1454 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="d-flex justify-content-start sticky-top optionNavBar">
+      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="volDisList-tab" data-toggle="pill" href="#volDisList" role="tab"
+            aria-controls="volDisList" (click)="volDisListTab();" aria-selected="true">List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="volDisNew-tab" data-toggle="pill" href="#volDisNew" role="tab"
+            aria-controls="volDisNew" (click)="volDisNewTab();" aria-selected="false">New</a>
+        </li>
+      </ul>
+      <button type="button" class="btn btn-primary header-btn" *ngIf="btn" (click)="save()">
+        Save
+      </button>
+      <!-- <button type="button" class="btn btn-primary header-btn" *ngIf="btn" [disabled]="saveData.syskey == ''" 
+        (click)="goDelete()">
+          Delete
+      </button> -->
+    </div>
+    <div class="row" id="volDisList" style="margin-left: 2px; margin-right: 2px;">
+      <div class="card sticky-top" style="margin-bottom: 8px; width: 100%;">
+        <div class="card-header bg-transparent border-bottom-0" style="width: 100%;">
+          {{spinner? 'Loading order list':'Advance'}}
+          <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+            [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true">
+          </i>
+          <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+            <span class="sr-only"></span>
+          </div>
+        </div>
+        <div class="card-body" *ngIf="searchtab" id="advance-card">
+          <div class="row">
+            <div class="col">
+              <div class="form-group row">
+                <label for="fDate" class="col-sm-5 col-form-label col-form-label-sm">From Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input required [(ngModel)]="criteria.fromDate" class="form-control" matInput
+                      [matDatepicker]="pickers1" placeholder="Select Date" name="fDate" id="fDate"
+                      (dblclick)="dblClickFunc1()" (dateChange)="dateChange1($event)" readonly>
+                    <div class="input-group-append">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers1.open()"></i>
+                      <mat-datepicker #pickers1 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="startDate" class="col-sm-5 col-form-label col-form-label-sm">Start Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input required [(ngModel)]="criteria.startDate" class="form-control" matInput
+                      [matDatepicker]="pickers5" placeholder="Select Date" name="startDate" id="startDate"
+                      (dblclick)="dblClickFunc5()" (dateChange)="dateChange5($event)" readonly>
+                    <div class="input-group-append">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers5.open()"></i>
+                      <mat-datepicker #pickers5 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-vdCode" class="col-sm-5 col-form-label col-form-label-sm">Code</label>
+                <div class="col-sm">
+                  <input type="text" id="cri-vdCode" name="cri-vdCode" class="form-control form-control-sm" 
+                    matInput [(ngModel)]="criteria.code" [formControl]="vdCodeSearch" [matAutocomplete]="auto1">
+                  <mat-autocomplete #auto1="matAutocomplete">
+                    <mat-option *ngFor="let vdCode of vdCodeList" [value]="vdCode.t1" style="font-size: small;">
+                      {{vdCode.t1}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-disType" class="col-sm-5 col-form-label col-form-label-sm">Discount Type</label>
+                <div class="col-sm">
+                  <select class="custom-select custom-select-sm" [(ngModel)]="criteria.disType" 
+                    id="cri-disType" (change)="criChange('1', 'cri-disType')">
+                      <option value="" selected>-</option>
+                      <option [value]="1">Price</option>
+                      <option [value]="2">Inkind</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-disItem" class="col-sm-5 col-form-label col-form-label-sm">Discount Item</label>
+                <div class="col-sm">
+                  <input type="text" id="cri-disItem" name="cri-disItem" [(ngModel)]="criteria.disItem" 
+                    class="form-control form-control-sm" matInput [matAutocomplete]="auto2" 
+                    [formControl]="disItemSearch" (change)="criChange('1', 'cri-disItem')">
+                    <!-- [disabled]="criteria.disType != '2'"  -->
+                  <mat-autocomplete #auto2="matAutocomplete">
+                    <mat-option *ngFor="let disItem of disItemList" [value]="disItem.t2" style="font-size: small;">
+                      {{disItem.t2}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label for="tDate" class="col-sm-5 col-form-label col-form-label-sm">To Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input required [(ngModel)]="criteria.toDate" class="form-control" matInput
+                      [matDatepicker]="pickers2" placeholder="Select Date" name="tDate" id="tDate"
+                      (dblclick)="dblClickFunc2()" (dateChange)="dateChange2($event)" readonly>
+                    <div class="input-group-append">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers2.open()"></i>
+                      <mat-datepicker #pickers2 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="endDate" class="col-sm-5 col-form-label col-form-label-sm">End Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input required [(ngModel)]="criteria.endDate" class="form-control" matInput
+                      [matDatepicker]="pickers6" placeholder="Select Date" name="endDate" id="endDate"
+                      (dblclick)="dblClickFunc6()" (dateChange)="dateChange6($event)" readonly>
+                    <div class="input-group-append">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers6.open()"></i>
+                      <mat-datepicker #pickers6 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-vdDesc" class="col-sm-5 col-form-label col-form-label-sm">Description</label>
+                <div class="col-sm">
+                  <input type="text" id="cri-vdDesc" name="cri-vdDesc" class="form-control form-control-sm" 
+                    matInput [(ngModel)]="criteria.desc" [formControl]="vdDescSearch" [matAutocomplete]="auto3">
+                  <mat-autocomplete #auto3="matAutocomplete">
+                    <mat-option *ngFor="let vdDesc of vdDescList" [value]="vdDesc.t2" style="font-size: small;">
+                      {{vdDesc.t2}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+              <!-- <div class="form-group row">
+                <label for="cri-disPriceType" class="col-sm-5 col-form-label col-form-label-sm">
+                  Discount Price Type
+                </label>
+                <div class="col-sm">
+                  <select id="cri-disPriceType" class="custom-select custom-select-sm" 
+                    [(ngModel)]="criteria.disPriceType" [disabled]="criteria.disType != '1'" 
+                    (change)="criChange('1', 'cri-disPriceType')">
+                      <option value="" selected>-</option>
+                      <option [value]="1">Amount</option>
+                      <option [value]="2">Percentage</option>
+                  </select>
+                </div>
+              </div> -->
+              <div class="form-group row">
+                <label for="cri-disAmt" class="col-sm-5 col-form-label col-form-label-sm">
+                  Discount Amount
+                </label>
+                <div class="col-sm">
+                  <input type="text" id="cri-disAmt" name="cri-disAmt" [(ngModel)]="criteria.disAmt" 
+                    class="form-control form-control-sm" [disabled]="criteria.disType != '1'">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-disItemQty" class="col-sm-5 col-form-label col-form-label-sm">
+                  Discount Item Qty
+                </label>
+                <div class="col-sm">
+                  <input type="text" id="cri-disItemQty" name="cri-disItemQty" 
+                    [(ngModel)]="criteria.disItemQty" class="form-control form-control-sm" 
+                    [disabled]="criteria.disItem == ''">
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label for="cri-brandOwner" class="col-sm-5 col-form-label col-form-label-sm">
+                  Brand Owner
+                </label>
+                <div class="col-sm">
+                  <input type="text" id="cri-brandOwner" name="cri-brandOwner" [formControl]="brandOwnerSearch" 
+                    matInput [(ngModel)]="criteria.brandOwner" class="form-control form-control-sm" 
+                    [matAutocomplete]="auto9">
+                  <mat-autocomplete #auto9="matAutocomplete">
+                    <mat-option *ngFor="let brandOwner of brandOwnerList" [value]="brandOwner.t2" 
+                      style="font-size: small;">
+                        {{brandOwner.t2}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-promoItem" class="col-sm-5 col-form-label col-form-label-sm">
+                  Promotion Item
+                </label>
+                <div class="col-sm">
+                  <input type="text" id="cri-promoItem" name="cri-promoItem" [formControl]="promoItemSearch" 
+                    matInput [(ngModel)]="criteria.promoItem" class="form-control form-control-sm" 
+                    [matAutocomplete]="auto4" (change)="criChange('2', 'cri-promoItem')">
+                  <mat-autocomplete #auto4="matAutocomplete">
+                    <mat-option *ngFor="let promoItem of promoItemList" [value]="promoItem.skuName" 
+                      style="font-size: small;">
+                        {{promoItem.skuName}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-promoType" class="col-sm-5 col-form-label col-form-label-sm">
+                  Promotion Type
+                </label>
+                <div class="col-sm">
+                  <select id="cri-promoType" class="custom-select custom-select-sm" 
+                    [(ngModel)]="criteria.promoType" (change)="criChange('2', 'cri-promoType')">
+                    <!-- [disabled]="criteria.promoItem == ''"  -->
+                      <option value="" selected>-</option>
+                      <option [value]="1">Amount</option>
+                      <option [value]="2">Qty</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-promoAmt" class="col-sm-5 col-form-label col-form-label-sm">
+                  Promotion Amt/Qty
+                </label>
+                <div class="col-sm">
+                  <input type="text" id="cri-promoAmt" name="cri-promoAmt" 
+                    class="form-control form-control-sm"  [(ngModel)]="criteria.promoAmt" 
+                    (change)="criChange('2', 'cri-promoAmt')">
+                    <!-- [disabled]="criteria.promoType == ''"  -->
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-operator" class="col-sm-5 col-form-label col-form-label-sm">Operator</label>
+                <div class="col-sm">
+                  <select class="custom-select custom-select-sm" [(ngModel)]="criteria.operator" 
+                    id="cri-operator">
+                    <!-- [disabled]="criteria.promoAmt == ''" -->
+                      <option value="" selected>-</option>
+                      <option [value]="1">less than ( < )</option>
+                      <option [value]="2">equal ( = )</option>
+                      <option [value]="3">equal and greater than ( >= )</option>
+                      <option [value]="4">greater than ( > )</option>
+                      <option [value]="5">between( >= and <= )</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="d-flex justify-content-start">
+                <div class="btn-group" role="group" style="height: 35px;">
+                  <button (click)="search(0, true)" type="button" class="btn btn-primary" [disabled]="spinner">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                  <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="d-flex justify-content-start">
+                  <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                    <button (click)="print()" type="button" class="btn btn-primary">
+                      Export
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <pagination-controls [id]="config.id" (pageChange)="pageChanged($event)" class="mb-2"></pagination-controls>
+      <div style="max-height: 457px; width: 100%;">
+        <table class="table table-hover table-striped" style="font-size: small">
+          <thead class="thead-dark">
+            <tr>
+              <th>No</th>
+              <th>Code</th>
+              <th>Description</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of headerList | paginate: config; let i = index;" >
+              <td scope="row" (click)="detail($event, i)" *ngIf="d.n1 == 1">
+                <b>
+                  {{i+1}}
+                </b>
+              </td>
+              <td scope="row" *ngIf="d.n1 == 0">
+                <b>
+                  {{i+1}}
+                </b>
+              </td>
+
+              <td (click)="detail($event, i)" *ngIf="d.n1 == 1">{{d.t1}}</td>
+              <td *ngIf="d.n1 == 0">{{d.t1}}</td>
+
+              <td (click)="detail($event, i)" *ngIf="d.n1 == 1">{{d.t2}}</td>
+              <td *ngIf="d.n1 == 0">{{d.t2}}</td>
+
+              <td (click)="detail($event, i)" *ngIf="d.n1 == 1">{{d.t3}}</td>
+              <td *ngIf="d.n1 == 0">{{d.t3}}</td>
+
+              <td (click)="detail($event, i)" *ngIf="d.n1 == 1">{{d.t4}}</td>
+              <td *ngIf="d.n1 == 0">{{d.t4}}</td>
+
+              <!-- <td id="statusChangeEvent" style="width: 16% !important;">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                  <button type="button" class="btn btn-success btn-sm mr-1" [disabled]="d.n1 == 1" 
+                    (click)="volDisHdrStatusChange($event, d)">
+                      Active
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="volDisHdrStatusChange($event, d)"
+                    style="background-color: red; border-color: red;" [disabled]="d.n1 == 0">
+                      Inactive
+                  </button>
+                </div>
+              </td> -->
+              <td class="d-flex flex-row">
+                <div class="custom-control custom-switch" style="width: 50px;">
+                  <input type="checkbox" class="custom-control-input" 
+                  [id]="'active-switch-'+d.syskey"
+                   [(ngModel)]="d.n1" (change)="volDisHdrStatusChange(d)">
+                  <label class="custom-control-label" 
+                  [for]="'active-switch-'+d.syskey" style="width: 0px;"></label>
+                </div>
+                <span class="text-muted" style="margin-left: -20px; margin-top: 2px;font-size: smaller;">{{d.n1?'Active':'Inactive'}}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <hr/>
+    <div id="volDisNew" style="margin-left: 3px;">
+      <div id="volDisInfoLists">
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link active" id="volDisHdr-tab" data-toggle="tab" (click)="hdrListTab()" 
+            role="tab" href="#volDisHdr"  aria-controls="volDisHdr" aria-selected="true">
+              Header
+          </a>
+          <a class="nav-item nav-link" id="volDisDtlList-tab" data-toggle="tab" (click)="dtlListTab()" 
+            role="tab" href="#volDisDtlList"  aria-controls="volDisDtlList" aria-selected="false">
+              Detail List
+          </a>
+          <a class="nav-item nav-link" id="volDisShopJuncList-tab" data-toggle="tab" (click)="shopJuncTab()" 
+            role="tab" href="#volDisShopJuncList" aria-controls="volDisShopJuncList" aria-selected="false">
+            Customer Applicablity
+          </a>
+        </div>
+        <div class="tab-content" id="nav-tabContent" style="margin-top: 5px;">
+          <div class="tab-pane fade show active" id="volDisHdr" role="tabpanel" aria-labelledby="volDisHdr-tab">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group row">
+                      <label for="saveVolDisCode" class="col-sm-4 col-form-label col-form-label-sm">
+                        Promotion ID
+                      </label>
+                      <div class="col-sm-8">
+                        <input type="text" id="saveVolDisCode" [(ngModel)]="saveData.t1" (focus)="focusFunction()"
+                          class="form-control form-control-sm" [disabled]="dtlFlag == true">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="form-group row">
+                      <label for="saveVolDisDesc" class="col-sm-4 col-form-label col-form-label-sm">Description</label>
+                      <div class="col-sm-8">
+                        <input type="text" id="saveVolDisDesc" [(ngModel)]="saveData.t2" 
+                          class="form-control form-control-sm">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group row">
+                      <label for="saveVolDisFromDate" class="col-sm-4 col-form-label col-form-label-sm">
+                        Start Date
+                      </label>
+                      <div class="col-sm-8">
+                        <div class="input-group input-group-sm">
+                          <input required class="form-control" id="validFD" name="validFD" 
+                            matInput [(ngModel)]="saveData.t3" [matDatepicker]="pickers3" 
+                            (dateChange)="dateChange3($event)" (dblclick)="dblClickFunc3()" 
+                            placeholder="Select Date" readonly>
+                          <div class="input-group-append">
+                            <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers3.open()"></i>
+                            <mat-datepicker #pickers3 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                            </mat-datepicker>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="form-group row">
+                      <label for="saveVolDisToDate" class="col-sm-4 col-form-label col-form-label-sm">
+                        End Date
+                      </label>
+                      <div class="col-sm-8">
+                        <div class="input-group input-group-sm">
+                          <input required class="form-control" id="validTD" name="validTD" 
+                            matInput [(ngModel)]="saveData.t4" [matDatepicker]="pickers4" 
+                            (dateChange)="dateChange4($event)" (dblclick)="dblClickFunc4()" 
+                            placeholder="Select Date" readonly>
+                          <div class="input-group-append">
+                            <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers4.open()"></i>
+                            <mat-datepicker #pickers4 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                            </mat-datepicker>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade show active" id="volDisDtlList" role="tabpanel" 
+            aria-labelledby="volDisDtlList-tab">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-group row">
+                        <label for="ruleNum" class="col-sm-4 col-form-label col-form-label-sm">
+                          Rule Number
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="ruleNum" name="ruleNum" 
+                            [(ngModel)]="detailDataList.n17" class="form-control form-control-sm">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="operator" class="col-sm-4 col-form-label col-form-label-sm">
+                          Get Type
+                        </label>
+                        <div class="col-sm-8">
+                          <select id="operator" class="custom-select custom-select-sm" 
+                            [(ngModel)]="detailDataList.n18">
+                              <!-- <option value="" selected>-</option> -->
+                              <option [value]="0" selected>Equal to</option>
+                              <option [value]="1">Multiple of</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="form-group row">
+                        <label for="rulePriority" class="col-sm-4 col-form-label col-form-label-sm">
+                          Rule Priority
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="rulePriority" name="rulePriority" 
+                            [(ngModel)]="detailDataList.n16" class="form-control form-control-sm">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="buyLimit" class="col-sm-4 col-form-label col-form-label-sm">
+                          Multiple Quantity
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="buyLimit" class="form-control form-control-sm" 
+                            [(ngModel)]="detailDataList.n19" 
+                            [disabled]="detailDataList.n18 != '1'">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="form-group row">
+                        <label for="endType" class="col-sm-4 col-form-label col-form-label-sm">
+                          End Type
+                        </label>
+                        <div class="col-sm-8">
+                          <select id="endType" [(ngModel)]="detailDataList.n15" 
+                            class="custom-select custom-select-sm"
+                            (change)="endTypeChange()">
+                              <!-- <option value="" selected>-</option> -->
+                              <option [value]="2">AND</option>
+                              <option [value]="1">OR</option>
+                              <option [value]="0" selected>END</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr/>
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-group row">
+                        <label for="discountType" class="col-sm-4 col-form-label col-form-label-sm">
+                          Dis Type
+                        </label>
+                        <div class="col-sm-8">
+                          <select id="discountType" [(ngModel)]="detailDataList.n3" 
+                            class="custom-select custom-select-sm" (change)="disTypeChange()"
+                            [disabled]="detailDataList.n15 != '0'">
+                              <option value="" selected>-</option>
+                              <option [value]="1" [hidden]="detailDataList.n18 == '1'">Price</option>
+                              <option [value]="2">Inkind</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row" style="margin-left: 0px;">
+                        <button type="button" class="btn btn-primary btn-sm" 
+                          (click)="addGiftList(true, -1)" [disabled]="detailDataList.n3 != 2">
+                          <!-- (click)="addGiftList()" --><!-- (click)="hideOrShow(true)" -->
+                            Add Inkind Detail
+                        </button>
+                      </div>
+                      <!-- <div class="form-group row">
+                        <label for="discountItemType" class="col-sm-4 col-form-label col-form-label-sm">
+                          Dis Item Type
+                        </label>
+                        <div class="col-sm-8">
+                          <select id="discountItemType" [(ngModel)]="detailDataList.n12" 
+                            class="custom-select custom-select-sm" (change)="disItemTypeChange()" 
+                            [disabled]="detailDataList.n3 != '2' || detailDataList.n15 != '0'">
+                              <option value="" selected>-</option>
+                              <option [value]="1">Gift</option>
+                              <option [value]="2">Coupon</option>
+                          </select>
+                        </div>
+                      </div> -->
+                    </div>
+                    <div class="col">
+                      <div class="form-group row">
+                        <label for="discountPriceType" class="col-sm-4 col-form-label col-form-label-sm">
+                          Dis Price Type
+                        </label>
+                        <div class="col-sm-8">
+                          <select id="discountPriceType" class="custom-select custom-select-sm" 
+                            [(ngModel)]="detailDataList.n4" 
+                            [disabled]="detailDataList.n3 != '1' || detailDataList.n15 != '0'">
+                              <option value="" selected>-</option>
+                              <!-- <option [value]="1">Amount</option> -->
+                              <option [value]="2">Percentage</option>
+                          </select>
+                        </div>
+                      </div>
+                      <!-- <div class="form-group row" id="discountItem0">
+                        <label for="discountItem" class="col-sm-4 col-form-label col-form-label-sm">
+                          Dis Item
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="discountItem" name="discountItem" 
+                            class="form-control form-control-sm" [disabled]="true">
+                        </div>
+                      </div>
+                      <div class="form-group row" id="discountItem1">
+                        <label for="discountItemGift" class="col-sm-4 col-form-label col-form-label-sm">
+                          Dis Item
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="discountItemGift" name="discountItemGift" 
+                            class="form-control form-control-sm" matInput [matAutocomplete]="auto7" 
+                            [formControl]="giftSearch" [(ngModel)]="detailDataList.t3" 
+                            (keyup)="discountItemChange($event, 'gift')">
+                          <mat-autocomplete #auto7="matAutocomplete">
+                            <mat-option *ngFor="let discountItemGift of giftList; let i = index;" 
+                              [value]="discountItemGift.t2" style="font-size: small;" 
+                              (click)="discountItemChange($event,'gift')">
+                                {{discountItemGift.t2}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </div>
+                      </div>
+                      <div class="form-group row" id="discountItem2">
+                        <label for="discountItemCoupon" class="col-sm-4 col-form-label col-form-label-sm">
+                          Dis Item
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="discountItemCoupon" name="discountItemCoupon" 
+                            class="form-control form-control-sm" matInput [matAutocomplete]="auto8" 
+                            [formControl]="couponSearch" [(ngModel)]="detailDataList.t3" 
+                            (keyup)="discountItemChange($event, 'coupon')">
+                          <mat-autocomplete #auto8="matAutocomplete">
+                            <mat-option *ngFor="let discountItemCoupon of couponList; let i = index;" 
+                              [value]="discountItemCoupon.t1" style="font-size: small;" 
+                              (click)="discountItemChange($event,'coupon')">
+                                {{discountItemCoupon.t1}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </div>
+                      </div> -->
+                    </div>
+                    <div class="col">
+                      <div class="form-group row">
+                        <label for="amtPercent" class="col-sm-4 col-form-label col-form-label-sm">
+                          <!-- Amt/Percent -->
+                          Price Discount Rate
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="amtPercent" class="form-control form-control-sm" 
+                            [(ngModel)]="detailDataList.n5" (keypress)="validateDisPercent($event)" 
+                            [disabled]="detailDataList.n3 != '1' || detailDataList.n15 != '0'">
+                            <!-- (keyup)="decimalDisable($event)" -->
+                        </div>
+                      </div>
+                      <!-- <div class="form-group row">
+                        <label for="disItemQty" class="col-sm-4 col-form-label col-form-label-sm">
+                          Dis Item Qty
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="disItemQty" class="form-control form-control-sm" 
+                            [disabled]="detailDataList.n6 == '' || detailDataList.n3 != '2' || detailDataList.n15 != '0'" 
+                            [(ngModel)]="detailDataList.n7" >
+                        </div>
+                      </div> -->
+                    </div>
+                  </div>
+                  <hr/>
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-group row">
+                        <label for="vendor" class="col-sm-4 col-form-label col-form-label-sm">
+                          Brand Owner
+                        </label>
+                        <!-- <div class="col-sm-8">
+                          <input type="text" id="vendor" name="vendor" [formControl]="vendorSearch" 
+                            matInput [(ngModel)]="detailDataList.t2" class="form-control form-control-sm" 
+                            [matAutocomplete]="auto5" (keyup)="vendorChange()">
+                          <mat-autocomplete #auto5="matAutocomplete">
+                            <mat-option *ngFor="let vendor of vendorList; let i = index;" [value]="vendor.t2" 
+                              style="font-size: small;" (click)="vendorChange()">
+                                {{vendor.t2}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </div> -->
+                        <div class="col-sm-8">
+                          <select id="vendor" class="custom-select custom-select-sm" 
+                            [(ngModel)]="detailDataList.n2" (change)="vendorChange($event)">
+                              <option value="" selected>-</option>
+                              <option [value]="vendor.syskey" *ngFor="let vendor of vendorList; let i = index;">
+                                {{vendor.t2}}
+                              </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="promoType" class="col-sm-4 col-form-label col-form-label-sm">
+                          Promotion Requirement
+                        </label>
+                        <div class="col-sm-8">
+                          <select id="promoType" [(ngModel)]="detailDataList.n9" 
+                            class="custom-select custom-select-sm" [disabled]="detailDataList.n8 == ''">
+                              <option value="" selected>-</option>
+                              <option [value]="1">Amount</option>
+                              <option [value]="2">Qty</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="amtQty2" class="col-sm-4 col-form-label col-form-label-sm">
+                          Revenue 2
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="amtQty2" class="form-control form-control-sm" 
+                            [(ngModel)]="detailDataList.n13" 
+                            [disabled]="detailDataList.n11 != '5'">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="form-group row">
+                        <label for="promoItem" class="col-sm-4 col-form-label col-form-label-sm">
+                          Promo Item
+                        </label>
+                        <!-- <div class="col-sm-8">
+                          <input type="text" id="promoItem" name="promoItem" [formControl]="promoItemInfoSearch" 
+                            matInput [(ngModel)]="detailDataList.t4" class="form-control form-control-sm" 
+                            [matAutocomplete]="auto6" (keyup)="promoItemChange()">
+                          <mat-autocomplete #auto6="matAutocomplete">
+                            <mat-option *ngFor="let promoItem of promoItemInfoList; let i = index;" 
+                              [value]="promoItem.skuName" style="font-size: small;" 
+                              (click)="promoItemChange()">
+                                {{promoItem.skuName}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </div> -->
+                        <div class="col-sm-8">
+                          <input type="text" name="promoItem" class="form-control form-control-sm" 
+                            id="promoItem" [(ngModel)]="detailDataList.t4" 
+                            [readonly]="detailDataList.n2 == ''" (click)="promoItemSearching()">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="operator" class="col-sm-4 col-form-label col-form-label-sm">Operator</label>
+                        <div class="col-sm-8">
+                          <select id="operator" class="custom-select custom-select-sm" 
+                            [(ngModel)]="detailDataList.n11" [disabled]="detailDataList.n9 == ''">
+                              <option value="" selected>-</option>
+                              <option [value]="1">less than ( < )</option>
+                              <option [value]="2">equal ( = )</option>
+                              <option [value]="3">equal and greater than ( >= )</option>
+                              <option [value]="4">greater than ( > )</option>
+                              <option [value]="5">between( >= and <= )</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="form-group row">
+                        <label for="ruleType" class="col-sm-4 col-form-label col-form-label-sm">
+                          Rule Type
+                        </label>
+                        <div class="col-sm-8">
+                          <select id="ruleType" class="custom-select custom-select-sm" 
+                            [(ngModel)]="detailDataList.n14">
+                              <!-- <option value="" selected>-</option> -->
+                              <option [value]="0" selected>Each Item</option>
+                              <option [value]="1">Total Item</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="amtQty" class="col-sm-4 col-form-label col-form-label-sm">
+                          Revenue 1
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="amtQty" class="form-control form-control-sm" 
+                            [(ngModel)]="detailDataList.n10" [disabled]="detailDataList.n11 == ''">
+                        </div>
+                      </div>
+                      <div class="form-group row" style="float: right; margin-right: 5px;">
+                        <button type="button" class="btn btn-primary btn-sm" 
+                          (click)="addDtlLine()">
+                            {{updateIndex < 0? 'Add' : 'Update'}}
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" (click)="clear()" 
+                          style="margin-left: 3px;">
+                            Clear
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="overflow-x: auto;">
+                <table class="table table-hover table-striped" style="font-size: 13px;">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th>Serial No</th>
+                      <th>Rule No</th>
+                      <th>Rule Priority</th>
+                      <th>Multiple Quantity</th>
+                      <th>Brand Owner</th>
+                      <th>Promo Item</th>
+                      <th>Rule Type</th>
+                      <th>Promotion Requirement</th>
+                      <th>Operator</th>
+                      <th>Revenue 1</th>
+                      <th>Revenue 2</th>
+                      <th>Dis Type</th>
+                      <th>Dis Price Type</th>
+                      <th>Price Discount Rate</th>
+                      <!-- <th>Dis Item</th>
+                      <th>Item Qty</th> -->
+                      <th>End Type</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let sdDtl of saveData.volDisDtlDataList; let i = index;">
+                    <!-- (click)="updateDtlLine($event, i)" -->
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n20}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n17}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n16}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n18 == '0'? 'Equal to' : sdDtl.n19}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.t2}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.t4}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n14 == '0'? 'Each' : (sdDtl.n14 == '1'? 'Total' : '-')}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n9 == '1'? 'Amount' : 'Qty'}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n11 == '1'? 'less than' : 
+                          (sdDtl.n11 == '2'? 'equal' : 
+                            (sdDtl.n11 == '3'? 'equal and greater than' : 
+                              (sdDtl.n11 == '4'? 'greater than' : 'between')))}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n10}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n13 == '' || sdDtl.n13 == '0'? '-' : sdDtl.n13}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n3 == '' || sdDtl.n3 == '0'? '-' : (sdDtl.n3 == '1'? 'Price' : 'Inkind')}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n4 == '' || sdDtl.n4 == '0'? '-' : (sdDtl.n4 == '1'? 'Amount' : 'Percent')}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n5 == '' || sdDtl.n5 == '0'? '-' : sdDtl.n5}}
+                      </td>
+                      <!-- <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.t3 == ''? '-' : sdDtl.t3}}
+                      </td>
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n7 == '' || sdDtl.n7 == '0'? '-' : sdDtl.n7}}
+                      </td> -->
+                      <td (click)="updateDtlLine($event, i)">
+                        {{sdDtl.n15 == '0'? 'END' : 
+                          (sdDtl.n15 == '1'? 'OR' : 'AND')}}
+                      </td>
+                      <td style="white-space: nowrap;">
+                        
+                          <div *ngIf="sdDtl.n3 == '2'" style="margin-bottom: 3px;">
+                            <button type="button" (click)="addGiftList(false, i)" 
+                              class="btn btn-primary btn-sm" [disabled]="updateIndex > -1">
+                                View Inkind
+                            </button>
+                          </div>
+                          <div *ngIf="sdDtl.syskey != ''; else btnDisable">
+                            <div>
+                              <button type="button" (click)="deleteDtlLine($event, i)" 
+                                class="btn btn-primary btn-sm btndelete" *ngIf="sdDtl.recordStatus == 1"
+                                [disabled]="updateIndex > -1">
+                                  Delete
+                              </button>
+                              <button type="button" (click)="deleteDtlLine($event, i)" 
+                                class="btn btn-primary btn-sm" *ngIf="sdDtl.recordStatus == 4" 
+                                style="background-color: grey; border-color: grey;"
+                                [disabled]="updateIndex > -1">
+                                  Deleted
+                              </button>
+                            </div>
+                          </div>
+                          <ng-template #btnDisable>
+                            <button type="button" class="btn btn-light btn-sm" 
+                              (click)="deleteDtlLine($event, i)" [disabled]="updateIndex > -1">
+                                Remove
+                            </button>
+                          </ng-template>
+
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+          </div>
+          <div class="tab-pane fade show active" id="volDisShopJuncList" role="tabpanel" 
+            aria-labelledby="volDisShopJuncList-tab">
+            <div class="card-body pb-0">
+              <div class="row row-cols-1 row-cols-sm-2">                
+                <div class="col">
+                  <div class="form-group row">
+                    <label for="fd" class="col-sm-3 col-form-label col-form-label-sm">Choose File </label>
+                    <div class="col-sm">
+                      <input type="file" id="filechose" class="custom-file-input form-control-sm" name="filechose" [ngModelOptions]="{standalone: true}"
+                      [ngModel]="importload" #chosefile (click)="resetValue()" (change)="onUpload($event)" >
+                     <label class="custom-file-label col-form-label-sm text-truncate"
+                      matTooltip="chosefile.value == ''? 'Name': chosefile.value"
+                      for="filechose">{{chosefile.value == ''? 'Name': chosefile.value}}</label>
+                    </div>    
+                    <ion-button (click)="appliedExcelShopData()" style="margin: 0px 0px 20px 10px; height: 33px; text-transform: none;"
+                    [disabled]="tsLoadingFlag">Apply</ion-button>       
+                  </div>
+                </div>
+              </div>
+            </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <!-- <div class="row">
+                    <div class="card" style="width: 100%; margin-left: 12px; margin-bottom: 5px;">
+                      <div class="card-header">
+                        Date Info
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <div class="form-group row">
+                              <label for="validFD" class="col-sm-4 col-form-label col-form-label-sm">From Date</label>
+                              <div class="col-sm">
+                                <div class="input-group input-group-sm">
+                                  <input required class="form-control" id="validFD" name="validFD" 
+                                    matInput [(ngModel)]="saveDataDates.fromDate" [matDatepicker]="pickers3" 
+                                    (dateChange)="dateChange3($event)" (dblclick)="dblClickFunc3()" 
+                                    placeholder="Select Date" readonly>
+                                  <div class="input-group-append">
+                                    <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers3.open()"></i>
+                                    <mat-datepicker #pickers3 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                                    </mat-datepicker>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-6">
+                            <div class="form-group row">
+                              <label for="validTD" class="col-sm-4 col-form-label col-form-label-sm">To Date</label>
+                              <div class="col-sm">
+                                <div class="input-group input-group-sm">
+                                  <input required class="form-control" id="validTD" name="validTD" 
+                                    matInput [(ngModel)]="saveDataDates.toDate" [matDatepicker]="pickers4" 
+                                    (dateChange)="dateChange4($event)" (dblclick)="dblClickFunc4()" 
+                                    placeholder="Select Date" readonly>
+                                  <div class="input-group-append">
+                                    <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers4.open()"></i>
+                                    <mat-datepicker #pickers4 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                                    </mat-datepicker>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row float-right" style="margin-right: 1px;">
+                          <button class="btn btn-sm btn-primary mr-2" style="margin-top: -3px;" 
+                            (click)="addShop()">
+                              Add Shop
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div> -->
+                  <div class="row">
+                    <div class="card" style="width: 100%; height: 100%; margin-left: 12px;">
+                      <div class="card-header">
+                        Applied Shops
+                        <span class="float-right" style="margin-bottom: -5px; margin-top: -5px;">
+                          <div class="input-group input-group-sm" style="width: 150px;">
+                            <input type="text" aria-describedby="inputGroup-sizing-sm" id="searchBoxAS"
+                              placeholder="Search" (change)="searchAppliedShop($event)" 
+                              class="form-control" aria-label="Sizing example input">
+                          </div>
+                        </span>
+                      </div>
+                      <pagination-controls (pageChange)="assignedShopListPageChanged($event)">
+                      </pagination-controls>
+                      <div class="overflow-auto table-responsive text-nowrap">
+                        <table class="table table-hover surveyortable" style="font-size: 13px;">
+                          <thead class="thead-dark">
+                            <tr>
+                              <th>No</th>
+                              <th>Shop Code</th>
+                              <th>Shop Name</th>
+                              <th>Address</th>
+                              <!-- <th>From Date</th>
+                              <th>To Date</th> -->
+                              <th>Delete</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let sList of tempShopList | paginate: config1; let i = index">
+                              <td>{{i+1}}</td>
+                              <td>{{sList.shopCode}}</td>
+                              <td>{{sList.t2}}</td>
+                              <td>{{sList.address}}</td>
+                              <!-- <td>{{sList.t3}}</td>
+                              <td>{{sList.t4}}</td> -->
+                              <td>
+                                <div *ngIf="sList.syskey != ''; else btnDisable">
+                                  <div>
+                                    <button type="button" (click)="pmo7RecordStatusChange($event, sList)" 
+                                      class="btn btn-primary btn-sm" *ngIf="sList.recordStatus == 1">
+                                        Delete
+                                    </button>
+                                    <button type="button" (click)="pmo7RecordStatusChange($event, sList)" 
+                                      class="btn btn-primary btn-sm" *ngIf="sList.recordStatus == 4" 
+                                      style="background-color: grey; border-color: grey;">
+                                        Deleted
+                                    </button>
+                                  </div>
+                                </div>
+                                <ng-template #btnDisable>
+                                  <button type="button" class="btn btn-light btn-sm" 
+                                    (click)="removeShop($event, i)">
+                                      Remove
+                                  </button>
+                                </ng-template>
+                              </td>
+                              <td>
+                                <div class="btn-group" role="group" >
+                                  <button type="button" class="btn btn-success btn-sm" 
+                                    (click)="pmo7StatusChange($event, sList)" 
+                                    [disabled]="sList.n3 == 1 || sList.syskey == ''">
+                                      Active
+                                  </button>
+                                  <button type="button" class="btn btn-danger btn-sm" 
+                                    (click)="pmo7StatusChange($event, sList)" 
+                                    [disabled]="sList.n3 == 0 || sList.syskey == ''">
+                                      Inactive
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="row">
+                    <div class="card" style="width: 96%; margin-left: 10px;">
+                      <div class="card-header">
+                        Shops
+                        <div class="spinner-border text-primary" role="status" id="spinner-advsearch" 
+                          *ngIf="tsLoadingFlag">
+                            <span class="sr-only"></span>
+                        </div>
+                        <span class="float-right">
+                          <div class="btn-group" style="margin-right: 10px;">
+                            <button class="btn btn-primary btn-sm" type="button" (click)="addShop()">
+                              Add Shop
+                            </button>
+                          </div>
+                          <i (click)="dropdown? dropdown=false: dropdown=true" aria-hidden="true" 
+                            [class]="dropdown? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'">
+                          </i>
+                        </span>
+                      </div>
+                      <div class="card-body px-5 border-bottom" id="shopAdvanceForm" *ngIf="dropdown">
+                        <div class="form-group row">
+                          <label for="tempVdShopSearch" class="col-sm-4 col-form-label col-form-label-sm">Shop</label>
+                          <div class="col-sm-8">
+                            <input type="text" id="tempVdShopSearch" class="form-control form-control-sm"
+                              [(ngModel)]="tempSearch.shopDesc">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label for="tempVdTsSearch" class="col-sm-4 col-form-label col-form-label-sm">Township</label>
+                          <div class="col-sm-8">
+                            <input type="text" id="tempVdTsSearch" class="form-control form-control-sm"
+                              [(ngModel)]="tempSearch.townDesc">
+                          </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                          <div class="btn-group" role="group">
+                            <button (click)="searchTownship()" type="button" class="btn btn-primary btn-sm">
+                            <!-- (click)="searchShop('0', 0, '')" -->
+                              Search
+                            </button>
+                          </div>
+                          <!-- <div class="btn-group float-right" style="margin-right: 1px;">
+                            <button class="btn btn-primary btn-sm" type="button" (click)="addShop()"
+                              style="margin-left: 3px;">
+                                Add Shop
+                            </button>
+                          </div> -->
+                        </div>
+                      </div>
+                      <div class="overflow-auto" style="height: 465px;">
+                        <mat-accordion>
+                          <mat-expansion-panel *ngFor="let tsList of townList; let i = index;"
+                          (opened)="openPanel(tsList)" [expanded]="tsList.panelExpanded">
+                            <mat-expansion-panel-header>
+                              <mat-panel-title>
+                                {{tsList.TownDesc}}
+                              </mat-panel-title>
+                              <!-- <mat-panel-title style="float: right;">
+                                <div>
+                                  <input type="checkbox" id="{{tsList.TownSyskey}}" (change)="selectTown($event, tsList.TownSyskey)">
+                                  Select All
+                                </div>
+                              </mat-panel-title> -->
+                            </mat-expansion-panel-header>
+                            
+                            <div>
+                              <input type="checkbox" id="{{tsList.TownSyskey}}" (change)="selectTown($event, tsList.TownSyskey)">
+                              Select All
+                            </div>
+
+                            <pagination-controls [id]="tsList.shopListConfig.id" (pageChange)="shopListPageChanged($event, tsList)">
+                            </pagination-controls>
+                            <div class="overflow-auto table-responsive text-nowrap">
+                              <table class="table table-hover surveyortable" style="font-size: 13px;">
+                                <thead class="thead-dark">
+                                  <tr>
+                                    <th>No</th>
+                                    <th>Shop Code</th>
+                                    <th>Shop Name</th>
+                                    <th>Address</th>
+                                    <th>
+                                      <!-- Select All
+                                      <input type="checkbox" id="{{tsList.TownSyskey}}" (change)="selectTown($event, i)"> -->
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let shopList of tsList.ShopDataList | paginate: tsList.shopListConfig; let j = index;">
+                                    <td>{{j+1}}</td>
+                                    <td>{{shopList.shopCode}}</td>
+                                    <td>{{shopList.shopName}}</td>
+                                    <td>{{shopList.address}}</td>
+                                    <td>
+                                      <!-- <input type="checkbox" id="townCb{{i}}and{{j}}" (change)="selectShop($event, i, j)"> -->
+                                      <input type="checkbox" id="{{shopList.shopSysKey}}" [(ngModel)]="shopList.checkFlag" 
+                                        (change)="selectShop($event, tsList, shopList, false)">
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </mat-expansion-panel>
+                        </mat-accordion>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+<div class="modal fade" id="promoItem-Search" tabindex="-1" role="dialog" aria-labelledby="skuaddmodal"
+  aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header px-3 py-2">
+          <h5 class="modal-title" id="promoItemSearchTitle">
+            Search
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body overflow-auto py-0" style="height: 450px;"> <!-- px-0 -->
+          <div class="row" style="width: 100%; margin-top: 5px; margin-bottom: 5px;">
+            <div class="col">
+              <div class="card">
+                <!-- <div class="card-header">
+                  Items
+                  <span class="float-right">
+                    <i (click)="dropdown1? dropdown1=false: dropdown1=true"
+                      [class]="dropdown1? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true">
+                    </i>
+                  </span>
+                </div> -->
+                <div class="card-body px-5 border-bottom" id="itemAdvanceForm"> <!-- *ngIf="dropdown1" -->
+                  <div class="form-group row">
+                    <label for="tempCatSearch" class="col-sm-4 col-form-label col-form-label-sm">
+                      Category
+                    </label>
+                    <div class="col-sm-8">
+                      <input type="text" id="tempCatSearch" class="form-control form-control-sm"
+                        [(ngModel)]="tempSearch1.category">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="tempSubCatSearch" class="col-sm-4 col-form-label col-form-label-sm">
+                      Sub-Category
+                    </label>
+                    <div class="col-sm-8">
+                      <input type="text" id="tempSubCatSearch" class="form-control form-control-sm"
+                        [(ngModel)]="tempSearch1.subCategory">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="tempItemCodeSearch" class="col-sm-4 col-form-label col-form-label-sm">
+                      Item Code
+                    </label>
+                    <div class="col-sm-8">
+                      <input type="text" id="tempItemCodeSearch" class="form-control form-control-sm"
+                        [(ngModel)]="tempSearch1.itemCode">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="tempItemNameSearch" class="col-sm-4 col-form-label col-form-label-sm">
+                      Item Name
+                    </label>
+                    <div class="col-sm-8">
+                      <input type="text" id="tempItemNameSearch" class="form-control form-control-sm"
+                        [(ngModel)]="tempSearch1.itemName">
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    <div class="btn-group" role="group">
+                      <button (click)="searchItem()" type="button" class="btn btn-primary btn-sm">
+                        Search
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div> <!-- class="overflow-auto" style="height: 300px;" -->
+                  <mat-accordion>
+                    <mat-expansion-panel *ngFor="let catList of itemList; let i = index;">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          {{catList.CategoryDesc}}
+                        </mat-panel-title>
+                      </mat-expansion-panel-header>
+                      <mat-expansion-panel *ngFor="let subCatList of catList.subCatList; let j = index;">
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>
+                            {{subCatList.SubCategoryDesc}}
+                          </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div>
+                          <table class="table table-hover surveyortable" style="font-size: 13px;">
+                            <thead class="thead-dark">
+                              <tr>
+                                <th>No</th>
+                                <th>Item Code</th>
+                                <th>Item Name</th>
+                                <th>
+                                  Changed Price
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let stkList of subCatList.itemList; let k = index;">
+                                <td>{{k+1}}</td>
+                                <td>{{stkList.ItemCode}}</td>
+                                <td>{{stkList.ItemDesc}}</td>
+                                <td>
+                                  <button [disabled]="" type="button" class="btn btn-primary" 
+                                    (click)="addpromoItem(stkList)">
+                                      Select Item
+                                  </button>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </mat-expansion-panel>
+                    </mat-expansion-panel>
+                  </mat-accordion>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+<div id="addInkindDetail" class="modal fade" tabindex="-1" role="dialog" 
+  aria-labelledby="skuaddmodal1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header px-3 py-2">
+          <h5 class="modal-title" id="inkindDetailTitle">
+            Add Inkind Detail
+          </h5>
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+        </div>
+        <div class="modal-body overflow-auto py-0" style="height: 450px;"> <!-- px-0 -->
+          <app-volume-discount-inkind-popup (outputInkindList)="modifyGetGiftList($event)" 
+            [inputInkindList]="getGiftDataList" [isInkindEdit]="inkindEditFlag">
+          </app-volume-discount-inkind-popup>
+          <!-- <div class="row" style="width: 100%; margin-top: 5px; margin-bottom: 5px;"> 
+            <div class="col">
+              <div class="card">
+                <div class="card-body px-5 border-bottom" id="invoiceDetail">
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-group row">
+                        <label for="discountItemType" class="col-sm-4 col-form-label col-form-label-sm">
+                          Dis Item Type
+                        </label>
+                        <div class="col-sm-8">
+                          <select id="discountItemType" class="custom-select custom-select-sm" 
+                            [(ngModel)]="getGiftData.n2" (change)="disItemTypeChange()">
+                            <!-- [disabled]="detailDataList.n3 != '2'" ->
+                              <option value="" selected>-</option>
+                              <option [value]="1">Gift</option>
+                              <option [value]="2">Coupon</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="getGiftEndType" class="col-sm-4 col-form-label col-form-label-sm">
+                          End Type
+                        </label>
+                        <div class="col-sm-8">
+                          <select id="getGiftEndType" class="custom-select custom-select-sm" 
+                            [(ngModel)]="getGiftData.n6">
+                              <option [value]="0" selected>END</option>
+                              <option [value]="1">OR</option>
+                              <option [value]="2">AND</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="form-group row" id="discountItem0">
+                        <label for="discountItem" class="col-sm-4 col-form-label col-form-label-sm">
+                          Dis Item
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="discountItem" name="discountItem" 
+                            class="form-control form-control-sm" [disabled]="true">
+                        </div>
+                      </div>
+                      <div class="form-group row" id="discountItem1">
+                        <label for="discountItemGift" class="col-sm-4 col-form-label col-form-label-sm">
+                          Dis Item
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="discountItemGift" name="discountItemGift" 
+                            class="form-control form-control-sm" matInput [matAutocomplete]="auto7" 
+                            [formControl]="giftSearch" [(ngModel)]="getGiftData.t1" 
+                            (keyup)="discountItemChange($event, 'gift')">
+                          <mat-autocomplete #auto7="matAutocomplete">
+                            <mat-option *ngFor="let discountItemGift of giftList; let i = index;" 
+                              [value]="discountItemGift.t2" style="font-size: small;" 
+                              (click)="discountItemChange($event,'gift')">
+                                {{discountItemGift.t2}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </div>
+                      </div>
+                      <div class="form-group row" id="discountItem2">
+                        <label for="discountItemCoupon" class="col-sm-4 col-form-label col-form-label-sm">
+                          Dis Item
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="discountItemCoupon" name="discountItemCoupon" 
+                            class="form-control form-control-sm" matInput [matAutocomplete]="auto8" 
+                            [formControl]="couponSearch" [(ngModel)]="getGiftData.t1" 
+                            (keyup)="discountItemChange($event, 'coupon')">
+                          <mat-autocomplete #auto8="matAutocomplete">
+                            <mat-option *ngFor="let discountItemCoupon of couponList; let i = index;" 
+                              [value]="discountItemCoupon.t1" style="font-size: small;" 
+                              (click)="discountItemChange($event,'coupon')">
+                                {{discountItemCoupon.t1}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="form-group row">
+                        <label for="disItemQty" class="col-sm-4 col-form-label col-form-label-sm">
+                          Dis Item Qty
+                        </label>
+                        <div class="col-sm-8">
+                          <input type="text" id="disItemQty" [(ngModel)]="getGiftData.n4" 
+                            class="form-control form-control-sm" 
+                            [disabled]="getGiftData.n3 == ''">
+                        </div>
+                      </div>
+                      <div class="form-group row" style="float: right; margin-right: 0px;">
+                        <div style="margin-right: 3px;">
+                          <button class="btn btn-primary btn-sm" type="button" 
+                            (click)="addGetGift()">
+                              Add Shop
+                          </button>
+                        </div>
+                        <div>
+                          <button class="btn btn-primary btn-sm" type="button" 
+                            (click)="clearGetGiftData()">
+                              Clear
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="overflow-auto table-responsive text-nowrap" style="height: 300px;">
+                    <table class="table table-hover surveyortable" style="font-size: 13px;">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th>Serial No</th>
+                          <th>Discount Item Type</th>
+                          <th>Discount Item</th>
+                          <th>Discount Item Qty</th>
+                          <th>End Type</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let gdList of getGiftDataList; let i = index">
+                          <td (click)="updateGetGiftData(i)">
+                            {{gdList.n5}}
+                          </td>
+                          <td (click)="updateGetGiftData(i)">
+                            {{gdList.n2 == '1'? 'Gift' : 
+                                gdList.n2 == '2'? 'Coupon' : '-'}}
+                          </td>
+                          <td (click)="updateGetGiftData(i)">
+                            {{gdList.t1}}
+                          </td>
+                          <td (click)="updateGetGiftData(i)">
+                            {{gdList.n4}}
+                          </td>
+                          <td (click)="updateGetGiftData(i)">
+                            {{gdList.n6 == '0'? 'END' : 
+                              (gdList.n6 == '1'? 'OR' : 'AND')}}
+                          </td>
+                          <td>
+                            <div *ngIf="gdList.syskey != ''; else btnDisableGift">
+                              <div>
+                                <button type="button" (click)="pmo12RecordStatusChange($event, gdList)" 
+                                  class="btn btn-primary btn-sm" *ngIf="gdList.recordStatus == 1">
+                                    Delete
+                                </button>
+                                <button type="button" (click)="pmo12RecordStatusChange($event, gdList)" 
+                                  class="btn btn-primary btn-sm" *ngIf="gdList.recordStatus == 4" 
+                                  style="background-color: grey; border-color: grey;">
+                                    Deleted
+                                </button>
+                              </div>
+                            </div>
+                            <ng-template #btnDisableGift>
+                              <button type="button" class="btn btn-light btn-sm" 
+                                (click)="removeGiftData(i)">
+                                  Remove
+                              </button>
+                            </ng-template>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> -->
+        </div>
+        <!-- <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div> -->
+      </div>
+    </div>
+</div>

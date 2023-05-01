@@ -1,0 +1,8 @@
+{
+    "app": "Auderbox",
+    "appname": "Auderbox",
+    "defaultDomain": "mit",
+    "apiurl": "http://localhost:8082/auderbox/",
+    "imgurl": "http://localhost:8080/",
+    "debug": false
+}

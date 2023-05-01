@@ -1,0 +1,927 @@
+<ion-content [scrollEvents]="true" (ionScroll)="logScrolling($event)">
+  <div>
+    <div class="d-flex justify-content-start sticky-top optionNavBar">
+      <ul class="nav nav-pills" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="shop-list-survey-response-tab" data-toggle="tab" href="#shop-list-survey-response"
+            role="tab" aria-controls="list" aria-selected="true" (change)="tab($event);"
+            (click)="btn=false; listTab()">List</a>
+        </li>
+        <li class="nav-item" [hidden]="!btn">
+          <a class="nav-link" id="shop-new-survey-response-tab" data-toggle="tab" href="#shop-survey-response-new"
+            aria-selected="false" (click)="newTabClick($event);">Detail</a>
+        </li>
+      </ul>
+
+      <div style="display: inline-flex;">
+        <button type="button" *ngIf="btn" class="btn btn-primary header-btn" (click)="update(1)" data-toggle="tooltip"
+          data-placement="top" title="Update"
+          [disabled]="shopObj.svrHdrData.n1 == 3 || shopObj.svrHdrData.n1 == 0 ? true : false">
+          <!-- svrHdrData.n1 => header status -->
+          <span class="h-text">Update</span>
+          <span class="h-icon">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </span>
+        </button>
+        <button type="button" *ngIf="btn" class="btn btn-primary header-btn" (click)="approvecompleteSurvey(2)"
+          data-toggle="tooltip" data-placement="top" title="Approve" [disabled]="approvedisabled">
+          <!-- svrHdrData.n1 => header status -->
+          <span class="h-text">
+            Approve
+          </span>
+
+          <span class="h-icon">
+            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+          </span>
+        </button>
+        <button type="button" *ngIf="btn" class="btn btn-primary header-btn" (click)="approvecompleteSurvey(3)"
+          data-toggle="tooltip" data-placement="top" title="Complete"
+          [disabled]="completedisabled || shopObj.svrHdrData.n1 == 3 ? true : false">
+          <span class="h-text">
+            Complete
+          </span>
+          <span class="h-icon">
+            <i class="fa fa-check-square-o" aria-hidden="true"></i>
+          </span>
+        </button>
+      </div>
+
+
+      <ul *ngIf="!detailLoading" style="display: flex;align-items: center;">
+        <li *ngIf="btn && shopObj.svrHdrData.n1 == 0" class="notstarted">Inprogress Survey</li>
+        <li *ngIf="btn && shopObj.svrHdrData.n1 == 1" class="inprogress">Pending Survey</li>
+        <li *ngIf="btn && shopObj.svrHdrData.n1 == 2" class="complete">Approved Survey</li>
+        <li *ngIf="btn && shopObj.svrHdrData.n1 == 3" class="complete">Complete Survey</li>
+      </ul>
+
+    </div>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade myOuterContainer" id="shop-list-survey-response" role="tabpanel"
+        aria-labelledby="shop-list-survey-response-tab">
+
+        <mat-accordion class="example-headers-align ">
+          <mat-expansion-panel class="border rounded mb-1">
+            <mat-expansion-panel-header style="height: 35px !important">
+              <mat-panel-title class="text-primary">
+                <span *ngIf="!spinner">Advance</span>
+                <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+                  <span class="sr-only"></span>
+                </div>
+              </mat-panel-title>
+              <mat-panel-description>
+                <small></small>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="searchbox-body">
+              <div class="row">
+                <div class="col">
+                  <div class="form-group row">
+                    <label for="cri-shop-name" class="col-sm-4 col-form-label col-form-label-sm">Shop Name</label>
+                    <div class="col-sm">
+                      <input type="text" id="cri-shop-name" name="cri-shop-name" [formControl]="shopNameSearch"
+                        class="form-control form-control-sm" matInput [(ngModel)]="searchObj.shopname"
+                        [matAutocomplete]="auto1">
+                      <mat-autocomplete #auto1="matAutocomplete">
+                        <mat-option *ngFor="let snList of shopNameList" [value]="snList.shopName"
+                          style="font-size: small;">
+                          {{snList.shopName}}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="cri-surveyform" class="col-sm-4 col-form-label col-form-label-sm">Survey Form</label>
+                    <div class="col-sm">
+                      <input type="text" id="cri-surveyform" name="cri-surveyform" [formControl]="surveyformSearch"
+                        class="form-control form-control-sm" matInput [(ngModel)]="searchObj.survey"
+                        [matAutocomplete]="auto2">
+                      <mat-autocomplete #auto2="matAutocomplete">
+                        <mat-option *ngFor="let sfList of surveyformList" [value]="sfList.t2" style="font-size: small;">
+                          {{sfList.t2}}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="premise" class="col-sm-4 col-form-label col-form-label-sm">Premise Type</label>
+                    <div class="col-sm">
+                      <!-- <select class="custom-select custom-select-sm" [(ngModel)]="searchObj.premise" id="premise"
+                        style="font-size: small;">
+                        <option value="" selected>-</option>
+                        <option [value]="1">On Premise</option>
+                        <option [value]="2">Off Premise</option>
+                      </select> -->
+                      <mat-select class="form-control form-control-sm" [(ngModel)]="searchObjTemp.premise" multiple>
+                        <mat-option [value]="" [disabled]="true">-</mat-option>
+                        <mat-option [value]="1">
+                          On Premise
+                        </mat-option>
+                        <mat-option [value]="2">
+                          Off Premise
+                        </mat-option>
+                      </mat-select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="cri-brandowner" class="col-sm-4 col-form-label col-form-label-sm">Brand Owner</label>
+                    <div class="col-sm">
+                      <input type="text" id="cri-brandowner" name="cri-brandowner" [formControl]="brandownerSearch"
+                        class="form-control form-control-sm" matInput [(ngModel)]="searchObj.brandowner"
+                        [matAutocomplete]="auto3">
+                      <mat-autocomplete #auto3="matAutocomplete">
+                        <mat-option *ngFor="let boList of brandownerList1" [value]="boList.desc"
+                          style="font-size: small;">
+                          {{boList.desc}}
+                        </mat-option>
+                      </mat-autocomplete>
+                      <!-- <input type="text" id="cri-brandowner" name="cri-brandowner" 
+                      class="form-control form-control-sm" [(ngModel)]="searchObj.brandowner"> -->
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="cri-characteristic" class="col-sm-4 col-form-label col-form-label-sm">
+                      Characteristic
+                    </label>
+                    <div class="col-sm">
+                      <input type="text" id="cri-characteristic" name="cri-characteristic"
+                        [formControl]="characteristicSearch" class="form-control form-control-sm" matInput
+                        [(ngModel)]="searchObj.characteristic" [matAutocomplete]="auto7">
+                      <mat-autocomplete #auto7="matAutocomplete">
+                        <mat-option *ngFor="let charList of characteristicList" [value]="charList.CharacteristicDesc"
+                          style="font-size: small;">
+                          {{charList.CharacteristicDesc}}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <!-- <div class="form-group row">
+                  <label for="cri-township" class="col-sm-4 col-form-label col-form-label-sm">Township</label>
+                  <div class="col-sm">
+                    <input type="text" id="cri-township" name="cri-township" class="form-control form-control-sm"
+                      matInput [(ngModel)]="searchObj.township" [formControl]="townshipSearch"
+                      [matAutocomplete]="auto4">
+                    <mat-autocomplete #auto4="matAutocomplete">
+                      <mat-option *ngFor="let tsList of townshipList" [value]="tsList.t2" style="font-size: small;">
+                        {{tsList.t2}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                </div> -->
+                  <div class="form-group row">
+                    <label for="cri-surveyor" class="col-sm-4 col-form-label col-form-label-sm">Surveyor</label>
+                    <div class="col-sm">
+                      <input type="text" id="cri-surveyor" name="cri-surveyor" class="form-control form-control-sm"
+                        matInput [(ngModel)]="searchObj.surveyor" [formControl]="surveyorSearch"
+                        [matAutocomplete]="auto5">
+                      <mat-autocomplete #auto5="matAutocomplete">
+                        <mat-option *ngFor="let svrList of surveyorList" [value]="svrList.userName"
+                          style="font-size: small;">
+                          {{svrList.userName}}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="type" class="col-sm-4 col-form-label col-form-label-sm">Trade Type</label>
+                    <div class="col-sm">
+                      <!-- <select class="custom-select custom-select-sm" [(ngModel)]="searchObj.trade" id="type"
+                        style="font-size: small;">
+                        <option value="" selected>-</option>
+                        <option [value]="1">Traditional Trade</option>
+                        <option [value]="2">Modern Trade</option>
+                      </select> -->
+                      <mat-select class="form-control form-control-sm" [(ngModel)]="searchObjTemp.trade" multiple>
+                        <mat-option [value]="" [disabled]="true">-</mat-option>
+                        <mat-option [value]="1">
+                          Traditional Trade
+                        </mat-option>
+                        <mat-option [value]="2">
+                          Modern Trade
+                        </mat-option>
+                      </mat-select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="cri-category" class="col-sm-4 col-form-label col-form-label-sm">Category</label>
+                    <div class="col-sm">
+                      <input type="text" id="cri-category" name="cri-category" [formControl]="categorySearch"
+                        class="form-control form-control-sm" matInput [(ngModel)]="searchObj.category"
+                        [matAutocomplete]="auto6">
+                      <mat-autocomplete #auto6="matAutocomplete">
+                        <mat-option *ngFor="let cList of categoryList" [value]="cList.t2" style="font-size: small;">
+                          {{cList.t2}}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="cri-state" class="col-sm-4 col-form-label col-form-label-sm">State</label>
+                    <div class="col-sm ">
+                      <select [(ngModel)]="searchObj.n20" class="custom-select custom-select-sm"
+                        style="max-width: 200px;" name="cri-state" id="cri-state" (change)="cristateChange()">
+                        <option value="">-</option>
+                        <option value="{{sl.syskey}}" class="btn btn-sm btn-danger" *ngFor="let sl of statelist">
+                          {{sl.t2}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group row">
+                    <label for="fd" class="col-sm-4 col-form-label col-form-label-sm">From Date</label>
+                    <div class="col-sm">
+                      <div class="input-group input-group-sm">
+                        <input required class="form-control" [(ngModel)]="searchObj.date" name="fd" id="fd"
+                          [matDatepicker]="pickers" placeholder="Select Date" (dblclick)="dblClickFunc1()"
+                          (click)="pickers.open()" readonly>
+                        <div class="input-group-append">
+                          <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers.open()"></i>
+                          <mat-datepicker #pickers displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                          </mat-datepicker>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="td" class="col-sm-4 col-form-label col-form-label-sm">To Date</label>
+                    <div class="col-sm">
+                      <div class="input-group input-group-sm">
+                        <input required class="form-control" [(ngModel)]="searchObj.todate" name="td" id="td"
+                          [matDatepicker]="pickers1" placeholder="Select Date" (dblclick)="dblClickFunc2()"
+                          (click)="pickers1.open()" readonly>
+                        <div class="input-group-append">
+                          <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers1.open()"></i>
+                          <mat-datepicker #pickers1 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                          </mat-datepicker>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="cri-district" class="col-sm-4 col-form-label col-form-label-sm">District</label>
+                    <div class="col-sm">
+                      <select [(ngModel)]="searchObj.n21" class="custom-select custom-select-sm"
+                        style="max-width: 200px;" name="cri-district" id="cri-district" (change)="cridisChange()"
+                        [disabled]="searchObj.n20 == ''">
+                        <option value="">-</option>
+                        <option value="{{dl.syskey}}" class="btn btn-sm btn-danger" *ngFor="let dl of dislist">
+                          {{dl.t2}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="cri-township" class="col-sm-4 col-form-label col-form-label-sm">Township</label>
+                    <div class="col-sm ">
+                      <select [(ngModel)]="searchObj.n22" class="custom-select custom-select-sm"
+                        style="max-width: 200px;" name="cri-township" id="cri-township" (change)="tspChange()"
+                        [disabled]="searchObj.n21 == ''">
+                        <option value="">-</option>
+                        <option value="{{tsl.syskey}}" class="btn btn-sm btn-danger" *ngFor="let tsl of townshiplist">
+                          {{tsl.t2}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="textarea-criteria" class="col-sm-4 col-form-label col-form-label-sm">Address</label>
+                    <div class="col-sm">
+                      <textarea class="form-control form-control-sm text-monospace bg-transparent"
+                        id="textarea-criteria" style="font-size: small;" rows="3"
+                        [(ngModel)]="searchObj.shopaddress"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="d-flex justify-content-start">
+                    <div class="btn-group" role="group" style="height: 35px;">
+                      <button (click)="setCriteria()" type="button" class="btn btn-primary" [disabled]="spinner">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                      </button>
+                      <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <div class="d-flex justify-content-start">
+                      <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                        <button (click)="print()" type="button" class="btn btn-primary">
+                          Export
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </mat-expansion-panel>
+
+        </mat-accordion>
+        <!------------------- Survey List ------------------>
+
+        <mat-accordion>
+          <mat-expansion-panel *ngFor="let sur of surveyorheaderlist" (opened)="openPanel(sur, '0', false)" 
+          [expanded]="sur.panelExpanded">
+          <!--  (click)="sur.panelExpanded = !sur.panelExpanded" -->
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{sur.surveyheader}}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <pagination-controls [id]="sur.surConfig.id" (pageChange)="pageChanged($event, sur)"></pagination-controls>
+            <!-- [id]="sur.id"  -->
+            <div style="max-height: 670px !important; overflow-x: auto !important; white-space: nowrap;">
+              <table class="table table-sm table-hover mt-2 surveyortable" style="font-size: 13px;">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>No</th>
+                    <th>Survey</th>
+                    <th>Date</th>
+                    <th>Store Name</th>
+                    <th>Store Address</th>
+                    <th>Surveyor</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let h of sur.survey | paginate: sur.surConfig;let i = index"
+                    (click)="btn=true;surveyorDetail(h,h.HeaderShopSyskey)">
+                    <!-- { itemsPerPage: manager.itemsPerPage, currentPage: sur.currentPage, id: sur.id } -->
+                      <td>{{i+1}}</td>
+                      <td>{{h.HeaderDescription}}</td>
+                      <td>{{manager.dateFormatCorrector(4,h.Date)}}</td>
+                      <td>{{h.ShopDescription}}</td>
+                      <td>
+                        <!-- <a class="text-truncate" style="max-width: 100px;" matTooltip="{{h.ShopAddress}}">
+                          {{h.ShopAddress}}</a> -->
+                        <span class="d-inline-block text-truncate" style="max-width: 350px;"
+                          matTooltip="{{h.ShopAddress}}">
+                          {{h.ShopAddress}}
+                        </span>
+                      </td>
+                      <td>{{h.Surveyor}}</td>
+                      <td>
+                        <span class="notstarted" *ngIf="h.Status == '0'">IN PROGRESS</span>
+                        <span class="inprogress" *ngIf="h.Status == '1'">PENDING</span>
+                        <span class="complete" *ngIf="h.Status == '2'">APPROVE</span>
+                        <span class="complete" *ngIf="h.Status == '3'">COMPLETE</span>
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <!-- <pagination-controls slot="start" (pageChange)="pageChanged($event)"></pagination-controls> -->
+        <!-- <div style="max-height: 670px !important; overflow-x: auto !important; white-space: nowrap;">
+          <table class="table table-hover mt-2 surveyortable" style="font-size: 13px;">
+            <thead class="thead-dark">
+              <tr>
+                <th>#</th>
+                <th>Survey</th>
+                <th>Date</th>
+                <th>Store Name</th>
+                <th>Store Address</th>
+                <th>Surveyor</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+             
+              <tr *ngFor="let h of surveyorheaderlist | paginate: config;let i = index"
+                (click)="btn=true;surveyorDetail(h,h.HeaderShopSyskey)">
+                <td>{{i+1}}</td>
+                <td>{{h.HeaderDescription}}</td>
+                <td>{{manager.dateFormatCorrector(4,h.Date)}}</td>
+                <td>{{h.ShopDescription}}</td>
+                <td>{{h.ShopAddress}}</td>
+                <td>{{h.Surveyor}}</td>
+                <td>
+                  <span class="complete" *ngIf="h.Status == '2'">COMPLETE</span>
+                  <span class="notstarted" *ngIf="h.Status == '0'">IN PROGRESS</span>
+                  <span class="inprogress" *ngIf="h.Status == '1'">PENDING</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div> -->
+      </div>
+
+
+      <div class="tab-pane fade tabContainer" id="shop-survey-response-new" role="tabpanel"
+        aria-labelledby="shop-new-survey-response-tab">
+
+
+        <div id="headersur">
+          <nav *ngIf="!detailLoading">
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+              <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+                aria-controls="nav-home" aria-selected="true">Survey Response</a>
+              <a (click)="shopDetailClick()" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab"
+                href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Shop Detail</a>
+            </div>
+          </nav>
+          <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+              <mat-tab-group (selectedTabChange)="selectedTabChange($event)">
+                <mat-tab label="{{s.sectionDesc}}" *ngFor="let s of sections.section;let i = index;">
+                  <div style="padding: 10px;">
+                    <!-- <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls> -->
+                    <mat-accordion>
+                      <mat-expansion-panel *ngFor="let data of s.quesandans ;let i = index;">
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>
+                            {{data.QuestionCode}} : {{data.QuestionDescription}}
+                            <span *ngIf="data.Flag == 1" class="flag"> flag </span>
+                          </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div *ngIf="data.TypeDesc == 'Multiple Choice'" class="card-body bg-transparent">
+                          <mat-radio-group color="primary" aria-label="Select an option">
+                            <mat-radio-button value="{{al.answerSK}}" *ngFor="let al of data.answers"
+                              [checked]="al.answered" (change)="multipleradioChange(al,data.answers)">
+                              {{al.answerDesc }}
+                            </mat-radio-button>
+                          </mat-radio-group>
+                        </div>
+                        <div *ngIf="data.TypeDesc == 'Checkbox'" class="card-body bg-transparent">
+                          <section class="surveyor-section">
+                            <mat-checkbox class="surveyor-margin" color="primary" *ngFor="let al of data.answers"
+                              [checked]="al.answered" (change)="checkboxChange(al)">
+                              {{al.answerDesc}}</mat-checkbox>
+                          </section>
+                        </div>
+                        <div *ngIf="data.TypeDesc == 'Fill in the Blank'" class="card-body bg-transparent">
+                          <input [(ngModel)]="data.answermodel" required type="text"
+                            class="form-control col-sm-5 col-md-5 col-lg-5 ">   
+                        </div>
+
+                        <div *ngIf="data.TypeDesc == 'Date'" class="card-body bg-transparent">
+                          <!----------------- Date And Time ------------------->
+                          <div class="row">
+                            <div class="input-group  col-sm-5 col-md-4 col-lg-3 ">
+                              <input [(ngModel)]="data.answermodel" class="form-control" [matDatepicker]="picker1"
+                                placeholder="Choose a date" name="fromdate" readonly (click)="picker1.open()">
+                              <mat-datepicker #picker1 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                              </mat-datepicker>
+                              <div class="input-group-append">
+                                <span class="input-group-text">
+                                  <i class="fa fa-calendar" aria-hidden="true" (click)="picker1.open()"></i>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div *ngIf="data.TypeDesc == 'Time Range'" class="card-body bg-transparent row">
+
+                          <div class="form-group col-sm-4 col-md-3 col-lg-3 ">
+                            <label for="fromtimeinput">Start Time</label>
+                            <div class="input-group  mb-3">
+                              <input [ngxTimepicker]="picker" [(ngModel)]="data.answermodel" id="fromtimeinput" readonly
+                                class="form-control">
+                              <ngx-material-timepicker value="data.answermodel" #picker [appendToInput]="true"
+                                (timeSet)="startTimeChange($event,data)" [cancelBtnTmpl]="cancelBtn"
+                                [confirmBtnTmpl]="confirmBtn">
+                              </ngx-material-timepicker>
+                              <ng-template #cancelBtn>
+                                <button mat-button color="primary" style="margin-right: 10px;">Cancel</button>
+                              </ng-template>
+                              <ng-template #confirmBtn>
+                                <button mat-button color="primary">Ok</button>
+                              </ng-template>
+                              <div class="input-group-append">
+                                <span class="input-group-text">
+                                  <i class=" fa fa-clock-o" aria-hidden="true"></i>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="form-group col-sm-4 col-md-3 col-lg-3 ">
+                            <label for="totimeinput">End Time</label>
+                            <div class="input-group  mb-3">
+
+                              <input [ngxTimepicker]="picker1" [(ngModel)]="data.answermodel1" id="totimeinput" readonly
+                                class="form-control starttime">
+                              <ngx-material-timepicker #picker1 [appendToInput]="true"
+                                (timeSet)="endTimeChange($event,data)" [cancelBtnTmpl]="cancelBtn1"
+                                [confirmBtnTmpl]="confirmBtn1">
+                              </ngx-material-timepicker>
+                              <ng-template #cancelBtn1>
+                                <button mat-button color="primary" style="margin-right: 10px;">Cancel</button>
+                              </ng-template>
+                              <ng-template #confirmBtn1>
+                                <button mat-button color="primary">Ok</button>
+                              </ng-template>
+                              <div class="input-group-append">
+                                <span class="input-group-text">
+                                  <i class=" fa fa-clock-o" aria-hidden="true"></i>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+
+                        </div>
+
+                        <div *ngIf="data.TypeDesc == 'Number Range' " class="card-body bg-transparent">
+                          <div class="row">
+                            <div class="form-group col-sm-5 col-md-4 col-lg-4 ">
+                              <label for="exampleInputEmail1">From</label>
+                              <input type="number" class="form-control" [(ngModel)]="data.answermodel">
+                            </div>
+
+                            <div class="form-group col-sm-5 col-md-4 col-lg-4 ">
+                              <label for="exampleInputEmail1">To</label>
+                              <input type="number" class="form-control" [(ngModel)]="data.answermodel1">
+                            </div>
+                          </div>
+                        </div>
+
+                        <div *ngIf="data.TypeDesc == 'Rating 0-10'" class="card-body bg-transparent">
+                          <div class="form-group col">
+                            <ion-label for="cri-rateScale" class="col-4">Rating Scale</ion-label>
+                            <div class="col-lg" style="overflow-x: auto;
+                            white-space: nowrap; margin-top: 20px;">
+                              <mat-button-toggle-group [(ngModel)]="data.answermodel" name="fontStyle"
+                                aria-label="Font Style" value="{{data.answermodel}}">
+                                <mat-button-toggle value="1">1</mat-button-toggle>
+                                <mat-button-toggle value="2">2</mat-button-toggle>
+                                <mat-button-toggle value="3">3</mat-button-toggle>
+                                <mat-button-toggle value="4">4</mat-button-toggle>
+                                <mat-button-toggle value="5">5</mat-button-toggle>
+                                <mat-button-toggle value="6">6</mat-button-toggle>
+                                <mat-button-toggle value="7">7</mat-button-toggle>
+                                <mat-button-toggle value="8">8</mat-button-toggle>
+                                <mat-button-toggle value="9">9</mat-button-toggle>
+                                <mat-button-toggle value="10">10</mat-button-toggle>
+                              </mat-button-toggle-group>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div *ngIf="data.TypeDesc == 'Attach Photograph'" class="card-body bg-transparent">
+                          <p>{{data.AnswerDesc}}</p>
+                        </div>
+
+                        <div *ngIf="data.TypeDesc == 'Attach Photograph'"
+                          class="card-footer bg-transparent photo-container">
+                          <div *ngFor="let al of data.AnswerShopPhoto" class="ion-activatable ripple-parent">
+                            <app-image-shell *ngIf="al.PhotoPath" [src]="manager.appConfig.imgurl + al.PhotoPath"
+                              (click)="previewImg(al.PhotoPath)">
+                            </app-image-shell>
+                            <span *ngIf="!al.PhotoPath && al.PhotoName=='NotAvaliable'">Not Applicable</span>
+                            <ion-ripple-effect></ion-ripple-effect>                            
+                          </div>
+                          
+
+                        </div>
+                        <mat-action-row *ngIf="shopObj.svrHdrData.n1 != 3 && shopObj.svrHdrData.n1 != 0">
+                          <div class="actiontoolbar">
+
+                            <mat-radio-group color="primary" aria-label="Select an option" style="margin-left: 27px;"
+                              [(ngModel)]="data.ApprovedFlag" (change)="approvedFlagRadioChange()">
+                              <mat-radio-button value="0">UnCheck</mat-radio-button>
+                              <mat-radio-button value="1">Approve</mat-radio-button>
+                              <mat-radio-button value="2">Reject</mat-radio-button>
+                            </mat-radio-group>
+
+                          </div>
+                          <div class="actiontoolbarright">
+                            <div class="form-group">
+                              <input type="text" class="form-control" [(ngModel)]="data.Comment"
+                                placeholder="Leave a comment">
+                            </div>
+
+                            <button mat-flat-button color="primary" (click)="flagQues(data)" slot="end"
+                              *ngIf="data.Flag == 0">
+                              <mat-icon>flag</mat-icon>Flag question
+                            </button>
+
+                            <button mat-flat-button color="primary" (click)="flagQues(data)" slot="end"
+                              *ngIf="data.Flag == 1">
+                              <mat-icon>flag</mat-icon>Unflag question
+                            </button>
+                          </div>
+
+                        </mat-action-row>
+                      </mat-expansion-panel>
+                    </mat-accordion>
+                  </div>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+              <div class="container">
+                <div class="card-group">
+                  <div class="card">
+                    <div class="card-header bg-transparent text-primary border-bottom-0">
+                      Detail
+                    </div>
+                    <div class="card-body px-4 ">
+
+
+                      <div class="form-group row">
+                        <label for="spShopCode" class="col-sm-4 col-form-label ">Shop Code</label>
+                        <div class="col-sm">
+                          <input readonly type="text" id="spShopCode" name="spShopCode" class="form-control "
+                            [(ngModel)]="ABShopCode" (focus)="focusFunction()" [disabled]="true">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="name" class="col-sm-4 col-form-label ">Name</label>
+                        <div class="col-sm">
+                          <input required type="text" id="name" name="name" class="form-control "
+                            [(ngModel)]="shopObj.shopName" [disabled]="true">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="name" class="col-sm-4 col-form-label ">ဆိုင်နာမည်</label>
+                        <div class="col-sm">
+                          <input required type="text" id="name" name="name" class="form-control "
+                            [(ngModel)]="shopObj.t5" [disabled]="true">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="person" class="col-sm-4 col-form-label ">Shop Phone No</label>
+                        <div class="col-sm">
+                          <input required type="tel" name="personph" id="personph" class="form-control  "
+                            pattern="[0-9]{11}" (change)="numberOnlyValidationshop()" [(ngModel)]="shopObj.phno"
+                            maxlength="11" [disabled]="true">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="person" class="col-sm-4 col-form-label ">Owner Name</label>
+                        <div class="col-sm">
+                          <input required type="text" name="person" id="person" class="form-control  "
+                            [(ngModel)]="shopObj.personName" [disabled]="true">
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label for="ph" class="col-sm-4 col-form-label ">Owner Phone No</label>
+                        <div class="col-sm">
+                          <input required type="tel" name="ph" id="ph" pattern="[0-9]{11}" class="form-control "
+                            (change)="numberOnlyValidation()" [(ngModel)]="shopObj.t10" maxlength="11" [disabled]="true">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card-body">
+                      <div style="width: 100%;" class="mb-3">
+                        <img id="showImg-shop" [src]="shopimage" (error)="handleImgError($event)"
+                          style="width: 16rem; margin: auto">
+                      </div>
+                      <small class="text-muted ">
+                        bigger image size makes slower image processing
+                      </small>
+                    </div>
+                    <!-- <div class="card-footer bg-transparent border-top-0">
+                      <div class="form-group row">
+
+                        <div class="col-sm input-group">
+                          <div class="custom-file">
+                            <input #shopimageinput type="file" class="custom-file-input" name="shopimg"
+                              id="imginput-shop" (change)="inputFileChange($event)" [disabled]="true">
+                            <label class="custom-file-label" for="imginput-shop" id="imginputLabel-shop"
+                              aria-describedby="inputGroupFileAddon02">Choose file</label>
+                          </div>
+                          <div class="input-group-prepend">
+                            <button (click)="clearImage()" class="btn btn-outline-secondary rounded-right" type="button"
+                              id="inputGroupFileAddon09" [disabled]="true">Clear</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div> -->
+                   
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header bg-transparent text-primary border-bottom-0">Address</div>
+                  <div class="card-body row">
+                    <div class="col">
+                      <div class="form-group row">
+                        <label for="shop-state" class="col-sm-4 col-form-label">State</label>
+                        <div class="col-sm">
+                          <select (change)="stateChange()" [(ngModel)]="shopObj.n20" 
+                            class="selectBox" name="state" id="shop-state" [disabled]="true">
+                            <option value="" selected [disabled]="true">-</option>
+                            <option [value]="s.syskey" *ngFor="let s of statelist" [disabled]="true">
+                              {{s.t2}}
+                            </option>
+                          </select>
+                          <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+                            *ngIf="state"></span>
+
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="shop-district" class="col-sm-4 col-form-label ">District</label>
+                        <div class="col-sm">
+                          <select (change)="disChange()" [(ngModel)]="shopObj.n21" class="selectBox"
+                            name="district" id="shop-district" [disabled]="true">
+                            <option value="" selected >-</option>
+                            <option [value]="d.syskey" *ngFor="let d of dislist">
+                              {{d.t2}}
+                            </option>
+                          </select>
+                          <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+                            *ngIf="dis"></span>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="shop-township" class="col-sm-4 col-form-label ">TownShip</label>
+                        <div class="col-sm">
+                          <select (change)="tspChange()" [(ngModel)]="shopObj.n22" 
+                            class="selectBox" name="township" id="shop-township" [disabled]="true">
+                            <option value="" selected >-</option>
+                            <option [value]="t.syskey" *ngFor="let t of townshiplist" >
+                              {{t.t2}}
+                            </option>
+                          </select>
+                          <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+                            *ngIf="township"></span>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="shop-townorvlg" class="col-sm-4 col-form-label ">Town/VillageTract?</label>
+                        <div class="col-sm">
+                          <select [(ngModel)]="townvillage" class="selectBox" (change)="townOrVillageChange()"
+                            name="township" id="shop-townorvlg" [disabled]="true">
+                            <option value="0" selected >-</option>
+                            <option value="1" >Town</option>
+                            <option value="2" >VillageTract</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="shop-town" class="col-sm-4 col-form-label ">{{townvillage=='1'?
+                          'Town':'VillageTract'}}</label>
+                        <div class="col-sm">
+                          <select (change)="townChange()" [(ngModel)]="shopObj.n23" 
+                            class="selectBox" name="town" id="shop-town" [disabled]="true">
+                            <option value="" selected >-</option>
+                            <option [value]="t.syskey" *ngFor="let t of town_village_list" >
+                              {{t.t2}}
+                            </option>
+                          </select>
+                          <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+                            *ngIf="townorvillage"></span>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="shop-villagewards" class="col-sm-4 col-form-label ">Village/Ward?</label>
+                        <div class="col-sm">
+                          <select (change)="villageWardChange()" class="selectBox" [(ngModel)]="village_wards"
+                            name="villagewards" id="shop-villagewards" [disabled]="true">
+                            <option value="0" selected>-</option>
+                            <option value="1" >Ward</option>
+                            <option value="2" >Village</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="shop-villagewards" class="col-sm-4 col-form-label ">{{village_wards=='1'?
+                          'Ward':'Village'}}</label>
+                        <div class="col-sm">
+                          <select (change)="wardChange()" class="selectBox" [(ngModel)]="shopObj.n24"
+                            name="villagewards" id="shop-villagewards" [disabled]="true">
+                            <option value="" selected >-</option>
+                            <option [value]="w.syskey" *ngFor="let w of wardlist" >
+                              {{w.t2}}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="shop-street" class="col-sm-4 col-form-label ">Street</label>
+                        <div class="col-sm">
+                          <input type="text" id="shop-street" [(ngModel)]="shopObj.t11" (change)="StreetChange()"class="form-control " [disabled]="true">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col">
+                      <div class="form-group row">
+                        <label class="col-sm-4 col-form-label  ">Latitude</label>
+                        <div class="col-sm-8">
+                          <input type="text" readonly class="form-control-plaintext" id="staticEmail"
+                            value="{{shopObj.locationData.lat}}">
+                        </div>
+                        <!-- <div class="col-sm">
+                          <p class="text-muted">{{shopObj.locationData.lat}}</p>
+                        </div> -->
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-4 col-form-label  ">Longitude</label>
+                        <div class="col-sm-8">
+                          <input type="text" readonly class="form-control-plaintext" id="staticEmail"
+                            value="{{shopObj.locationData.lon}}">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-4 col-form-label  ">Plus Code</label>
+                        <div class="col-sm-8">
+                          <input type="text" readonly class="form-control-plaintext" id="staticEmail"
+                            value="{{shopObj.locationData.t1}}">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="add" class="col-sm-4 col-form-label  ">Address</label>
+                        <div class="col-sm">
+                          <p class="text-muted">{{shopObj.address}}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="card-footer">
+                    <div class="row" style="float: right;">
+                      <ion-chip color="primary" (click)="storeCharacter()">
+                        <ion-icon name="add"></ion-icon>
+                        <ion-label>Store characteristics</ion-label>
+                      </ion-chip>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<!-- <div class="modal fade" id="imgcrp-shop" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modified image</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" [hidden]="!croperReady">
+        <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" format="png"
+          (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()"
+          autoCrop="false">
+        </image-cropper>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cropImageCencel()" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" (click)="cropImage()" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="previewSurveImgModel" class="modal" tabindex="-1">
+    <span class="closemodel" (click)="previewModelClose()">&times;</span>
+    <img [src]="manager.appConfig.imgurl + image" class="previewSurveImgModel-content" (error)="handleImgError($event)">
+  </div>
+</div> -->
+
+
+<div class="modal fade" id="storecharactermodal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Store characteristics</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-center" *ngIf="isLoading">
+          <div class=" spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"
+            id="spinner-advsearch">
+            <span class="sr-only"></span>
+          </div>
+        </div>
+
+        <span class="example-list-section">
+          <ul class="list-group">
+            <li class="list-group-item" *ngFor="let c of _storecharacterlist">
+              <mat-checkbox color="primary" checked="true">
+                {{c.CharacterDesc}}
+              </mat-checkbox>
+            </li>
+          </ul>
+        </span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" disabled="true">Add</button>
+      </div>
+    </div>
+  </div>
+</div>

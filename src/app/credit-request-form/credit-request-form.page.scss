@@ -1,0 +1,56 @@
+.custom-select-sm,
+.form-control-sm,
+.input-group-sm {
+  max-width: 200px;
+}
+
+:host ::ng-deep .mat-expansion-panel {
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .mat-expansion-panel-header {
+  height: 35px !important;
+}
+
+:host ::ng-deep .mat-expansion-panel-header.mat-expanded {
+  // note that we're transitioning transform, not height!
+  height: 48px !important;
+}
+#spinner-shop{
+  display: none;
+}
+
+#spinner-shopCode{
+  display: none;
+}
+
+.proceedBtn {
+  padding: 5px;
+  background-color: green;
+  color: white;
+  margin-right: 5px;
+  width: 70px;
+}
+
+.rejectBtn {
+  padding: 5px;
+  background-color: darkred;
+  color: white;
+  margin-right: 5px;
+  width: 70px;
+}
+.btndelete {
+
+  background-color: rgb(189, 51, 80);
+
+  color: white;
+
+}
+
+.btndelete:hover {
+
+  background-color:  #740110;
+
+  color: white;
+
+}

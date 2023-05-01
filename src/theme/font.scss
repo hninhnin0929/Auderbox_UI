@@ -1,0 +1,30 @@
+@font-face {
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 400;
+    src: local("Roboto"), local("Roboto-Regular"), url(../assets/fonts/Roboto-Regular.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 500;
+    src: local("Roboto Medium"), local("Roboto-Medium"), url(../assets/fonts/Roboto-Medium.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: "Roboto", sans-serif !important;
+    font-style: normal;
+    font-weight: 700;
+    src: local("Roboto Bold"), local("Roboto-Bold"), url(../assets/fonts/Roboto-Bold.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: "ZawgyiOne";
+    src: url("../assets/fonts/ZawgyiOne.ttf");
+}
+
+@font-face {
+    font-family: "Pyidaungsu";
+    src: url("../assets/fonts/mm3.ttf");
+}

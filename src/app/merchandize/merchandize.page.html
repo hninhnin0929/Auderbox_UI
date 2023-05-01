@@ -1,0 +1,158 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="row">
+      <div class="col">
+        <div class="card boarderless">
+          <div class="card-body">
+            <form>
+              <div class="form-group row">
+                <label for="shop" class="col-sm-5 col-form-label">Choose shop</label>
+                <div class="col-sm ">
+                  <select (change)="chooseShopClick()" [(ngModel)]="selectShop" name="shop" class="form-control"
+                    interface="popover" slot="end">
+                    <option value="" disabled selected hidden>Select</option>
+                    <option *ngFor="let shop of shopList; let i = index;" [value]="i"> {{shop.shopname}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="shop" class="col-sm-5 col-form-label">Choose tranId</label>
+                <div class="col-sm ">
+                  <select (change)="campaignClick()" [(ngModel)]="selectCampain" name="tran" class="form-control"
+                    interface="popover" slot="end">
+                    <option value="" disabled selected hidden>Select</option>
+                    <option *ngFor="let mc002 of mc002list; let i=index" [value]="i">
+                      {{mc002.t1==''? i+1: mc002.t1}} {{mc002.mc003.length == 0? ' (No task avariable)':''}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+      <div class="col">
+        <div class="card boarderless">
+          <div class="card-body">
+            <div class="form-group row">
+              <label for="shop" class="col-sm-5 col-form-label">BrandOwner id</label>
+              <div class="col-sm ">
+                <input type="text" readonly class="form-control" id="staticEmail" [value]="campaignDetail.brandOwnerId==undefined? '-':campaignDetail.brandOwnerId ">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="shop" class="col-sm-5 col-form-label">Campaign id</label>
+              <div class="col-sm ">
+                <input type="text" readonly class="form-control" id="staticEmail" 
+                [value]="campaignDetail.campaignId == undefined? '-':campaignDetail.campaignId ">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dropdown-divider"></div>
+    <div class="row">
+      <div class="col">
+        <div id="d-flex justify-content-end">
+          <button type="button text-primary" class="btn btn-light" (click)="saveTask()">SAVE</button>
+        </div>
+      </div>
+    </div>
+    <div class="dropdown-divider"></div>
+    <div class="row">
+      <div class="col-lg">
+        <div class="alert alert-primary " style="width: 400px;" *ngFor="let mc003 of mc003list; let i=index"
+          role="alert">
+          <div class="d-flex justify-content-between">
+            <p class="mt-2" (click)="taskClick(i)">{{mc003.t1=='null'? i+1 : mc003.t1}}</p>
+            <div class="custom-control custom-checkbox mt-2">
+              <input type="checkbox" class="custom-control-input" [(ngModel)]="mc003.complete" id="checkme">
+              <label class="custom-control-label text-dark mt-1" for="checkme">Completed</label>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+      <div class="col">
+        <div class="card overflow-auto" *ngIf="mc003list.length!==0 && piclist.length!==0">
+          <div class="card-header">{{clickableTask.t1}}</div>
+          <div class="flexbin flexbin-margin">
+            <a *ngFor="let pic of piclist; let i=index">
+              <img [src]="pic.t3 == ''? 'assets/img/not-found.png': url + pic.t3" />
+            </a>
+
+             <!-- <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?man" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?woman" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?design" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?sky" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?tree" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?cat" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?dog" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?office" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?sea" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?green" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?fashion" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?architecture" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?art" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?style" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?animal" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?home" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?flower" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?grass" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?market" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?street" />
+            </a>
+            <a href="https://unsplash.com/">
+                <img src="https://source.unsplash.com/featured/?bird" />
+            </a> -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</ion-content>

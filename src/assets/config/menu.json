@@ -1,0 +1,643 @@
+{
+    "appPages": [
+        {
+            "title": "User",
+            "flag": false,
+            "icon": "assets/icon/settings-outline.svg",
+            "status": true,
+            "child": [
+                {
+                    "title": "User",
+                    "code": "user",
+                    "url": "/user-list",
+                    "status": true,
+                    "style": false,
+                    "btns": [
+                        {
+                            "title": "Save",
+                            "code": "save",
+                            "status": true
+                        },
+                        {
+                            "title": "Delete",
+                            "code": "delete",
+                            "status": true
+                        },
+                        {
+                            "title": "Activate/Deactivate",
+                            "code": "activate",
+                            "status": true
+                        },
+                        {
+                            "title": "Reset Password",
+                            "code": "reset_password",
+                            "status": true
+                        }
+                    ]
+                },
+                {
+                    "title": "Role",
+                    "code": "role",
+                    "url": "/role-list",
+                    "status": true,
+                    "style": false
+                },
+              
+               
+                {
+                    "title": "Security",
+                    "code": "security",
+                    "url": "/security",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Menu",
+                    "code": "menu",
+                    "url": "/menu-list",
+                    "status": true,
+                    "style": false
+                }
+            ]
+        },
+        {
+            "title": "Asset",
+            "flag": false,
+            "icon": "assets/icon/settings-outline.svg",
+            "status": true,
+            "child": [
+                {
+                    "title": "Store",
+                    "code": "shop",
+                    "url": "/shop",
+                    "status": true,
+                    "style": false,
+                    "btns": [
+                        {
+                            "title": "allow store to create",
+                            "code": "active",
+                            "status": true
+                        },
+                        {
+                            "title": "allow store to delete",
+                            "code": "deleteShop",
+                            "status": true
+                        },
+                        {
+                            "title": "allow store to export",
+                            "code": "exportShop",
+                            "status": true
+                        },
+                        {
+                            "title": "allow active/inactive button control",
+                            "code": "allowButton",
+                            "status": true
+                        },
+                        {
+                            "title": "allow gps modification control",
+                            "code": "gps",
+                            "status": true
+                        },
+                        {
+                            "title": "allow store phone modification control",
+                            "code": "storephone",
+                            "status": true
+                        }
+                    ]
+                },
+                {
+                    "title": "Coupon",
+                    "code": "coupon-entry",
+                    "url": "/coupon-entry",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Surveyor Summary",
+                    "code": "surveyorsummary",
+                    "url": "/surveyor-summary",
+                    "status": true,
+                    "style": false
+                },
+             
+                {
+                    "title": "Original Warehouse",
+                    "code": "mapping",
+                    "url": "/mapping",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Surveyor Response Management",
+                    "code": "surveyorresponse",
+                    "url": "/surveyor-response",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Gift SKU",
+                    "code": "gift",
+                    "url": "/gift",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Credit Approval",
+                    "code": "credit-limit",
+                    "url": "/credit-limit",
+                    "status": true,
+                    "style": false,
+                    "btns": [
+                        {
+                            "title": "allow credit Approval to save",
+                            "code": "credit-limit-save",
+                            "status": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Places",
+            "flag": false,
+            "icon": "assets/icon/settings-outline.svg",
+            "status": true,
+            "child": [
+                {
+                    "title": "Town/VillageTract",
+                    "code": "town",
+                    "url": "/town",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "District",
+                    "code": "district",
+                    "url": "/district",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Township",
+                    "code": "tsp",
+                    "url": "/tsp",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Village/Ward",
+                    "code": "ward",
+                    "url": "/ward",
+                    "status": true,
+                    "style": false
+                }
+            ]
+        },
+        {
+            "title": "Routing",
+            "flag": false,
+            "icon": "assets/icon/settings-outline.svg",
+            "status": true,
+            "child": [
+                {
+                    "title": "Zone",
+                    "code": "zone",
+                    "url": "/zone",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Zone/Team",
+                    "code": "team",
+                    "url": "/team",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Zone/SKU",
+                    "code": "zone-sku-mapping",
+                    "url": "/zone-sku-mapping",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Routing Schedule",
+                    "code": "store-routing",
+                    "url": "/store-routing",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Routing Assignment",
+                    "code": "assign-user-store",
+                    "url": "/assign-user-store",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Map",
+                    "code": "map",
+                    "url": "/google-map",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Surveyor Routing",
+                    "code": "surveyorrouting",
+                    "url": "/surveyor-routing",
+                    "status": true,
+                    "style": false
+                }
+                
+            ]
+        },
+        {
+            "title": "Production",
+            "flag": false,
+            "icon": "assets/icon/settings-outline.svg",
+            "status": true,
+            "child": [
+                {
+                    "title": "Stock",
+                    "code": "stock",
+                    "url": "/stock",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Category",
+                    "code": "category",
+                    "url": "/category",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Sub Category",
+                    "code": "sub-category",
+                    "url": "/sub-category",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Pack Size",
+                    "code": "packsize",
+                    "url": "/packsize",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Pack Type",
+                    "code": "packtype",
+                    "url": "/packtype",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "UOM",
+                    "code": "uom",
+                    "url": "/uom",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Flavour",
+                    "code": "flover",
+                    "url": "/flover",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Vendor",
+                    "code": "vendor",
+                    "url": "/vendor",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Brand Owner",
+                    "code": "brand-owner",
+                    "url": "/brand-owner",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Brand",
+                    "code": "brand",
+                    "url": "/brand",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Discount",
+                    "code": "discount-type",
+                    "url": "/discount-type",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Invoice Discount",
+                    "code": "invoice-discount",
+                    "url": "/invoice-discount",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Volume Discount",
+                    "code": "volume-discount",
+                    "url": "/volume-discount",
+                    "status": true,
+                    "style": false
+                },
+           
+                {
+                    "title": "Loyalty Discount",
+                    "code": "loyalty-discount",
+                    "url": "/loyalty-discount",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Loyalty Discount Run",
+                    "code": "loyalty-discount-run",
+                    "url": "/loyalty-discount-run",
+                    "status": true,
+                    "style": false
+                } 
+                
+            ]
+        },
+        {
+            "title": "Transaction",
+            "flag": false,
+            "icon": "assets/icon/settings-outline.svg",
+            "status": true,
+            "child": [
+                {
+                    "title": "Sales Order",
+                    "code": "order/211",
+                    "url": "/order",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Delivery Order",
+                    "code": "deliveryorder",
+                    "url": "/delievery-order",
+                    "status": true,
+                    "style": false,
+                    "btns": [
+                        {
+                            "title": "Allow Back Date Transaction",
+                            "code": "allow-backdate",
+                            "status": true
+                        }
+                    ]
+                },
+                {
+                    "title": "CampaignShop",
+                    "code": "campaign-shop",
+                    "url": "/campaign-shop",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "CampaignTask",
+                    "code": "campaign-task",
+                    "url": "/campaigntask",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Campaign BrandOwner",
+                    "code": "campaign-brandowner",
+                    "url": "/campaignbrand",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Merchandising",
+                    "code": "merchandise",
+                    "url": "/merchandise",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title":"Surveyor Header",
+                    "code": "surveyor-header",
+                    "url": "/surveyor-header",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Surveyor",
+                    "code": "surveyor",
+                    "url": "/surveyor",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Export Recomended SKU",
+                    "code": "export-recomended-sku",
+                    "url": "/export-recomended-sku",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Price Zone",
+                    "code": "price-zone",
+                    "url": "/price-zone",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Credit Request Form",
+                    "code": "credit-request-form",
+                    "url": "/credit-request-form",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Credit Collection",
+                    "code": "credit-collection",
+                    "url": "/payment-collection",
+                    "status": true,
+                    "style": false
+                }
+            ]
+        },
+        {
+            "title": "Reports",
+            "flag": false,
+            "icon": "assets/icon/settings-outline.svg",
+            "status": true,
+            "child": [
+                {
+                    "title": "Order Detail Report",
+                    "code": "order-report",
+                    "url": "/order-report",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Order Report",
+                    "code": "order-report-by-summary",
+                    "url": "/order-report-by-summary",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Transaction report",
+                    "code": "transaction-report",
+                    "url": "/transaction-report",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Returnable Packaging report",
+                    "code": "empty-bottle-report",
+                    "url": "/empty-bottle-report",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Transaction detail report",
+                    "code": "transaction-detail-report",
+                    "url": "/transaction-detail-report",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Delivery Void report",
+                    "code": "void-report",
+                    "url": "/void-report",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Red Flag by amount",
+                    "code": "red-flag-by-amount",
+                    "url": "/average-order-amount",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Red Flag by SKU",
+                    "code": "red-flag-by-sku",
+                    "url": "/redflag-report",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Inventory Report",
+                    "code": "inventory-report",
+                    "url": "/inventory-report",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Survey Transaction Report",
+                    "code": "survey-transaction-report",
+                    "url": "/survey-transaction-report",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Survey Transaction Archive Report",
+                    "code": "survey-transaction-archive-report",
+                    "url": "/survey-transaction-archive-report",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title":"ShopTransferReport",
+                    "code": "shop-transfer-report",
+                    "url": "/shop-transfer-report",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title":"LoyaltyReport",
+                    "code": "loyalty-report",
+                    "url": "/loyalty-report",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Loyalty Transaction Report",
+                    "code": "loyalty-transaction-report",
+                    "url": "/loyalty-transaction-report",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Order Delivery Report",
+                    "code": "order-delivery-report",
+                    "url": "/order-delivery-report",
+                    "status": true,
+                    "style": false
+                },
+                {
+                    "title": "Check In Report",
+                    "code": "checkin-report",
+                    "url": "/checkin-report",
+                    "status": true,
+                    "style": false
+                }  
+                ]
+        },
+        {
+            "title": "Settings",
+            "flag": false,
+            "icon": "assets/icon/settings-outline.svg",
+            "status": true,
+            "child": [
+                {
+                    "title": "System Setting",
+                    "code": "system-setting",
+                    "url": "/system-setting",
+                    "status": true,
+                    "style": false
+                }
+            ]
+        },
+        {
+            "title": "SAP Integration",
+            "flag": false,
+            "icon": "assets/icon/settings-outline.svg",
+            "status": true,
+            "child": [
+                {
+                    "title": "SAP Template",
+                    "code": "sap-template",
+                    "url": "/sap",
+                    "status": true,
+                    "style": false,
+                    "btns": [
+                        {
+                            "title": "Allow Credit Balance Import",
+                            "code": "allow_creditbalimport",
+                            "status": true
+                        },
+                        {
+                            "title": "Allow AR Import",
+                            "code": "allow_arimport",
+                            "status": true
+                        },
+                        {
+                            "title": "Allow Credit Collection Export",
+                            "code": "allow_crdcollectexport",
+                            "status": true
+                        }
+                    ]
+                },
+                {
+                    "title": "SAP Audit Trail",
+                    "code": "audit-log",
+                    "url": "/audit-log",
+                    "status": true,
+                    "style": false
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,264 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="tab-content" id="nav-tabContent">
+
+      <div class="card sticky-top" style="margin-bottom: 8px; width: 100%;">
+        <div class="card-header bg-transparent" style="width: 100%;">
+          {{spinner? 'Processing ..':'Advance'}}
+          <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+            [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true">
+          </i>
+          <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+            <span class="sr-only"></span>
+          </div>
+        </div>
+        <div class="card-body" *ngIf="searchtab" id="advance-card">
+          <div class="row">
+            <div class="col">
+              <div class="form-group row">
+                <label for="fd" class="col-sm-4 col-form-label col-form-label-sm">From date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input [(ngModel)]="criteria.fromdate" matInput [matDatepicker]="p1" placeholder="Select Date"
+                    class="form-control form-control-sm " readonly>
+                    <div class="input-group-append date-form" style="width: fit-content;">
+                      <i class="input-group-text fa fa-calendar rounded-right" aria-hidden="true "
+                      (click)="p1.open()"></i>
+                      <mat-datepicker #p1></mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="spSKUCode" class="col-sm-4 col-form-label col-form-label-sm">Section</label>
+                <div class="col-sm">
+                  <input [(ngModel)]="criteria.section" type="text" matInput class="form-control form-control-sm"
+                    id="spsection" name="spSKUCode" required>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="owner-name" class="col-sm-4 col-form-label col-form-label-sm">Answer</label>
+                <div class="col-sm">
+                  <input type="text" id="cri-answer" matInput class="form-control form-control-sm"
+                    [(ngModel)]="criteria.answer" [formControl]="stockNameSearch">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="name" class="col-sm-4 col-form-label col-form-label-sm">Question</label>
+                <div class="col-sm">
+                  <input class="form-control form-control-sm text-monospace bg-transparent" id="question"
+                    style="font-size: small;" [(ngModel)]="criteria.questionDesc">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="owner-name" class="col-sm-4 col-form-label col-form-label-sm">Phone number</label>
+                <div class="col-sm">
+                  <input type="text" id="cri-answer" matInput class="form-control form-control-sm"
+                    [(ngModel)]="criteria.Phone" [formControl]="stockNameSearch">
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label for="fd" class="col-sm-4 col-form-label col-form-label-sm">To date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input [(ngModel)]="criteria.todate" matInput [matDatepicker]="p2" placeholder="Select Date"
+                      class="form-control form-control-sm inputdate" readonly>
+                    <div class="input-group-append date-form" style="width: fit-content;">
+                      <i class="input-group-text fa fa-calendar rounded-right" aria-hidden="true "
+                      (click)="p2.open()"></i>
+                      <mat-datepicker #p2></mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="stock-code" class="col-sm-4 col-form-label col-form-label-sm"> Survey Form</label>
+                <div class="col-sm">
+                  <input type="text" id="cri-shop2" matInput class="form-control form-control-sm"
+                    [(ngModel)]="criteria.surveyForm" [formControl]="stockCodeSearch">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="address" class="col-sm-4 col-form-label col-form-label-sm">Surveyor</label>
+                <div class="col-sm">
+                  <input class="form-control form-control-sm text-monospace bg-transparent" id="name"
+                    style="font-size: small;" [(ngModel)]="criteria.surveyor">
+                </div>
+              </div>
+
+              <!-- <div class="form-group row">
+                    <label for="staid" class="col-sm-4 col-form-label col-form-label-sm">State</label>
+                    <div class="col-sm">
+                        <select slot="end" style="font: small;" 
+                            name="sta" class="custom-select custom-select-sm col-form-label-sm" [(ngModel)]="staobj.syskey" id="sta" (change)="stateChange()">
+                            <option value="" selected>-</option>
+                            <option [value]="i.syskey" *ngFor="let i of _stateList">{{i.t2}}
+                            </option>
+                        </select>
+                    </div>
+                </div> -->
+              <div class="form-group row">
+                <label for="address" class="col-sm-4 col-form-label col-form-label-sm">Question Type</label>
+                <div class="col-sm">
+                  <input class="form-control form-control-sm text-monospace bg-transparent" id="type"
+                    style="font-size: small;" [(ngModel)]="criteria.type">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="stock-name" class="col-sm-4 col-form-label col-form-label-sm">Question No.</label>
+                <div class="col-sm">
+                  <input type="text" id="cri-qcode" matInput class="form-control form-control-sm"
+                    [(ngModel)]="criteria.questionCode" [formControl]="stockNameSearch">
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label for="cri-dateoptions" class="col-sm-4 col-form-label col-form-label-sm">Date Options</label>
+                <div class="col-sm">
+                  <select [(ngModel)]="criteria.dateOptions" class="custom-select custom-select-sm"
+                    name="cri-dateoptions" id="cri-dateoptions" (change)="dateOptionsChange()">
+                    <option value="0" selected>-</option>
+                    <option value="today">
+                      Today
+                    </option>
+                    <option value="yesterday">
+                      Yesterday
+                    </option>
+                    <option value="this_week">
+                      This Week
+                    </option>
+                    <option value="last_week">
+                      Last Week
+                    </option>
+                    <option value="this_month">
+                      This Month
+                    </option>
+                    <option value="last_month">
+                      Last Month
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="code" class="col-sm-4 col-form-label col-form-label-sm">Shop</label>
+                <div class="col-sm">
+                  <input class="form-control form-control-sm  bg-transparent" id="code" style="font-size: small;"
+                    [(ngModel)]="criteria.shop">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="code" class="col-sm-4 col-form-label col-form-label-sm">State</label>
+                <div class="col-sm">
+                  <select [(ngModel)]="criteria.state" class="custom-select custom-select-sm" (change)="tspNameSearch.setValue('')">
+                    <option value="">-</option>
+                    <option *ngFor="let state of _stateList" [value]="state.syskey">{{state.t2}}</option>
+                  </select>
+
+                </div>
+              </div>
+              <div class="form-group row align-middle">
+                <label for="shop-name" class="col-sm-4 col-form-label col-form-label-sm">Town Ship</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm  flex-nowrap rounded-right">
+
+                    <input type="text" matInput id="tsp-name" class=" form-control border-right-0 "
+                      [(ngModel)]="criteria.township" (keyup.enter)="getTspListForAutoComplete()" placeholder="Search and enter"
+                      [formControl]="tspNameSearch" [matAutocomplete]="auto" [disabled]="staobj.syskey==''">
+                    <mat-autocomplete #auto="matAutocomplete">
+                      <mat-option *ngFor="let tsp of _tspList" [value]="tsp.t2" style="font-size: small;">
+                        {{tsp.t2}}
+                      </mat-option>
+                    </mat-autocomplete>
+                    <div class="input-group-append border rounded-right align-middle">
+                      <span class="spinner-border btn-outline-secondary" role="status" style="margin-top: 3px;margin-right: 4px;" id="spinner-tsp">
+                        <span class="sr-only">Loading...</span>
+                      </span>
+
+                    </div>
+                  </div>
+            
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="d-flex justify-content-start">
+                <div class="btn-group" role="group" style="height: 35px;">
+                  <button (click)="search(0)" type="button" class="btn btn-primary" [disabled]="spinner">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+
+                  <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="d-flex justify-content-start">
+                  <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                    <button (click)="print()" type="button" class="btn btn-primary">
+                      Export
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <pagination-controls (pageChange)="pageChanged($event)" [hidden]="surveyTransactionList.length == 0">
+      </pagination-controls>
+      <div class="table-responsive text-nowrap overflow-auto mt-1" [hidden]="surveyTransactionList.length == 0">
+
+        <table class="table table-hover " style="font-size: 13px;">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col" style="width: 5px">#</th>
+              <th scope="col">Date</th>
+              <th scopr="col">State</th>
+              <th scopr="col">Township</th>
+              <th scope="col">Store ID</th>
+              <th scope="col">Store Name</th>
+              <th scope="col">Store Phno</th>
+              <th scope="col">Email</th>
+              <th scope="col">Comment</th>
+              <th scope="col">Survey Form</th>
+              <th scope="col">Section</th>
+              <th scope="col">Question Type</th>
+              <th scope="col">Question No.</th>
+              <th scope="col">Question Description</th>
+              <th scope="col">Answer</th>
+              <th scope="col">Surveyor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of surveyTransactionList | paginate: config;let i = index">
+              <th scope="row">{{i+1}}</th>
+              <td>{{d.CreatedDate}}</td>
+              <td>{{d.state}}</td>
+              <td>{{d.Township}}</td>
+              <td>{{d.storeID}}</td>
+              <td>{{d.ShopDescription}}</td>
+              <td>{{d.storephno}}</td>
+              <td>{{d.Email}}</td>
+              <td>{{d.Comment}}</td>
+              <td>{{d.HeaderDescription}}</td>
+              <td>{{d.SectionDesc}}</td>
+              <td>{{d.TypeDesc}}</td>
+              <td>{{d.QuestionCode}}</td>
+              <td>{{d.QuestionDescription}}</td>
+              <td>{{d.AnswerCode.length == '0'? d.photoDesc : d.AnswerCode}}</td>
+              <td>{{d.Surveyor}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</ion-content>

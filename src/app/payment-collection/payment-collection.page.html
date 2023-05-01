@@ -1,0 +1,597 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="d-flex justify-content-start sticky-top optionNavBar">
+      <ul class="nav nav-pills mb-3" id="payCol-tab" role="tablist">
+
+        <li class="nav-item">
+          <a class="nav-link" id="payColList-tab" data-toggle="pill" href="#payColList" role="tab"
+            aria-controls="payColList" (click)="payColListTab();" aria-selected="true">
+              List
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" id="payColNew-tab" data-toggle="pill" href="#payColNew" role="tab"
+            aria-controls="payColNew" (click)="payColNewTab();" aria-selected="false">
+              New
+          </a>
+        </li>
+
+      </ul>
+
+      <button type="button" class="btn btn-primary header-btn" *ngIf="btn" (click)="save()">
+        Save
+      </button>
+
+      <button type="button" class="btn btn-primary header-btn btn btn-warning" *ngIf="btn" (click)="goVoid()" 
+        [disabled]="saveData.syskey == ''">
+          Void
+      </button>
+
+    </div>
+
+    <div class="row" id="payColList" style="margin-left: 2px; margin-right: 2px;">
+
+      <div class="card sticky-top" style="margin-bottom: 8px; width: 100%;">
+
+        <div class="card-header bg-transparent border-bottom-0" style="width: 100%;">
+          {{spinner? 'Loading order list':'Advance'}}
+          <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+            [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true">
+          </i>
+          <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+            <span class="sr-only"></span>
+          </div>
+        </div>
+
+        <div class="card-body" *ngIf="searchtab" id="advance-card">
+
+          <div class="row">
+
+            <div class="col">
+              <div class="form-group row">
+                <label for="cri-transFromDate" class="col-sm-4 col-form-label col-form-label-sm">From Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input required class="form-control" id="cri-transFromDate" name="cri-transFromDate" 
+                      matInput [(ngModel)]="criteria.transFromDate" [matDatepicker]="pickers1" 
+                      (dblclick)="dblClickFunc1()" placeholder="Select Date" [max]="criteria.transToDate" readonly>
+                    <div class="input-group-append">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers1.open()"></i>
+                      <mat-datepicker #pickers1 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="form-group row">
+                <label for="transToDate" class="col-sm-4 col-form-label col-form-label-sm">To Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input required class="form-control" id="cri-transToDate" name="cri-transToDate" 
+                      matInput [(ngModel)]="criteria.transToDate" [matDatepicker]="pickers2" 
+                      (dblclick)="dblClickFunc2()" placeholder="Select Date" [min]="criteria.transFromDate" readonly>
+                    <div class="input-group-append">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers2.open()"></i>
+                      <mat-datepicker #pickers2 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="form-group row">
+                <label for="cri-refDocNo" class="col-sm-4 col-form-label col-form-label-sm">
+                  AR Receipt No
+                </label>
+                <div class="col-sm">
+                  <div class="form-group">
+                    <input type="text" id="cri-refDocNo" class="form-control form-control-sm" style="font-size: small;" 
+                      [(ngModel)]="criteria.refDocNo">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col">
+              <div class="form-group row">
+                <label for="cri-state" class="col-sm-4 col-form-label col-form-label-sm">
+                  State
+                </label>
+                <div class="col-sm">
+                  <select class="custom-select custom-select-sm" id="cri-state" (change)="cboStateChange($event)"
+                    [(ngModel)]="criteria.stateSyskey">
+                      <option value="" selected>-</option>
+                      <option [value]="sl.syskey" *ngFor="let sl of stateList2">
+                        {{sl.t2}}
+                      </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="form-group row">
+                <label for="cri-district" class="col-sm-4 col-form-label col-form-label-sm">
+                  District
+                </label>
+                <div class="col-sm">
+                  <select class="custom-select custom-select-sm" id="cri-district" (change)="cboDistrictChange()" 
+                    [(ngModel)]="criteria.districtSyskey">
+                      <option value="" selected>-</option>
+                      <option [value]="dl.syskey" *ngFor="let dl of districtList2">
+                        {{dl.t2}}
+                      </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="form-group row">
+                <label for="cri-township" class="col-sm-4 col-form-label col-form-label-sm">
+                  Township
+                </label>
+                <div class="col-sm">
+                  <select class="custom-select custom-select-sm" id="cri-township" (change)="cboTownshipChange()"
+                    [(ngModel)]="criteria.tshipSyskey">
+                      <option value="" selected>-</option>
+                      <option [value]="tsl.syskey" *ngFor="let tsl of townshipList2">
+                        {{tsl.t2}}
+                      </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col">
+              <div class="form-group row">
+                <label for="cri-Customer_Code" class="col-sm-4 col-form-label col-form-label-sm">
+                  Shop Code
+                </label>
+                <div class="col-sm">
+                  <div class="form-group">
+                    <input type="text" id="cri-Customer_Code" class="form-control form-control-sm" style="font-size: small;" 
+                      [(ngModel)]="criteria.Customer_Code" placeholder="Search Store">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="form-group row">
+                <label for="cri-Customer_Name" class="col-sm-4 col-form-label col-form-label-sm">
+                  Shop Name
+                </label>
+                <div class="col-sm">
+                  <div class="form-group">
+                    <input type="text" id="cri-Customer_Name" class="form-control form-control-sm" style="font-size: small;" 
+                      [(ngModel)]="criteria.Customer_Name" placeholder="Search Store">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="form-group row">
+                <label for="cri-status" class="col-sm-4 col-form-label col-form-label-sm">
+                  Status
+                </label>
+                <div class="col-sm">
+                  <select class="custom-select custom-select-sm" id="cri-status" [(ngModel)]="criteria.status">
+                    <option value="" selected>All</option>
+                    <option value="1" selected>Collected</option>
+                    <option value="6" selected>Void</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col">
+              <div class="form-group row">
+                <!-- <label for="cri-backdate" class="col-sm-4 col-form-label col-form-label-sm">
+                 
+                </label> -->
+                <div class="col-sm">
+                  <div class="form-group">
+                    <input type="checkbox" [(ngModel)]="backDate" style="margin-right: 5px;">
+                    <label class=" col-form-label col-form-label-sm">Back Date Transaction</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col"></div>
+            <div class="col"></div> -->
+          </div>
+
+          <div class="row">
+
+            <div class="col">
+              <div class="d-flex justify-content-start">
+                <div class="btn-group" role="group" style="height: 35px;">
+                  <button (click)="search(0, true)" type="button" class="btn btn-primary" [disabled]="spinner">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                  <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                  </button>
+                </div>
+                
+                <div class="d-flex justify-content-start">
+                  <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                    <button (click)="print()" type="button" class="btn btn-primary">
+                      Export
+                    </button>
+                  </div>
+                </div>
+               
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <pagination-controls (pageChange)="pageChanged($event)" class="mb-2"></pagination-controls>
+      <div style="max-height: 457px; width: 100%;">
+        <table class="table table-hover table-striped" style="font-size: small">
+          <thead class="thead-dark">
+            <tr>
+              <th>No</th>
+              <th>AR Receipt No</th>
+              <th>Shop Code</th>
+              <th>Shop Name</th>
+              <th>AR Receipt Date</th>
+              <th>Amount</th>
+              <th>Currency</th>
+              <th>Remark</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of payColList | paginate: config; let i = index;" (click)="d.voidStatus == 'Void' ? stopDetail($event) : detail($event, d)">
+              <td scope="row">
+                <b>
+                  {{i+1}}
+                </b>
+              </td>
+              <td>{{d.refDocNo}}</td>
+              <td>{{d.customerId}}</td>
+              <td>{{d.customerName}}</td>
+              <td>{{d.transDate}}</td>
+              <td>{{d.amount}}</td>
+              <td>{{d.currency}}</td>
+              <td>{{d.remark}}</td>
+              <td class="text-center" scope="row"> 
+                <span class="badge badge-primary" *ngIf="d.voidStatus == 'Collected'" style="width: 50px;">
+                  {{d.voidStatus}}
+                </span>
+                <span class="badge badge-warning" *ngIf="d.voidStatus == 'Void'" style="width: 50px;">
+                  {{d.voidStatus}}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <div id="payColNew" style="margin-left: 3px;">
+      <div class="card" style="margin-top: 7px;">
+        <div class="card-body">
+
+          <div class="row">
+
+            <div class="col">
+
+              <div class="form-group row">
+                <label for="refDocNo" class="col-sm-4 col-form-label col-form-label-sm">
+                  AR Receipt No
+                </label>
+                <div class="col-sm">
+                  <input type="text" id="refDocNo" class="form-control form-control-sm" 
+                    [(ngModel)]="saveData.REF_DOC_NO" [readonly]="true">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="state" class="col-sm-4 col-form-label col-form-label-sm">
+                  State
+                </label>
+                <div class="col-sm">
+                  <select class="custom-select custom-select-sm" id="state" (change)="cboStateChange($event)" 
+                    [(ngModel)]="state" [disabled]="dtlFlag">
+                      <option value="" selected>-</option>
+                      <option [value]="sl.syskey" *ngFor="let sl of stateList2">
+                        {{sl.t2}}
+                      </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="district" class="col-sm-4 col-form-label col-form-label-sm">
+                  District
+                </label>
+                <div class="col-sm">
+                  <select class="custom-select custom-select-sm" id="district" (change)="cboDistrictChange()" 
+                    [(ngModel)]="district" [disabled]="dtlFlag">
+                      <option value="" selected>-</option>
+                      <option [value]="dl.syskey" *ngFor="let dl of districtList2">
+                        {{dl.t2}}
+                      </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="township" class="col-sm-4 col-form-label col-form-label-sm">
+                  Township
+                </label>
+                <div class="col-sm">
+                  <select class="custom-select custom-select-sm" id="township" (change)="cboTownshipChange()" 
+                    [(ngModel)]="township" [disabled]="dtlFlag">
+                      <option value="" selected>-</option>
+                      <option [value]="tsl.syskey" *ngFor="let tsl of townshipList2">
+                        {{tsl.t2}}
+                      </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="Customer_ID" class="col-sm-4 col-form-label col-form-label-sm">
+                  Shop Code
+                </label>
+                <div class="col-sm">
+                  <input type="text" id="Customer_ID" class="form-control form-control-sm" style="font-size: small;" 
+                    [(ngModel)]="saveData.Customer_ID" 
+                    (keyup.enter)="txtShopCodeEnter()"  placeholder="Search Store Code" 
+                    matInput [formControl]="Customer_ID" [matAutocomplete]="auto1" [readonly]="dtlFlag">
+                    <mat-autocomplete #auto1="matAutocomplete" (optionSelected)='shopCodeChange()'>
+                      <mat-option *ngFor="let shop of shopCodeList" [value]="shop" style="font-size: small;">
+                        {{shop.shopCode}}
+                      </mat-option>
+                    </mat-autocomplete>
+                </div>
+                <!-- <button type="button" class="btn btn-primary header-btn" (click)="showArList()" id="shoparlist">
+                  Show AR List
+                </button> -->
+              </div>
+
+              <div class="form-group row">
+                <label for="Customer_Name" class="col-sm-4 col-form-label col-form-label-sm">
+                  Shop Name
+                </label>
+                <div class="col-sm">
+                  <div class="form-group">
+                    <input type="text" id="Customer_Name" class="form-control form-control-sm" style="font-size: small;" 
+                      (keyup.enter)="txtShopNameEnter()" [(ngModel)]="saveData.Customer_Name" placeholder="Search Store" 
+                      matInput [formControl]="Customer_Name" [matAutocomplete]="auto" [readonly]="dtlFlag">
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)='shopChange2()'>
+                      <mat-option *ngFor="let shop of shoplist2" [value]="shop" style="font-size: small;">
+                        {{shop.shopName}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                </div>
+                <div class="spinner-border text-primary col-sm-2" role="status" id="spinner-advsearch-arList" *ngIf="arListSpinner">
+                  <span class="sr-only"></span>
+                </div>
+                <button type="button" class="btn btn-primary header-btn" (click)="showArList()" id="shoparlist">
+                  Show AR List
+                </button>
+              </div>
+
+              <!-- 
+              <div class="form-group row">
+                <label for="transDate" class="col-sm-4 col-form-label col-form-label-sm">
+                  AR Receipt Date
+                </label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input required class="form-control" id="transDate" name="transDate" 
+                      matInput [(ngModel)]="saveData.TRANS_DATE" [matDatepicker]="pickers1" 
+                      (dateChange)="dateChange1($event)" (dblclick)="dblClickFunc1()" 
+                      placeholder="Select Date" readonly>
+                    <div class="input-group-append">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers1.open()"></i>
+                      <mat-datepicker #pickers1 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+               -->
+
+              <!-- <div class="form-group row">
+                <label for="Customer_ID" class="col-sm-4 col-form-label col-form-label-sm">
+                  Shop Code
+                </label>
+                <div class="col-sm">
+                  <input type="text" id="Customer_ID" class="form-control form-control-sm" 
+                    [(ngModel)]="saveData.Customer_ID" 
+                    (keyup.enter)="txtShopCodeEnter()"  placeholder="Search Store Code" 
+                    matInput [formControl]="Customer_ID" [matAutocomplete]="auto1" [readonly]="dtlFlag">
+                    <mat-autocomplete #auto1="matAutocomplete" (optionSelected)='shopCodeChange()'>
+                      <mat-option *ngFor="let shop of shopCodeList" [value]="shop" style="font-size: small;">
+                        {{shop.shopCode}}
+                      </mat-option>
+                    </mat-autocomplete>
+                </div>
+                <button type="button" class="btn btn-primary header-btn" (click)="showArList()" id="shoparlist">
+                  Show AR List
+                </button>
+              </div> -->
+
+              <!-- 
+              <div class="form-group row">
+                <label for="Customer_Name" class="col-sm-4 col-form-label col-form-label-sm">
+                  Customer Name
+                </label>
+                <div class="col-sm">
+                  <div class="form-group">
+                    <input type="text" id="Customer_Name" class="form-control form-control-sm" (click)="shopSearching()" 
+                      [(ngModel)]="saveData.Customer_Name" placeholder="Search Store" [readonly]="true">
+                  </div>
+                </div>
+              </div>
+               -->
+
+            </div>
+
+            <div class="col">
+
+              <div class="form-group row">
+                <label for="transDate" class="col-sm-4 col-form-label col-form-label-sm">
+                  AR Receipt Date
+                </label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input required class="form-control" id="transDate" name="transDate" 
+                      matInput [(ngModel)]="saveData.TRANS_DATE" [matDatepicker]="pickers3" 
+                      (dblclick)="dblClickFunc3()" placeholder="Select Date" [disabled]="restrictDates.isDisable" 
+                      [min]="restrictDates.startDate" [max]="restrictDates.endDate" readonly>
+                      <!-- (dateChange)="dateChange1($event)" -->
+                    <div class="input-group-append">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers3.open()">
+                      </i>
+                      <mat-datepicker #pickers3 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" [disabled]="disableCalendar">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="amount" class="col-sm-4 col-form-label col-form-label-sm">
+                  Amount
+                </label>
+                <div class="col-sm">
+                  <input type="number" id="amount" class="form-control form-control-sm" 
+                    [(ngModel)]="saveData.AMOUNT">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="currency" class="col-sm-4 col-form-label col-form-label-sm">
+                  Currency
+                </label>
+                <div class="col-sm">
+                  <input type="text" id="currency" class="form-control form-control-sm" 
+                    [(ngModel)]="saveData.CURRENCY" [readonly]="true">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="remark" class="col-sm-4 col-form-label col-form-label-sm">
+                  Remark
+                </label>
+                <div class="col-sm">
+                  <textarea id="remark" class="form-control form-control-sm" 
+                    [(ngModel)]="saveData.Remark" rows="3">
+                  </textarea>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ion-content>
+<div class="modal fade" id="ArInfo" tabindex="-1" role="dialog" aria-labelledby="skuaddmodal" aria-hidden="true">>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <div class="modal-header px-3 py-2">
+        <h5 class="modal-title" id="ArInfoTitle">
+          AR Info
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body overflow-auto py-0" style="height: 450px;">
+        <div class="row" style="width: 100%; margin-top: 5px; margin-bottom: 5px;">
+          <div class="col">
+
+            <div *ngIf="ArListByCusId.length == 0">
+              <label>
+                <b>No AR Data Found for this Customer</b>
+              </label>
+            </div>
+
+            <div *ngIf="ArListByCusId.length != 0">
+              <table class="table table-hover table-striped" style="font-size: small">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>No</th>
+                    <th>Customer ID</th>
+                    <th>Customer Name</th>
+                    <th>Invoice Number</th>
+                    <th>Invoice Date</th>
+                    <th>Due Date</th>
+                    <th>Currency</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let d of ArListByCusId | paginate: config; let i = index;" >
+                    <td scope="row">
+                      <b>
+                        {{i+1}}
+                      </b>
+                    </td>
+                    <td>{{d.customerId}}</td>
+                    <td>{{d.customerName}}</td>
+                    <td>{{d.invNo}}</td>
+                    <td>{{d.invDate}}</td>
+                    <td>{{d.dueDate}}</td>
+                    <td>{{d.currency}}</td>
+                    <td>{{d.amount}}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="7" style="text-align: right;">Total Amount</td>
+                    <td>{{ArListByCusId[0].totalAmt}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>

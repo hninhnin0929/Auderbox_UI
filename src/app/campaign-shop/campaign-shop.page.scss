@@ -1,0 +1,44 @@
+
+.custom-select-sm,
+.form-control-sm,
+.form-control,
+.input-group-sm {
+    max-width: 200px;
+}
+#id {
+    overflow-x: auto;
+}
+
+#btnGroup>ion-button {
+    float: right;
+}
+.card-header{
+    background-color: transparent;
+    border: none;
+}
+ul{
+    text-decoration: none;
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+
+}
+#excel-name{
+    border: none;
+    font-size: small;
+}
+.btndelete {
+
+    background-color: rgb(189, 51, 80);
+
+    color: white;
+
+  }
+
+.btndelete:hover {
+
+    background-color:  #740110;
+
+    color: white;
+
+  }

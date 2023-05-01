@@ -1,0 +1,214 @@
+<ion-content>
+  <div>
+    <div class="d-flex justify-content-start sticky-top optionNavBar">
+      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="surveyor-summary-list-tab" data-toggle="tab" href="#surveyor-summary-list" role="tab"
+            aria-controls="list" aria-selected="true" (click)="btn=false; listTab()">List</a>
+        </li>
+
+        <li class="nav-item" [hidden]="!btn">
+          <a class="nav-link" id="surveyor-summary-detail-tab" data-toggle="tab" href="#surveyor-summary-detail"
+            role="tab" aria-controls="list" aria-selected="true" (click)="btn=false;">Detail</a>
+        </li>
+      </ul>
+    </div>
+    <div class="tab-content" id="nav-tabContent">
+
+
+      <div class="tab-pane fade myOuterContainer" id="surveyor-summary-list" role="tabpanel"
+        aria-labelledby="surveyor-summary-list-tab">
+        <!----- Advanced Search ----->
+        <div class="card sticky-top" style="margin-bottom: 8px;">
+          <div class="card-header bg-transparent">
+            {{spinner? 'Loading..':'Advance'}}
+            <i *ngIf="!spinner" [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'"
+              aria-hidden="true" (click)="advanceSearch(searchtab? false: true);"></i>
+            <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+
+          <div class="card-body" *ngIf="searchtab" id="advance-card">
+            <div class="row">
+              <div class="col">
+                <div class="form-group row">
+                  <label for="stock-code" class="col-sm-3 col-form-label col-form-label-sm">Name</label>
+                  <div class="col-md-6">
+                    <input [(ngModel)]="searchObj.name" type="text" id="stockcat-code" name="stock-code"
+                      class="form-control form-control-sm">
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <label for="stock-name" class="col-sm-3 col-form-label col-form-label-sm">User Id</label>
+                  <div class="col-md-6">
+                    <input type="text" [(ngModel)]="searchObj.userid" id="stock-name" name="stock-name"
+                      class="form-control form-control-sm">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class=" row">
+              <div class="col">
+                <div class="d-flex justify-content-start">
+                  <div class="btn-group" role="group" style="height: 35px;">
+                    <button (click)="search()" type="button" class="btn btn-primary" [disabled]="spinner">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                    <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                      <i class="fa fa-refresh" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <pagination-controls class="my-pagination" (pageChange)="config.currentPage = $event">
+        </pagination-controls>
+        <div style="max-height: 670px !important; overflow-x: auto !important; white-space: nowrap;">
+          <table class="table table-hover mt-2" style="font-size: 13px;">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col" class="sticky-top" style="width: 5px">No</th>
+                <!-- <th scope="col" >SP Shop Code</th> -->
+                <th scope="col" class="sticky-top">Id</th>
+                <th scope="col" class="sticky-top">Name</th>
+                <th scope="col" class="sticky-top">User Type</th>
+                <th scope="col" class="sticky-top">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let d of surveyorlist | paginate: config;let i = index;" (click)="btn=true;detail(d);">
+                <th scope="row">{{i+1}}</th>
+                <!-- <td>{{d.t12}}</td> -->
+                <td>{{d.UserId}}</td>
+                <td>{{d.UserName}}</td>
+                <td>Surveyor</td>
+                <td>
+                  <span class="complete">Active</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-pane fade myOuterContainer" id="surveyor-summary-detail" role="tabpanel"
+        aria-labelledby="surveyor-summary-detail-tab">
+        <ion-card *ngIf="isLoading">
+          <mat-tab-group (selectedTabChange)="selectedTabChange($event)" color="primary">
+            <mat-tab label="Profile Detail">
+              <div class="tabInnerContent">
+                <div class="row">
+                  <div class="col-md-3  col-xs-12">
+                    <ion-card style="margin-top: 0;">
+                      <app-image-shell class="imgProfile" [src]=" userdetail?.userphoto"
+                        (click)="previewImg(userdetail.userphoto)"></app-image-shell>
+                      <div class="username">
+                        <ion-label> {{userdetail.username}}</ion-label>
+                      </div>
+                    </ion-card>
+                  </div>
+                  <div class="col">
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <div class="row">
+                          <div class="col-sm-3 col-md-2 col-5">
+                            <span>Name</span>
+                          </div>
+                          <div class="col-md-8 col-6">
+                            <span class="font-weight-bold"> {{userdetail.username}}</span>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-group-item">
+                        <div class="row">
+                          <div class="col-sm-3 col-md-2 col-5">
+                            <span>User Id</span>
+                          </div>
+                          <div class="col-md-8 col-6">
+                            <span class="font-weight-bold">{{userdetail.userid}}</span>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-group-item">
+                        <div class="row">
+                          <div class="col-sm-3 col-md-2 col-5">
+                            <span>Email</span>
+                          </div>
+                          <div class="col-md-8 col-6">
+                            <span class="font-weight-bold">-</span>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-group-item">
+                        <div class="row">
+                          <div class="col-sm-3 col-md-2 col-5">
+                            <span>NRC</span>
+                          </div>
+                          <div class="col-md-8 col-6">
+                            <span class="font-weight-bold"> {{userdetail.nrc}}</span>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-group-item">
+                        <div class="row">
+                          <div class="col-sm-3 col-md-2 col-5">
+                            <span>Birth Date</span>
+                          </div>
+                          <div class="col-md-8 col-6">
+                            <span class="font-weight-bold"> {{ manager.dateFormatCorrector(4,userdetail.dob)}}</span>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-group-item">
+                        <div class="row">
+                          <div class="col-sm-3 col-md-2 col-5">
+                            <span>Sex</span>
+                          </div>
+                          <div class="col-md-8 col-6">
+                            <span class="font-weight-bold">{{userdetail.sex}}</span>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+            <mat-tab label="Assigned Stores">
+              <div class="tabInnerContent">
+                <mat-card>
+                  <pagination-controls (pageChange)="currentPage = $event">
+                  </pagination-controls>
+                  <mat-list
+                    *ngFor="let region of regionlist| paginate: { itemsPerPage: manager.itemsPerPage, currentPage: currentPage};let u = index;">
+                    <mat-list-item (click)="openDialog(region)" class="r_region ion-activatable ripple-parent">
+                      {{region.RegionDesc}} &nbsp;
+                      <span class="badge badge-info badge-pill"> {{region.Shop.AssignShopCount}}</span>
+                      <mat-icon class="r_add">add</mat-icon>
+                      <ion-ripple-effect></ion-ripple-effect>
+                    </mat-list-item>
+                    <mat-divider *ngIf="u < (regionlist.length - 1)"></mat-divider>
+                  </mat-list>
+                </mat-card>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </ion-card>
+
+
+        <!-- Profile Image Preview -->
+        <div id="previewProfileImgModel" class="modal" tabindex="-1">
+          <span class="closemodel" (click)="previewModelClose()">&times;</span>
+          <img [src]="profileimg" class="previewSurveImgModel-content" (error)="handleImgError($event)">
+        </div>
+
+      </div>
+    </div>
+  </div>
+</ion-content>

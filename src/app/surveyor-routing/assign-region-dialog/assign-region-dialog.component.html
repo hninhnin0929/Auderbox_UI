@@ -1,0 +1,76 @@
+<h2 mat-dialog-title>{{ manager.dateFormatCorrector(4,data.userbydate.date)}}
+  &nbsp;
+  <span *ngIf="data.userbydate.status == 1" class="inprogress">IN PROGRESS</span>
+  <span *ngIf="data.userbydate.status == 2" class="complete">COMPLETED</span>
+  <span *ngIf="data.userbydate.status == 0" class="notstarted">NOT STARTED</span>
+  <button class="close" mat-stroked-button mat-dialog-close color="primary">Close</button>
+</h2>
+<mat-dialog-content>
+  <div class="card-group">
+    <div class="card">
+      <div class="card-header card-header-with-toolbar  text-primary sticky-top   ">
+        Assigned Surveyors
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>User Id</th>
+              <th>User Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of data.userbydate.userList">
+              <td> {{user.userid}}</td>
+              <td> {{user.username}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header card-header-with-toolbar  text-primary sticky-top   ">
+        Assigned Surveys
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Survey Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of data.assignedsurvey">
+              <td> {{user.svrname}}
+                <br>
+
+
+                <section class="example-section type-section " style="overflow: auto;">
+
+                  <div class="example-margin check-container">
+                    <span [ngClass]="user.newstore == '1' ? 'checkmark' : 'checkmarknone'"></span>
+                    <ion-label>New Store</ion-label>
+                  </div>
+
+                  <div class="example-margin check-container">
+                    <span [ngClass]="user.exitstore == '1'? 'checkmark' : 'checkmarknone'"></span>
+                    <ion-label> Existing
+                      Store</ion-label>
+                  </div>
+
+                  <div class="example-margin check-container">
+                    <span [ngClass]="user.flagstore == '1'? 'checkmark' : 'checkmarknone'"></span>
+                    <ion-label>Flag
+                      Store</ion-label>
+                  </div>
+                </section>
+
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</mat-dialog-content>

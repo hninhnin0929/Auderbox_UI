@@ -1,0 +1,320 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="d-flex justify-content-start optionNavBar">
+      <ul class="nav nav-pills mb-3 sticky-top" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="surveyorHdrList-tab" data-toggle="pill" href="#surveyorHdrList" role="tab"
+            aria-controls="surveyorHdrList" (click)="surveyorHdrListTab();btn=false;" aria-selected="true">List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="surveyorHdrNew-tab" data-toggle="pill" href="#surveyorHdrNew" role="tab"
+            aria-controls="surveyorHdrNew" (click)="surveyorHdrNewTab();" aria-selected="false">New</a>
+        </li>
+      </ul>
+      <button type="button" class="btn btn-primary header-btn" *ngIf="btn" (click)="save()">
+        Save
+      </button>
+      <button type="button" class="btn btn-primary header-btn btndelete" *ngIf="btn" [disabled]="saveData.headerSyskey==''"
+        (click)="goDelete()">
+        Delete
+      </button>
+    </div>
+    <div class="row" id="surveyorHdrList" style="margin-left: 2px; margin-right: 2px;">
+      <div class="card sticky-top" style="margin-bottom: 8px; width: 100%;">
+        <div class="card-header bg-transparent" style="width: 100%;">
+          {{spinner? 'Loading order list':'Advance'}}
+          <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+            [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true">
+          </i>
+          <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+            <span class="sr-only"></span>
+          </div>
+        </div>
+        <div class="card-body" *ngIf="searchtab" id="advance-card">
+          <div class="row">
+            <div class="col">
+              <div class="form-group row">
+                <label for="fDate" class="col-sm-5 col-form-label col-form-label-sm">From Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input required [(ngModel)]="criteria.fromDate" class="form-control" matInput
+                      [matDatepicker]="pickers1" placeholder="Select Date" name="fDate" id="fDate"
+                      (dblclick)="dblClickFunc1()" (dateChange)="dateChange1($event)" readonly>
+                    <div class="input-group-append">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers1.open()"></i>
+                      <mat-datepicker #pickers1 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="svName" class="col-sm-5 col-form-label col-form-label-sm">Survey Name</label>
+                <div class="col-sm">
+                  <input type="text" id="svName" name="svName" class="form-control form-control-sm" matInput
+                    [(ngModel)]="criteria.headerDesc" [formControl]="svNameSearch" [matAutocomplete]="auto1">
+                  <mat-autocomplete #auto1="matAutocomplete">
+                    <mat-option *ngFor="let svName of svNameList" [value]="svName.t2" style="font-size: small;">
+                      {{svName.t2}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="status" class="col-sm-5 col-form-label col-form-label-sm">Status</label>
+                <div class="col-sm">
+                  <select class="custom-select custom-select-sm" [(ngModel)]="criteria.n1" id="status">
+                    <option value="" selected></option>
+                    <option [value]="1">Active</option>
+                    <option [value]="0">Inactive</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                  <label for="tDate" class="col-sm-5 col-form-label col-form-label-sm">To Date</label>
+                  <div class="col-sm">
+                    <div class="input-group input-group-sm">
+                      <input required [(ngModel)]="criteria.toDate" class="form-control" matInput
+                        [matDatepicker]="pickers2" placeholder="Select Date" name="tDate" id="tDate"
+                        (dblclick)="dblClickFunc2()" (dateChange)="dateChange2($event)" readonly>
+                      <div class="input-group-append">
+                        <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers2.open()"></i>
+                        <mat-datepicker #pickers2 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                        </mat-datepicker>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="form-group row">
+                <label for="qnName" class="col-sm-5 col-form-label col-form-label-sm">Question Nature</label>
+                <div class="col-sm">
+                  <input type="text" id="qnName" name="qnName" class="form-control form-control-sm" matInput
+                    [(ngModel)]="criteria.sectionDesc" [formControl]="qnNameSearch" [matAutocomplete]="auto2">
+                  <mat-autocomplete #auto2="matAutocomplete">
+                    <mat-option *ngFor="let qn of qnList" [value]="qn.t2" style="font-size: small;">
+                      {{qn.t2}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                  <label for="vDate" class="col-sm-5 col-form-label col-form-label-sm">Valid Date</label>
+                  <div class="col-sm">
+                    <div class="input-group input-group-sm">
+                      <input required [(ngModel)]="criteria.validDate" class="form-control" matInput
+                        [matDatepicker]="pickers5" placeholder="Select Date" name="vDate" id="vDate"
+                        (dblclick)="dblClickFunc5()" readonly>
+                      <div class="input-group-append">
+                        <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers5.open()"></i>
+                        <mat-datepicker #pickers5 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                        </mat-datepicker>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="form-group row">
+                <label for="qName" class="col-sm-5 col-form-label col-form-label-sm">Question</label>
+                <div class="col-sm">
+                  <input type="text" id="qName" name="qName" class="form-control form-control-sm" matInput
+                    [(ngModel)]="criteria.questionDesc" [formControl]="qNameSearch" [matAutocomplete]="auto3">
+                  <mat-autocomplete #auto3="matAutocomplete">
+                    <mat-option *ngFor="let q of qList" [value]="q.t2" style="font-size: small;">
+                      {{q.t2}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div> 
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="d-flex justify-content-start">
+                <div class="btn-group" role="group" style="height: 35px;">
+                  <button (click)="search(0, true)" type="button" class="btn btn-primary" [disabled]="spinner">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                  <!-- <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                  </button> -->
+                </div>
+                <!-- <div class="d-flex justify-content-start">
+                  <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                    <button (click)="print()" type="button" class="btn btn-primary">
+                      Export
+                    </button>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <pagination-controls (pageChange)="pageChanged($event)" class="mb-2"></pagination-controls>
+      <div style="max-height: 457px; width: 100%;">
+        
+        <table class="table table-hover table-striped" style="font-size: 13px;">
+          <thead class="thead-dark">
+            <tr>
+              <th>No</th>
+              <th>Survey Code</th>
+              <th>Survey Description</th>
+              <th>Valid From Date</th>
+              <th>Valid To Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of headerList | paginate: config; let i = index;" (click)="detail($event, i)">
+              <td scope="row">
+                <b>
+                  {{i+1}}
+                </b>
+              </td>
+              <td>{{d.headerCode}}</td>
+              <td>{{d.headerDescription}}</td>
+              <td>{{d.fromDate}}</td>
+              <td>{{d.toDate}}</td>
+              <td id="statusChangeEvent" style="width: 16% !important;">
+                <div *ngIf="d.status == '1'; else btnDisable">
+                  <button type="button" class="btn btn-primary" (click)="headerStatusChange($event, d)" 
+                    style="background-color: rgb(9, 214, 9); border-color: rgb(9, 214, 9); width: 100px;">
+                      Active
+                  </button>
+                </div>
+                <ng-template #btnDisable>
+                  <button type="button" class="btn btn-primary" (click)="headerStatusChange($event, d)"
+                    style="background-color: red; border-color: red; width: 100px;">
+                      Inactive
+                  </button>
+                </ng-template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row" id="surveyorHdrNew">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            Survey Header
+          </div>
+          <div class="card-body row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label for="surveyCode" class="col-sm-4 col-form-label">Survey Code</label>
+                <div class="col-sm-6">
+                  <input type="text" id="surveyCode" [(ngModel)]="saveData.headerCode"
+                    class="form-control form-control-sm" (focus)="focusFunction()" [disabled]="dtlFlag == true">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="surveyDesc" class="col-sm-4 col-form-label">Survey Name</label>
+                <div class="col-sm-6">
+                  <input type="text" id="surveyDesc" [(ngModel)]="saveData.headerDescription"
+                    class="form-control form-control-sm">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="svrHdrt3" class="col-sm-4 col-form-label">From Date</label>
+                <div class="col-sm-6">
+                  <div class="input-group">
+                    <input required [(ngModel)]="saveData.t3" class="form-control form-control-sm" matInput
+                      [matDatepicker]="pickers3" placeholder="Select Date" name="svrHdrt3" id="svrHdrt3"
+                      (dblclick)="dblClickFunc3()" (dateChange)="dateChange3($event)" readonly>
+                    <div class="input-group-append">
+                      <i class="input-group-text fa fa-calendar" style="margin-top: -1px;" aria-hidden="true" (click)="pickers3.open()"></i>
+                      <mat-datepicker #pickers3 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="svrHdrt4" class="col-sm-4 col-form-label">To Date</label>
+                <div class="col-sm-6">
+                  <div class="input-group">
+                    <input required [(ngModel)]="saveData.t4" class="form-control form-control-sm" matInput
+                      [matDatepicker]="pickers4" placeholder="Select Date" name="svrHdrt4" id="svrHdrt4"
+                      (dblclick)="dblClickFunc4()" (dateChange)="dateChange4($event)" readonly>
+                    <div class="input-group-append">
+                      <i class="input-group-text fa fa-calendar" style="margin-top: -1px;" aria-hidden="true" (click)="pickers4.open()"></i>
+                      <mat-datepicker #pickers4 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="form-group row">
+                <label for="use-section" class="col-sm-4 col-form-label">Use Section</label>
+                <div class="col-sm-6">
+                  <ion-chip outline color="primary">
+                    <ion-checkbox mode="ios" color="primary" [(ngModel)]="useSectionFlag">
+                    </ion-checkbox>
+                  </ion-chip>
+                </div>
+              </div> -->
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label for="use-section" class="col-sm-4">Use Section</label>
+                <div class="col-sm-6">
+                  <mat-radio-group id="use-section" (change)="IsUserSection($event)" 
+                    [disabled]="dtlFlag == true"> <!-- aria-label="Select an option" -->
+                      <mat-radio-button class="mr-2" value="1" [checked]='useSectionFlag'>Yes</mat-radio-button>
+                      <mat-radio-button value="0" [checked]='!useSectionFlag'>No</mat-radio-button>
+                  </mat-radio-group>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="section" class="col-sm-4">Section</label> <!-- Question Nature -->
+                <div class="col-sm-6">
+                  <div class="ml-3">
+                    <div class="row" name="section" *ngFor="let qn of qnSaveList; let i = index;">
+                      <input type="checkbox" id="{{qn.syskey}}" (change)="getSectionData($event, i)"
+                        [disabled]="useSectionFlag == false"> <!-- dtlFlag == true ||  -->
+                      <label for="{{qn.syskey}}" class="ml-1" style="margin-top: -1;">
+                        {{qn.t2}}
+                      </label>
+                    </div>
+                    <!-- <div class="row" name="section">
+                      <input type="checkbox" id="other" (change)="getSectionData($event, -1)"
+                        [disabled]="dtlFlag == true"> <label for="other" class="ml-1"
+                        style="margin-top: -1;">Other</label>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-4" >Standard</label>
+                <div class="col-sm-6">
+                  <mat-radio-group (change)="yesOrno(rcheck)" aria-label="Select an option"
+                    [(ngModel)]="rcheck">
+                    <mat-radio-button class="mr-2" value="1">Yes</mat-radio-button>
+                    <mat-radio-button value="0">No</mat-radio-button>
+                  </mat-radio-group>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="surveyCode" class="col-sm-4 ">Category</label>
+                <div class="col-sm-6">
+                  <select [disabled]="saveData.n2==1" name="subcat" class="form-control form-control-sm" 
+                    [(ngModel)]="saveData.n3" id="subcatid" [ngModelOptions]="{standalone: true}"> <!-- [disabled]="rcheck==1" -->
+                    <option value="0" selected>-</option>
+                    <option *ngFor="let i of catlist" value="{{i.syskey}}">
+                      {{i.t2}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

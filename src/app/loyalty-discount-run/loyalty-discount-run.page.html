@@ -1,0 +1,263 @@
+<ion-content>
+  <mat-progress-bar mode="query" class="sticky-top" *ngIf="page.main_spinner"></mat-progress-bar>
+
+  <div [class]="page.main_spinner ? 'myOuterContainer disabled' : 'myOuterContainer'">
+    <div class="d-flex justify-content-start mb-2">
+      <ul class="nav nav-pills" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="loyaltyrun-list-tab" data-toggle="tab" href="#loyaltyrun-list" role="tab"
+            aria-controls="list" aria-selected="true">List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link mynew-header" id="loyaltyrun-new-tab" data-toggle="tab" href="#loyaltyrun-new" role="tab"
+            aria-controls="new" aria-selected="false">Detail</a>
+        </li>
+      </ul>
+    </div>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="loyaltyrun-list" role="tabpanel" aria-labelledby="loyaltyrun-list-tab">
+        <div class="table-responsive text-nowrap overflow-auto mt-1">
+          <table class="table table-hover table-bordered" style="font-size: 13px;">
+            <thead class="thead-dark">
+              <tr>
+                <th class="sticky-top" scope="col" style="width: 5px">#</th>
+                <th class="sticky-top" scope="col">Code</th>
+                <th class="sticky-top" scope="col">Name</th>
+                <th class="sticky-top" scope="col">address</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of service.shopList;let i = index" (click)="detail(s)">
+                <td scope="row">{{i+1}}</td>
+                <td>{{s.shopCode}}</td>
+                <td>{{s.shopName}}</td>
+                <td>{{s.address}}</td>
+
+
+              </tr>
+              <tr *ngIf="service.shopList.length == 0 && page.main_spinner == false">
+                <td scope="row" class="text-muted">1</td>
+                <td colspan="4" class="text-muted">No Record</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="loyaltyrun-new" role="tabpanel" aria-labelledby="loyaltyrun-new-tab">
+        <div id="alert-success" style="display: none;">
+          <div class="alert alert-warning" role="alert" *ngFor="let dis of service.discountItem; let i = index">
+            {{service.account.t2}} got
+            {{dis.n11 == 1 ? dis.n10 + ' kyats which is ' +dis.n8+ ' % discount.': dis.n14 +''+ dis.t2}}
+          </div>
+        </div>
+
+
+        <div class="card mb-2">
+          <div class="card-header bg-transparent text-primary border-bottom-0" style="padding-bottom: 0px;">Account
+            Detail</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col ">
+                <div class="form-group row mb-0">
+                  <label for="lol-shop-name" class="col-sm-4 col-form-label col-form-label-sm">Name</label>
+                  <div class="col-sm">
+                    <p id="lol-shop-name">{{service.account.shopDetail.shopName}}</p>
+                  </div>
+                </div>
+                <div class="form-group row mb-0">
+                  <label for="lol-shop-code" class="col-sm-4 col-form-label col-form-label-sm ">Code</label>
+                  <div class="col-sm">
+                    <p id="lol-shop-code">{{service.account.shopDetail.shopCode}}</p>
+                  </div>
+                </div>
+                <div class="form-group row mb-0">
+                  <label for="lol-shop-address" class="col-sm-4 col-form-label col-form-label-sm ">Address</label>
+                  <div class="col-sm">
+                    <p id="lol-shop-address" class="text-break">{{service.account.shopDetail.address}}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col border-left">
+                <div class="form-group row mb-0">
+                  <label for="lol-shop-name" class="col-sm-4 col-form-label col-form-label-sm">Account Number</label>
+                  <div class="col-sm">
+                    <input type="text" id="lol-shop-name" class="form-control form-control-sm border-0"
+                      [(ngModel)]="service.account.t1">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card mb-2">
+          <div class="card-header bg-transparent text-primary border-bottom-0" style="padding-bottom: 0px;">Account
+            Balance</div>
+          <div class="card-body">
+            <table class="table table-sm table-borderless border-0" style="font-size: smaller;">
+              <thead>
+                <tr>
+                  <th scope="col" style="width: 5px">#</th>
+                  <th scope="col">BrandOwner Name</th>
+                  <th scope="col">Account Number</th>
+                  <th scope="col">Invoice Amt</th>
+                  <th scope="col">Net Discount Amount</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let accDetail of service.account.detail; let i=index">
+                  <td scope="row" class="align-middle">{{i+1}}</td>
+                  <td scope="row" class="align-middle">{{accDetail.t1}}</td>
+                  <td scope="row" class="align-middle">{{accDetail.t2 == '' ? 'not available' : accDetail.t2}}</td>
+                  <td scope="row" class="align-middle">{{accDetail.n6}}</td>
+                  <td scope="row" class="align-middle">{{accDetail.n7}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card mt-1">
+          <div class="card-header bg-transparent text-primary border-bottom-0" style="padding-bottom: 0px;">
+            Available Promotions
+          </div>
+          <div class="card-body px-0 py-0 pt-1">
+            <small class="text-muted" style="margin-left: 18.75px ;" *ngIf="service.headerList.length==0">No record</small>
+            <mat-accordion class="example-headers-align">
+              <mat-expansion-panel *ngFor="let header of service.headerList;let i = index"
+                (opened)="detailExtensionPanelOpen(i)">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    {{i+1}}. {{header.t2}}
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    <small>{{header.t3 |  date:'d/M/y'}} - {{header.t4 |  date:'d/M/y'}}</small>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div class="card">
+                  <table class="table table-sm border-0 mb-0" style="font-size: smaller;">
+                    <thead>
+                      <tr>
+                        <th class="sticky-top table-active" scope="col" style="width: 5px">#</th>
+                        <th class="sticky-top table-active" scope="col">Type</th>
+                        <th class="sticky-top table-active" scope="col">BrandOwner</th>
+                        <th class="sticky-top table-active" scope="col">Operator</th>
+                        <th class="sticky-top table-active" scope="col">First Revenue</th>
+                        <th class="sticky-top table-active" scope="col">Second Revenue</th>
+                        <th class="sticky-top table-active" scope="col">Discount %</th>
+                        <th class="sticky-top table-active" scope="col">GiftSku/LuckyDraw</th>
+                        <th class="sticky-top table-active" scope="col">Item Name</th>
+                        <th class="sticky-top table-active" scope="col">Item Qty</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let d of header.detail; let i=index">
+                        <td scope="row" class="align-middle">{{i+1}}</td>
+                        <td scope="row" class="align-middle">{{d.n11}}</td>
+                        <td scope="row" class="align-middle">{{d.t2}}</td>
+                        <td scope="row" class="align-middle">{{d.n12}}</td>
+                        <td scope="row" class="align-middle">{{d.n6}}</td>
+                        <td scope="row" class="align-middle">{{d.n7}}</td>
+                        <td scope="row" class="align-middle">{{d.n8}}</td>
+                        <td scope="row" class="align-middle">{{d.n13}}</td>
+                        <td scope="row" class="align-middle">{{d.n3 == '' ? 'NA': d.n3}}</td>
+                        <td scope="row" class="align-middle">{{d.n14}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </mat-expansion-panel>
+
+            </mat-accordion>
+          </div>
+          <div class="card-footer bg-transparent border-top-0">
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-sm btn-primary" type="button" style="width: 100px;"  [disabled]="service.headerList.length==0"
+                (click)="run()">Preview</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+<div class="modal fade" id="preview-promotion-modal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Promotion Detail</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <mat-accordion class="example-headers-align" multi>
+          <mat-expansion-panel *ngFor="let transaction of tranObject.detail; let i=index" expanded
+            style="box-shadow: none;">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{transaction.t1}}
+              </mat-panel-title>
+              <mat-panel-description>
+                <small>{{transaction.promotionTransaction.n11 == 1? 'Price Discount':'Inkind Discount'}}</small>
+
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            
+              <div class="card" *ngIf="transaction.promotionTransaction.n11 == 1">
+                <table class="table table-sm border-0 mb-0" style="font-size: smaller;">
+                  <thead>
+                    <tr>
+                      <th class="sticky-top table-active" scope="col" style="width: 5px">#</th>
+                      <th class="sticky-top table-active" scope="col">Total Invoice Amount</th>
+                      <th class="sticky-top table-active" scope="col">Promotion Discount %</th>
+                      <th class="sticky-top table-active" scope="col">Discount Amount To Be Received</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td scope="row" class="align-middle">{{i+1}}</td>
+                      <td scope="row" class="align-middle">{{transaction.promotionTransaction.n9}}</td>
+                      <td scope="row" class="align-middle">{{transaction.promotionTransaction.n8}}</td>
+                      <td scope="row" class="align-middle">{{transaction.promotionTransaction.n10}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card" *ngIf="transaction.promotionTransaction.n11 == 2">
+                <table class="table table-sm border-0 mb-0" style="font-size: smaller;">
+                  <thead>
+                    <tr>
+                      <th class="sticky-top table-active" scope="col" style="width: 5px">#</th>
+                      <th class="sticky-top table-active" scope="col">Total Invoice Amount</th>
+                      <th class="sticky-top table-active" scope="col">Promotion Item Type</th>
+                      <th class="sticky-top table-active" scope="col">Promotion Item Name</th>
+                      <th class="sticky-top table-active" scope="col">Promotion Item Qty</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td scope="row" class="align-middle">{{i+1}}</td>
+                      <td scope="row" class="align-middle">{{transaction.promotionTransaction.n9}}</td>
+                      <td scope="row" class="align-middle">
+                        {{transaction.promotionTransaction.n13 == 1 ? 'Gift Item':'LuckyDraw'}}</td>
+                      <td scope="row" class="align-middle">{{transaction.promotionTransaction.t2}}</td>
+                      <td scope="row" class="align-middle">{{transaction.promotionTransaction.n14}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+       
+
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="savePromotion()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

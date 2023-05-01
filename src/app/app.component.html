@@ -1,0 +1,103 @@
+<ion-app class="md">
+    <div class="d-flex" *ngIf="showToolbar" style="background-color: whitesmoke">
+        <div class="p-2">
+            <ion-buttons slot="start">
+                <ion-menu-button style="height: 40px;width: 40px;" auto-hide="false" (click)="menuButton()">
+                </ion-menu-button>
+            </ion-buttons>
+
+        </div>
+        <div class="p-2">
+            <span class="text-muted" style="float: left;
+            margin-top: 5px;
+            font-size: large;
+            font-weight: bold;cursor: pointer;" id="app-detail" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">Auderbox
+                <a class="ml-2" style="font-size: smaller;color: gray;font-weight: 500;">
+                    {{version}}
+                </a>
+            </span>
+            <div class="dropdown-menu px-3 py-3 " aria-labelledby="app-detail">
+                <dl class="text-muted">
+                    <dt class="text-center">Version</dt>
+                    <dd class="text-center">{{version}}</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="ml-auto p-2">
+            <span>
+                <div>
+                    <div class="row">
+                        <div class="col px-0 align-middle">
+                            <label class="text-muted" style="font-size: small;margin-top: 8px">{{userName}}</label>
+                        </div>
+                        <div class="col" style="padding: none">
+                            <div matRipple class="dropdown ">
+                                <img [src]="userImage" class="img rounded-circle dropdown-toggle" data-toggle="tooltip"
+                                    data-placement="bottom" title="{{userName}}" style="width: 35px;cursor: pointer;"
+                                    id="userDropDown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    (error)="userImage = 'assets/img/avatar.png'">
+                                <div class="dropdown-menu px-3 py-3" aria-labelledby="userDropDown">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="d-flex justify-content-center">
+                                                <img [src]="userImage == '' ? 'assets/img/avatar.png': userImage"
+                                                    class="img rounded-circle" style="width: 80px; margin: auto"
+                                                    alt="...">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="justify-content-center">
+                                                <div class="px-2 py-4">
+                                                    <h5 class="card-title text-center">{{ph}}</h5>
+                                                    <p class="card-text text-center">{{userName}}</p>
+                                                    <button type="button" class="btn btn-link w-100 "
+                                                        (click)="Logout()">Log out</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </span>
+        </div>
+    </div>
+    <ion-content>
+        <ion-split-pane contentId="main-content" (ionSplitPaneVisible)="onSplitPaneChange($event)">
+            <ion-menu side="start" [hidden]="userName==''" contentId="main-content" menuId="first" type="reveal"
+                [disabled]="disableMenu">
+                <ion-content class="simplebar-content-wrapper">
+                    <ul class="metismenu side-nav mm-show">
+                        <li [class]="p.flag? 'side-nav-item mm-active' : 'side-nav-item normal-text'"
+                            *ngFor="let p of appPages">
+                            <a class="side-nav-link" (click)="parentClick(p)">
+                                <span class="side-nav-title">{{p.title}}</span>
+                                <span class="fa fa-angle-right menu-arrow" aria-hidden="true"></span>
+                            </a>
+                            <ul class="side-nav-second-level" *ngIf="p.flag" [@inOutAnimation]>
+                                <li (click)="childClick(c,p)"
+                                    [class]="c.style? 'bg-primary text-light rounded' :'rounded normal-text' "
+                                    *ngFor=" let c of p.child" [id]="c.code">
+
+                                    <a class="side-nav-title">
+                                        {{c.title}}
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </ion-content>
+            </ion-menu>
+            <ion-router-outlet id="main-content"></ion-router-outlet>
+        </ion-split-pane>
+    </ion-content>
+</ion-app>

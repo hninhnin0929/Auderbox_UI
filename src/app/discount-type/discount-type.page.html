@@ -1,0 +1,373 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="d-flex justify-content-start optionNavBar">
+      <ul class="nav nav-pills mb-3 " id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="discountTypeList-tab" data-toggle="pill" href="#discountTypeList" role="tab"
+            aria-controls="discountTypeList" (click)="discountTypeListTab(); btn=false;" aria-selected="true">List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="discountTypeNew-tab" data-toggle="pill" href="#discountTypeNew" role="tab"
+            aria-controls="discountTypeNew" (click)="discountTypeNewTab();" aria-selected="false">New</a>
+        </li>
+      </ul>
+      <button type="button" class="btn btn-primary header-btn" *ngIf="btn" (click)="save()">
+        Save
+      </button>
+      <button type="button" class="btn btn-primary header-btn btndelete" *ngIf="btn" [disabled]="saveData.syskey==''"
+        (click)="goDelete()">
+        Delete
+      </button>
+    </div>
+    <div id="discountTypeList" style="margin-left: 2px; margin-right: 2px;">
+      <div class="card mb-1" style=" width: 100%;">
+        <div class="card-header bg-transparent advance-form" style="width: 100%;">
+          {{spinner? 'Loading order list':'Advance'}}
+          <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+            [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true">
+          </i>
+          <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+            <span class="sr-only"></span>
+          </div>
+        </div>
+        <div class="card-body" *ngIf="searchtab" id="advance-card-disType">
+          <div class="row">
+            <div class="col">
+              <div class="form-group row">
+                <label for="fDate" class="col-sm-4 col-form-label col-form-label-sm">From Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm" style="width: 170px;">
+                    <input required [(ngModel)]="criteria.fromDate" class="form-control" matInput
+                      [matDatepicker]="pickers1" placeholder="Select Date" name="fDate" id="fDate"
+                      (dblclick)="dblClickFunc1()" (dateChange)="dateChange1($event)" readonly>
+                    <div class="input-group-append date-form" style="width: fit-content;">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers1.open()"></i>
+                      <mat-datepicker #pickers1 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="disCode" class="col-sm-4 col-form-label col-form-label-sm">Discount Code</label>
+                <div class="col-sm">
+                  <input type="text" id="disCode" name="disCode" class="form-control form-control-sm" matInput
+                    [(ngModel)]="criteria.discountCode" [formControl]="disCodeSearch" [matAutocomplete]="auto1">
+                  <mat-autocomplete #auto1="matAutocomplete">
+                    <mat-option *ngFor="let disCode of disCodeList" [value]="disCode.t1" style="font-size: small;">
+                      {{disCode.t1}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <!-- <div class="form-group row">
+                <label for="disPercent" class="col-sm-4 col-form-label col-form-label-sm">Discount Percent</label>
+                <div class="col-sm">
+                  <input type="text" id="disPercent" name="disPercent" class="form-control form-control-sm" 
+                    matInput [(ngModel)]="criteria.discountPercent" [formControl]="disPercentSearch" 
+                    [matAutocomplete]="auto3">
+                  <mat-autocomplete #auto3="matAutocomplete">
+                    <mat-option *ngFor="let disPercent of disPercentList" [value]="disPercent.t2" 
+                      style="font-size: small;">
+                        {{disPercent.n2}}%
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div> -->
+              <div class="form-group row">
+                <label for="tDate" class="col-sm-4 col-form-label col-form-label-sm">To Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm" style="width: 170px;">
+                    <input required [(ngModel)]="criteria.toDate" class="form-control" matInput
+                      [matDatepicker]="pickers2" placeholder="Select Date" name="tDate" id="tDate"
+                      (dblclick)="dblClickFunc2()" (dateChange)="dateChange2($event)" readonly>
+                    <div class="input-group-append date-form" style="width: fit-content;">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers2.open()"></i>
+                      <mat-datepicker #pickers2 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="disPercent" class="col-sm-4 col-form-label col-form-label-sm">Discount Percent</label>
+                <div class="col-sm">
+                  <select class="custom-select custom-select-sm" [(ngModel)]="criteria.discountPercent" id="disPercent">
+                    <option value="" selected>-</option>
+                    <option [value]="disPercent.n2" *ngFor="let disPercent of disPercentList">
+                      {{disPercent.n2}}%
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label for="shopDesc" class="col-sm-4 col-form-label col-form-label-sm">Shop Desc</label>
+                <div class="col-sm">
+                  <input type="text" id="shopDesc" name="shopDesc" class="form-control form-control-sm" matInput
+                    [(ngModel)]="criteria.shopDesc" [formControl]="shopDescSearch" [matAutocomplete]="auto4">
+                  <mat-autocomplete #auto4="matAutocomplete">
+                    <mat-option *ngFor="let shopDesc of shopDescList" [value]="shopDesc.shopName"
+                      style="font-size: small;">
+                      {{shopDesc.shopName}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="disDesc" class="col-sm-4 col-form-label col-form-label-sm">Discount Desc</label>
+                <div class="col-sm">
+                  <input type="text" id="disDesc" name="disDesc" class="form-control form-control-sm" matInput
+                    [(ngModel)]="criteria.discountDesc" [formControl]="disDescSearch" [matAutocomplete]="auto2">
+                  <mat-autocomplete #auto2="matAutocomplete">
+                    <mat-option *ngFor="let disDesc of disDescList" [value]="disDesc.t2" style="font-size: small;">
+                      {{disDesc.t2}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="d-flex justify-content-start">
+                <div class="btn-group" role="group" style="height: 35px;">
+                  <button (click)="search(0, true)" type="button" class="btn btn-primary" [disabled]="spinner">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <!-- <div class="d-flex justify-content-start">
+                  <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                    <button (click)="print()" type="button" class="btn btn-primary">
+                      Export
+                    </button>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <pagination-controls (pageChange)="pageChanged($event)" ></pagination-controls>
+      <div class="table-responsive text-nowrap mt-1 border" style="height: 380px;">
+        <table class="table table-hover mx-0" style="font-size: 13px;">
+          <thead class="thead-dark">
+            <tr>
+              <th>No</th>
+              <th>Date</th>
+              <th>Discount Type Code</th>
+              <th>Discount Type Description</th>
+              <th>Discount Type Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of disTypeList | paginate: config; let i = index;" (click)="detail($event, i)">
+              <td scope="row">
+                <b>
+                  {{i+1}}
+                </b>
+              </td>
+              <td>{{d.disTypeDate}}</td>
+              <td>{{d.disTypeCode}}</td>
+              <td>{{d.disTypeDesc}}</td>
+              <td id="statusChangeEvent" style="width: 16% !important;">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                  <button type="button" class="btn btn-success btn-sm mr-1" (click)="disTypeStatusChange($event, d)"
+                    [disabled]="d.disTypeStatus == 1">
+                    Active
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="disTypeStatusChange($event, d)"
+                    style="background-color: red; border-color: red;" [disabled]="d.disTypeStatus == 0">
+                    Inactive
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="discountTypeNew">
+      <div class="card mb-1">
+        <div class="card-header">
+          Discount Type Info
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col border-right">
+              <div class="form-group row">
+                <label for="saveDisCode" class="col-sm-4 col-form-label col-form-label-sm">Code</label>
+                <div class="col-sm-8">
+                  <input type="text" id="saveDisCode" [(ngModel)]="saveData.t1" (focus)="focusFunction()"
+                    class="form-control form-control-sm" [disabled]="dtlFlag == true">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="saveDisDesc" class="col-sm-4 col-form-label col-form-label-sm">Description</label>
+                <div class="col-sm-8">
+                  <input type="text" id="saveDisDesc" [(ngModel)]="saveData.t2" class="form-control form-control-sm">
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label for="saveDisPercent" class="col-sm-4 col-form-label col-form-label-sm">Discount Percent</label>
+                <div class="col-sm-8">
+                  <input type="text" id="saveDisPercent" class="form-control form-control-sm" [(ngModel)]="saveData.n2"
+                    (keypress)="validateDisPercent($event)"> <!--  (keyup)="validateDisPercent($event)"> -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+      <div class="card">
+        <div class="row">
+          <div class="col border-right" style="padding-right: 0px;">
+            <div class="card-header">
+              Applied Shops
+            </div>
+            <div class="overflow-auto table-responsive text-nowrap" style="height: 300px;">
+              <!-- <div class="table-responsive text-nowrap mt-2" style="max-height: 380px;"> -->
+
+              <table class="table table-hover surveyortable" style="font-size: 13px;">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>No</th>
+                    <th>Store Name</th>
+                    <th>Delete</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let sList of saveData.promoAndDisJunDataList; let i = index">
+                    <td>{{i+1}}</td>
+                    <td>{{sList.t1}}</td>
+                    <td>
+                      <div *ngIf="sList.syskey != ''; else btnDisable">
+                        <div>
+                          <button type="button" class="btn btn-primary btn-sm"
+                            (click)="juncRecordStatusChange($event, sList)" *ngIf="sList.recordStatus == 1">
+                            Delete
+                          </button>
+                          <button type="button" class="btn btn-primary btn-sm"
+                            (click)="juncRecordStatusChange($event, sList)" *ngIf="sList.recordStatus == 4"
+                            style="background-color: grey; border-color: grey;">
+                            Deleted
+                          </button>
+                        </div>
+                      </div>
+                      <ng-template #btnDisable>
+                        <button type="button" class="btn btn-light btn-sm" (click)="removeShop($event, i)">
+                          Remove
+                        </button>
+                      </ng-template>
+                    </td>
+                    <td>
+                      <div class="btn-group" role="group" >
+                        <button type="button" class="btn btn-success btn-sm"
+                        (click)="disTypeJuncStatusChange($event, sList)"
+                       
+                        [disabled]="sList.n3 == 1 || sList.syskey == ''">
+                        Active
+                      </button>
+                      <button type="button" class="btn btn-danger btn-sm"
+                        (click)="disTypeJuncStatusChange($event, sList)"
+                     
+                        [disabled]="sList.n3 == 0 || sList.syskey == ''">
+                        Inactive
+                      </button>
+                      </div>
+                      
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col" style="padding-left: 0px;">
+            <div class="card-header">
+              Shops
+              <span class="float-right">
+                <button class="btn btn-sm btn-primary mr-2" style="margin-top: -3px;" (click)="addShop()" [disabled]="">Add Shop</button>
+                <i (click)="dropdown? dropdown=false: dropdown=true"
+                [class]="dropdown? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true">
+              </i>
+             
+              </span>
+            </div>
+           
+            <div class="card-body px-5 border-bottom" id="shopAdvanceForm" *ngIf="dropdown">
+              <div class="form-group row">
+                <label for="tempShopSearch" class="col-sm-4 col-form-label">Shop</label>
+                <div class="col-sm-8">
+                  <input type="text" id="tempShopSearch" class="form-control form-control-sm"
+                    [(ngModel)]="tempSearch.shopDesc">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="tempTsSearch" class="col-sm-4 col-form-label">Town</label>
+                <div class="col-sm-8">
+                  <input type="text" id="tempTsSearch" class="form-control form-control-sm"
+                    [(ngModel)]="tempSearch.townDesc">
+                </div>
+              </div>
+              <div class="d-flex justify-content-end">
+                <div class="btn-group" role="group">
+                  <button (click)="searchShop()" type="button" class="btn btn-primary btn-sm">
+                    Search
+                  </button>
+                </div>
+                
+              </div>
+            </div>
+            <div class="overflow-auto" style="height: 300px;">
+            <mat-accordion>
+              <mat-expansion-panel *ngFor="let tsList of townList; let i = index;">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    {{tsList.TownDesc}}
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div>
+                  <table class="table table-hover surveyortable" style="font-size: 13px;">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th>No</th>
+                        <th>Store Name</th>
+                        <th>
+                          Select All
+                          <input type="checkbox" id="combo{{i}}" (change)="selectTown($event, i)">
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let shopList of tsList.ShopDataList; let j = index;">
+                        <td>{{j+1}}</td>
+                        <td>{{shopList.shopName}}</td>
+                        <td>
+                          <!-- <button class="btn btn-sm" type="button" (click)="addShop($event, i, j)">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                              </button> -->
+                          <input type="checkbox" id="cb{{i}}and{{j}}" (change)="selectShop($event, i, j)">
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ion-content>

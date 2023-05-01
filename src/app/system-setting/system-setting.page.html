@@ -1,0 +1,336 @@
+
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="d-flex justify-content-start optionNavBar">
+      <button type="button" class="btn btn-primary header-btn" (click)="update()">
+        Save
+      </button>
+    </div>
+    <div class="card" style="margin-top: 10px;">
+      <div class="card-header">
+        System Setting
+      </div>
+      <mat-tab-group animationDuration="0ms">
+        <mat-tab label="General">
+          <!-- Content 1 -->
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm" style="padding-left: 40px;">
+                    <input id="isUseGPSLimitation" name="isUseGPSLimitation" class="form-check-input" 
+                      type="checkbox" [(ngModel)]="tempSaveData.isUseGPSLimitation" (change)="rangeNotUse()">
+                    <label for="isUseGPSLimitation" class="col-form-label col-form-label-sm">
+                      Use GPS Limitation
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm">
+                    <input type="number" id="gpsRange" name="gpsRange" [(ngModel)]="tempSaveData.gpsRange" 
+                      class="form-control form-control-sm" min="0" [disabled]="!tempSaveData.isUseGPSLimitation">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm" style="padding-left: 40px;">
+                    <input type="checkbox" id="isUseHotLineNumber" name="isUseHotLineNumber" 
+                      class="form-check-input" [(ngModel)]="tempSaveData.isUseHotLineNumber" (change)="hlNotUse()">
+                    <label for="isUseHotLineNumber" class="col-form-label col-form-label-sm">
+                      Use HotLine Number
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm">
+                    <input type="text" id="hlNumber" name="hlNumber" [(ngModel)]="tempSaveData.hlNumber" 
+                      class="form-control form-control-sm" [disabled]="!tempSaveData.isUseHotLineNumber">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm" style="padding-left: 40px;">
+                    <input id="isUseEstimatedDeliDay" name="isUseEstimatedDeliDay" class="form-check-input" 
+                      type="checkbox" [(ngModel)]="tempSaveData.isUseEstimatedDeliDay" (change)="rangeNotUse()">
+                    <label for="isUseEstimatedDeliDay" class="col-form-label col-form-label-sm">
+                      Use Estimated Delivery Day
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm">
+                    <input type="number" id="estimatedDeliDay" name="estimatedDeliDay" [(ngModel)]="tempSaveData.estimatedDeliDay" 
+                      class="form-control form-control-sm" min="0" [disabled]="!tempSaveData.isUseEstimatedDeliDay">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm" style="padding-left: 40px;">
+                    <input id="isUseOrgName" name="isUseOrgName" class="form-check-input" 
+                      type="checkbox" [(ngModel)]="tempSaveData.isUseOrgName" (change)="orgNameNotUse()">
+                    <label for="isUseOrgName" class="col-form-label col-form-label-sm">
+                      Company Name
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm">
+                    <input type="text" id="orgName" name="orgName" [(ngModel)]="tempSaveData.orgName" 
+                      class="form-control form-control-sm" min="0" [disabled]="!tempSaveData.isUseOrgName">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm" style="padding-left: 40px;">
+                    <input id="isUseBackDate" name="isUseBackDate" class="form-check-input" 
+                      type="checkbox" [(ngModel)]="tempSaveData.isUseBackDate" (change)="backDateNotUse()">
+                    <label for="isUseBackDate" class="col-form-label col-form-label-sm">
+                      Allow Back Date
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm">
+                    <div class="input-group input-group-sm">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="lblstartBackDate">From</span>
+                      </div>
+                      <input type="text" class="form-control" name="startBackDate" [(ngModel)]="tempSaveData.startBackDate" matInput id="startBackDate"
+                        [matDatepicker]="configdpfrom" (click)="configdpfrom.open()" placeholder="Click" [disabled]="!tempSaveData.isUseBackDate" readonly>
+                      <mat-datepicker #configdpfrom></mat-datepicker>
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="lblendBackDate">To</span>
+                      </div>
+                      <mat-datepicker #configdpto></mat-datepicker>
+                      <input type="text" class="form-control" name="endBackDate" [(ngModel)]="tempSaveData.endBackDate" aria-describedby="lblendBackDate" id="endBackDate" readonly
+                        matInput [matDatepicker]="configdpto" (click)="configdpto.open()" placeholder="Click" [disabled]="!tempSaveData.isUseBackDate">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm" style="padding-left: 40px;">
+                    <input id="isUseDisplayDeciPlace" name="isUseDisplayDeciPlace" class="form-check-input" 
+                      type="checkbox" [(ngModel)]="tempSaveData.isUseDisplayDeciPlace" (change)="displayDeciPlaceNotUse()">
+                    <label for="isUseDisplayDeciPlace" class="col-form-label col-form-label-sm">
+                      Display Decimal Place
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm">
+                    <input type="number" id="displayDeciPlace" name="displayDeciPlace" [(ngModel)]="tempSaveData.displayDeciPlace" 
+                      class="form-control form-control-sm" min="0" [disabled]="!tempSaveData.isUseDisplayDeciPlace">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm" style="padding-left: 40px;">
+                    <input id="isUseCalcDeciPlace" name="isUseCalcDeciPlace" class="form-check-input" 
+                      type="checkbox" [(ngModel)]="tempSaveData.isUseCalcDeciPlace" (change)="calcDeciPlaceNotUse()">
+                    <label for="isUseCalcDeciPlace" class="col-form-label col-form-label-sm">
+                      Calculation Decimal Place
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm">
+                    <input type="number" id="calcDeciPlace" name="calcDeciPlace" [(ngModel)]="tempSaveData.calcDeciPlace" 
+                      class="form-control form-control-sm" min="0" [disabled]="!tempSaveData.isUseCalcDeciPlace">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm" style="padding-left: 40px;">
+                    <input id="isUseCameraSetting" name="isUseCameraSetting" class="form-check-input" 
+                      type="checkbox" [(ngModel)]="tempSaveData.isUseCameraSetting" (change)="cameraSettingNotUse()">
+                    <label for="isUseCameraSetting" class="col-form-label col-form-label-sm">
+                      Camera Setting
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm">
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input" id="camerasetting" [(ngModel)]="tempSaveData.isUseCamera" [checked]="tempSaveData.isUseCamera">
+                      <label class="custom-control-label  col-form-label-sm" for="camerasetting">Camera</label>
+                    </div>
+                  </div>
+                  <div class="col-sm">
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input"  id="galsetting" [(ngModel)]="tempSaveData.isUseGallery" [checked]="tempSaveData.isUseGallery">
+                      <label class="custom-control-label  col-form-label-sm" for="galsetting">Gallery</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Tax">
+          <!-- Content 2 -->
+          <div class="card-body">      
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm" style="padding-left: 40px;">
+                    <input id="isUseTaxDesc" name="isUseTaxDesc" class="form-check-input" 
+                      type="checkbox" [(ngModel)]="tempSaveData.isUseTaxDesc" (change)="orgNameNotUse()">
+                    <label for="isUseTaxDesc" class="col-form-label col-form-label-sm">
+                      Tax Description
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm">
+                    <input type="text" id="taxDesc" name="taxDesc" [(ngModel)]="tempSaveData.taxDesc" 
+                      class="form-control form-control-sm" min="0" [disabled]="!tempSaveData.isUseTaxDesc">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm" style="padding-left: 40px;">
+                    <input id="isUsePcent" name="isUsePcent" class="form-check-input" 
+                      type="checkbox" [(ngModel)]="tempSaveData.isUseTaxPercent" (change)="taxPercentNotUse()">
+                    <label for="isUsePcent" class="col-form-label col-form-label-sm">
+                      Tax Percent(%)
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm">
+                    <input type="text" id="taxPcent" name="taxPcent" [(ngModel)]="tempSaveData.taxPercent" 
+                      class="form-control form-control-sm" min="0" [disabled]="!tempSaveData.isUseTaxPercent">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm" style="padding-left: 40px;">
+                    <input id="isUseTaxExc" name="isUsePcent" class="form-check-input" 
+                      type="checkbox" [(ngModel)]="tempSaveData.isUseTaxExclusiveSKU" (change)="taxExclusiveSKUNotUse()">
+                    <label for="isUseTaxExc" class="col-form-label col-form-label-sm">
+                      Tax Exclusive SKU
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group row">
+                  <div class="col-sm">
+                    <div class="d-flex justify-content-start">
+                      <div class="input-group">
+                        <input type="file" id="skufilechose" class="custom-file-input form-control-sm" name="skufilechose" [ngModelOptions]="{standalone: true}"
+                        [ngModel]="importload" #choseskufile (click)="resetValue()" (change)="onUpload($event)" >
+                        <label class="custom-file-label col-form-label-sm text-truncate"
+                          matTooltip="choseskufile.value == ''? 'No file chosen': choseskufile.value"
+                          for="skufilechose">{{choseskufile.value == ''? 'No file chosen': choseskufile.value}}</label>
+                      </div>
+                      <button type="button" class="btn btn-primary btn-sm ml-1" (click)="exportTaxExcSKUFile()">
+                        Export
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="col-sm-6">
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <div class="input-group">
+                      <input type="file" id="skufilechose" class="custom-file-input form-control-sm" name="skufilechose" [ngModelOptions]="{standalone: true}"
+                      [ngModel]="importload" #choseskufile (click)="resetValue()" (change)="onUpload($event)" >
+                      <label class="custom-file-label col-form-label-sm text-truncate"
+                        matTooltip="choseskufile.value == ''? 'No file chosen': choseskufile.value"
+                        for="skufilechose">{{choseskufile.value == ''? 'No file chosen': choseskufile.value}}</label>
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-primary btn-sm ml-0" (click)="exportTaxExcSKUFile()">
+                    <i class="fa fa-download mr-1"></i>
+                    Export
+                  </button>
+                </div>
+              </div> -->
+            </div>       
+          </div>
+        </mat-tab>
+        <mat-tab label="Other">
+          <!-- Content 3 -->
+          <div class="card-body"> 
+            <div class="row">
+              <div class="col">
+                <div class="form-group row">
+                  <div class="col-sm" style="padding-left: 40px;">
+                    <input type="checkbox" id="isUseEmptyBottle" name="isUseEmptyBottle" 
+                      class="form-check-input" [(ngModel)]="tempSaveData.isUseEmptyBottle">
+                    <label for="isUseEmptyBottle" class="col-form-label col-form-label-sm">
+                      Use Returnable Packaging Stock
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <div class="col-sm" style="padding-left: 40px;">
+                    <input type="checkbox" id="isUseSAP" name="isUseSAP" 
+                      class="form-check-input" [(ngModel)]="tempSaveData.isUseSAP">
+                    <label for="isUseSAP" class="col-form-label col-form-label-sm">
+                      Use SAP Integration
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!-- You may add third column -->
+              <div class="col"></div>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</ion-content>

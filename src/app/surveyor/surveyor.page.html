@@ -1,0 +1,456 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="d-flex justify-content-start optionNavBar">
+      <ul class="nav nav-pills mb-3 sticky-top" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="surveyorList-tab" data-toggle="pill" href="#surveyorList" role="tab"
+            aria-controls="surveyorList" (click)="surveyorListTab();btn=false;" aria-selected="true">List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="surveyorNew-tab" data-toggle="pill" href="#surveyorNew" role="tab"
+            aria-controls="surveyorNew" (click)="surveyorNewTab();" aria-selected="false">New</a>
+        </li>
+      </ul>
+      <button type="button" class="btn btn-primary header-btn" *ngIf="btn" (click)="save()">
+        Save
+      </button>
+      <button type="button" class="btn btn-primary header-btn btndelete" *ngIf="btn" [disabled]="saveData.syskey==''"
+        (click)="goDelete()">
+        Delete
+      </button>
+    </div>
+    <div class="row" id="surveyorList" style="margin-left: 2px; margin-right: 2px;">
+      <div class="card" style="margin-bottom: 8px; width: 100%;">
+        <div class="card-header bg-transparensut advance-form" style="width: 100%;">
+          {{spinner? 'Loading order list':'Advance'}}
+          <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+            [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true">
+          </i>
+          <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+            <span class="sr-only"></span>
+          </div>
+        </div>
+        <div class="card-body" *ngIf="searchtab" id="advance-card">
+          <div class="row">
+            <div class="col">
+              <div class="form-group row">
+                <label for="date" class="col-sm-5 col-form-label col-form-label-sm">Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input required [(ngModel)]="criteria.date" class="form-control" matInput [matDatepicker]="pickers1"
+                      placeholder="Select Date" name="date" id="date" (dblclick)="dblClickFunc1()" readonly>
+                    <div class="input-group-append">
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="pickers1.open()"></i>
+                      <mat-datepicker #pickers1 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="qName" class="col-sm-5 col-form-label col-form-label-sm">Question</label>
+                <div class="col-sm">
+                  <input type="text" id="qName" name="qName" class="form-control form-control-sm" matInput
+                    [(ngModel)]="criteria.t2" [formControl]="qNameSearch" [matAutocomplete]="auto2">
+                  <mat-autocomplete #auto2="matAutocomplete">
+                    <mat-option *ngFor="let q of qList" [value]="q.t2" style="font-size: small;">
+                      {{q.t2}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label for="qNature" class="col-sm-5 col-form-label col-form-label-sm">Question Nature</label>
+                <div class="col-sm">
+                  <input type="text" id="qNature" name="qNature" class="form-control form-control-sm" matInput
+                    [(ngModel)]="criteria.questionNature" [formControl]="qNatureSearch" [matAutocomplete]="auto3">
+                  <mat-autocomplete #auto3="matAutocomplete">
+                    <mat-option *ngFor="let qn of qnList1" [value]="qn.t2" style="font-size: small;">
+                      {{qn.t2}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+              <div class="form-group row">
+                
+                <label for="qCode" class="col-sm-5 col-form-label col-form-label-sm">Question Code</label>
+                <div class="col-sm">
+                  <input type="text" id="qCode" name="qCode" class="form-control form-control-sm" matInput
+                    [(ngModel)]="criteria.t1" [formControl]="qCodeSearch" [matAutocomplete]="auto1">
+                  <mat-autocomplete #auto1="matAutocomplete">
+                    <mat-option *ngFor="let qc of qcList" [value]="qc.t1" style="font-size: small;">
+                      {{qc.t1}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label for="qType" class="col-sm-5 col-form-label col-form-label-sm">Question Type</label>
+                <div class="col-sm">
+                  <input type="text" id="qType" name="qType" class="form-control form-control-sm" matInput
+                    [(ngModel)]="criteria.questionType" [formControl]="qTypeSearch" [matAutocomplete]="auto4">
+                  <mat-autocomplete #auto4="matAutocomplete">
+                    <mat-option *ngFor="let qt of qtList1" [value]="qt.t2" style="font-size: small;">
+                      {{qt.t2}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="aName" class="col-sm-5 col-form-label col-form-label-sm">Survey Form</label>
+                <div class="col-sm">
+                  <input type="text" id="aName" name="aName" class="form-control form-control-sm" matInput
+                    [(ngModel)]="criteria.t3" [formControl]="aNameSearch" [matAutocomplete]="auto2">
+                  <mat-autocomplete #auto2="matAutocomplete">
+                    <mat-option *ngFor="let svrform of aList" [value]="svrform.t2" style="font-size: small;">
+                      {{svrform.t2}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="d-flex justify-content-start">
+                <div class="btn-group" role="group" style="height: 35px;">
+                  <button (click)="search(0, true)" type="button" class="btn btn-primary" [disabled]="spinner">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                  <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="d-flex justify-content-start">
+                  <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                    <button (click)="print()" type="button" class="btn btn-primary">
+                      Export
+                    </button>
+                  </div>
+                </div> 
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+      <div style="max-height: 457px; width: 100%;" class="mt-2">
+        <table class="table table-hover table-striped" style="font-size: 13px;">
+          <thead class="thead-dark">
+            <tr>
+              <th>No</th>
+              <th>Date</th>
+              <th>Survey Form</th>
+              <th>Question Code</th>
+              <th>Question</th>
+              <th>Question Nature</th>
+              <th>Question Type</th>
+              <!-- <th>Answer Details</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of QandAList | paginate: config; let i = index;" (click)="detail(i)">
+              <td scope="row">
+                <b>
+                  {{i+1}}
+                </b>
+              </td>
+              <td>{{d.date}}</td>
+              <td>{{d.svrform}}</td>
+              <td>{{d.t1}}</td>
+              <td>{{d.t2}}</td>
+              <td>{{d.questionNature}}</td>
+              <td>{{d.questionType}}</td>
+              <!-- <td>
+                <ul>
+                  <li *ngFor="let al of d.answerList; let j = index;">
+                    {{al.t1}}
+                  </li>
+                </ul>
+              </td> -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row" id="surveyorNew">
+      <div class="col-sm-12">
+        <div class="card" style="margin-bottom: 5px;">
+          <div class="card-header bg-transparent">
+            Question Detail
+          </div>
+          <div class="card-body row">
+
+            <div class="col">
+              <div class="form-group row">
+                <label for="survey-header" class="col-sm-3 col-form-label col-form-label-sm">Survey Form</label>
+                <div class="col-sm">
+                  <select [(ngModel)]="saveData.n6" class="custom-select custom-select-sm" id="survey-header"
+                    name="survey-header"style="max-width: 280px;" (change)="getSectionByHeader()"
+                    [disabled]="AnsDtlList.length > 0 || dtlFlag == true">
+                    <option value="" selected>-</option>
+                    <option [value]="svrHdr.headerSyskey" *ngFor="let svrHdr of svrHdrList">
+                      {{svrHdr.headerDescription}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="question-nature" class="col-sm-3 col-form-label col-form-label-sm">
+                  Survey Section
+                </label>
+                <div class="col-sm">
+                  <select [(ngModel)]="saveData.n1" class="custom-select custom-select-sm" id="question-nature"
+                  style="max-width: 280px;" name="question-nature">
+                    <!-- [disabled]="AnsDtlList.length > 0 || dtlFlag == true" (change)="getNatureStatusWithSK()"  -->
+                    <option value="" selected>-</option>
+                    <option [value]="qn.sectionSyskey" *ngFor="let qn of qnList2">
+                      {{qn.sectionDescription}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="question-type" class="col-sm-3 col-form-label col-form-label-sm">Question Type</label>
+                <div class="col-sm">
+                  <select [(ngModel)]="saveData.n2" class="custom-select custom-select-sm" id="question-type"
+                  style="max-width: 280px;" name="question-type" (change)="getTypeStatusWithSK()"
+                    [disabled]="AnsDtlList.length > 0 || dtlFlag == true">
+                    <option value="" selected>-</option>
+                    <option [value]="qt.syskey" *ngFor="let qt of qtList2">
+                      {{qt.t2}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="photo-type" class="col-sm-3 col-form-label col-form-label-sm">View Type</label>
+                <div class="col-sm">
+                  <select [(ngModel)]="saveData.n3" class="custom-select custom-select-sm" id="photo-type"
+                  style="max-width: 280px;" name="photo-type">
+                    <!--  || natureStatus == true [disabled]="checkPhotoDisable() == true || dtlFlag == true"-->
+                    <option value=0 selected>-</option>
+                    <!-- <option [value]="1">On/Off Premise</option>
+                          <option [value]="2">Modern/Traditional Trade</option> -->
+                    <option *ngFor="let i of _viewList" value="{{i.value}}">
+                      {{i.caption}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="stType" class="col-sm-3 col-form-label col-form-label-sm">Type</label>
+                <div class="col-sm">
+                  <select [(ngModel)]="saveData.n7" class="custom-select custom-select-sm" style="max-width: 280px;"id="type"
+                    name="type" (change)="changeStoreType(saveData.n7)"
+                    [disabled]="AnsDtlList.length > 0 || dtlFlag == true || showStoreType == false">
+                    <option value="0" selected>-</option>
+                    <option value="{{st.value}}" *ngFor="let st of _storeTypeList">
+                      {{st.caption}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label for="questionCode" class="col-sm-3 col-form-label col-form-label-sm">Code</label>
+                <div class="col-sm">
+                  <input type="text" id="questionCode" [(ngModel)]="saveData.t1" class="form-control form-control-sm"
+                  style="max-width: 280px;" (focus)="focusFunction()" >
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="question" class="col-sm-3 col-form-label col-form-label-sm">Description</label>
+                <div class="col-sm">
+                  <textarea id="question" [(ngModel)]="saveData.t2" style="max-width: 280px;" class="form-control form-control-sm" rows="3">
+                      </textarea>
+                  <!-- <input type="text" id="question" [(ngModel)]="saveData.t2" class="form-control"> -->
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="instruction" class="col-sm-3 col-form-label col-form-label-sm">Instruction</label>
+                <div class="col-sm">
+                  <input type="text" id="instruction" [(ngModel)]="saveData.t3" class="form-control form-control-sm"
+                  style="max-width: 280px;" [disabled]="checkPhotoDisable() == true ">
+                </div>
+              </div>
+              <!--                              Temporary Comment KN
+                  <div class="form-group row">
+                    <label for="question-type" class="col-sm-5 col-form-label">Brand Owner</label>
+                    <div class="col-sm">
+                      <select [(ngModel)]="saveData.n8" class="custom-select custom-select-sm"  
+                        id="question-type" name="question-type"  
+                        [disabled]="AnsDtlList.length > 0 || dtlFlag == true || disableFlag">
+                        <option value="" selected>-</option>
+                        <option [value]="bo.syskey" *ngFor="let bo of bolist">
+                          {{bo.t2}}
+                        </option>
+                      </select>
+                    </div>
+                  </div> -->
+
+            </div>
+          </div>
+        </div>
+        <div class="card" style="width: 100%;">
+          <div class="card-header bg-transparent">
+            Answer Detail Info
+          </div>
+          <div class="card-body row">
+            <!-- <div class="col">
+                      <div class="form-group row">
+                        <div class="col">
+                          <div class="form-group row">
+                            <label for="answerType-photo" class="col-sm-4 col-form-label">Photo</label>
+                            <div class="col-sm">
+                              <input class="form-control" type="file" id="answerType-photo" (change)="onChange($event)" 
+                                #fileInput accept='image/*' [disabled]="checkPhotoDisable()"/>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-group row">
+                            <label for="answerType-text" class="col-sm-4 col-form-label">
+                              {{checkPhotoDisable()? "Text" : "Instruction"}}
+                            </label>
+                            <div class="col-sm">
+                              <input type="text" id="answerType-text" [(ngModel)]="ansDtlText" 
+                                [disabled]="checkTextDisable()" class="form-control">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row" style="float: right; margin-right: 3%;">
+                        <button class="btn btn-primary" (click)="add()" [disabled]="checkTextDisable()"
+                          style="margin-right: 5px;">
+                          Add
+                        </button>
+                        <button class="btn btn-primary" (click)="clear()" [disabled]="checkTextDisable()">
+                          Clear
+                        </button>
+                      </div>
+                    </div> -->
+            <div class="col col-sm border-right">
+              <div class="form-group row">
+                <label for="answerType-text" class="col-sm-3 col-form-label col-form-label-sm">
+                  Answer Text
+                </label>
+                <div class="col-sm">
+                  <input type="text" id="answerType-text" [(ngModel)]="ansDtlText" [disabled]="checkTextDisable()"
+                    class="form-control form-control-sm" style="max-width: 280px;">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="answerType-text" class="col-sm-3 col-form-label col-form-label-sm">
+                  Category
+                </label>
+                <div class="col-sm">
+                  <select id="subcatid" name="subcat" [(ngModel)]="categorySyskey" 
+                    [disabled]="showStoreType == false ||categoryDisable == true || checkTextDisable()" 
+                    class="custom-select custom-select-sm" style="max-width: 280px;" (change)="changeCategory(categorySyskey)" 
+                    [ngModelOptions]="{standalone: true}">
+                      <option value="0" selected>-</option>
+                      <option *ngFor="let i of catlist" value="{{i.syskey}}">
+                        {{i.t2}}
+                      </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col col-sm">
+              <div class="form-group row">
+                <label  class="col-sm-3 col-form-label col-form-label-sm">Photo</label>
+                <div class="col-sm">
+                  <input class="form-control form-control-sm" type="file" id="answerType-photo"
+                    (change)="onChange($event)" #fileInput accept='image/*' hidden/>
+                    <input class="form-control form-control-sm" style="max-width: 280px;" type="text" [disabled]="checkPhotoDisable()"
+                     (click)="fileInput.click()"
+                     [matTooltip]="fileInput.value"
+                     [placeholder]="fileInput.value == ''? 'Cick to select': fileInput.value"/>
+                  <div class="d-flex justify-content-end mt-2" style="width: 100px;">
+                    <button class="btn btn-primary btn-sm" (click)="add()" [disabled]="checkAddBtnDisable()"
+                      style="margin-right: 5px;">
+                      Add
+                    </button>
+                    <button class="btn btn-primary btn-sm" (click)="clear()"
+                      [disabled]="checkAddBtnDisable() == true || dtlFlag == true">
+                      Clear
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="card mt-2">
+          <div class="card-header bg-transparent">
+            Answer Details
+          </div>
+          <div class="card-body row">
+            <div class="col" *ngIf="checkPhotoDisable() == false; else textonly">
+              <div class="form-group row" style="margin-left: 10px;">
+                {{AnsDtlList.length > 0 ? saveData.t3 : ""}}
+              </div>
+              <div class="form-group row" style="margin-bottom: 25px;">
+                <div class="col" *ngFor="let d of AnsDtlList; let i = index;">
+                  <div class="image-wrapper">
+                    <img id="showImg" [src]="d.imagePathForMobile" height="200px" width="99%">
+                    <button class="btn_img_del" type="button" (click)="AnsDtlDel(i)">
+                      <b>x</b>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ng-template #textonly>
+              <div class="col">
+                <div class="form-group row">
+                  <table class="table table-hover table-striped" style="width: 100%;" *ngIf="AnsDtlList.length > 0">
+                    <tr>
+                     <!-- <th>Serial No</th>-->
+                      <th>Answers</th>
+                      <th>Changes</th>
+                      <th>Category</th>
+                      <th></th>
+                      <!-- *ngIf="dtlFlag == true" -->
+                    </tr>
+                    <tr *ngFor="let d of AnsDtlList; let i = index;">
+                  
+                      <td>
+                        {{d.t1}}
+                      </td>
+                      <td>
+                        <input type="text" class="form-control col-sm-2" id="updateAnsText{{i}}"
+                          style="margin-right: 5px; max-width: 280px;">
+                      </td>
+                      <td>
+                        {{d.categoryDesc}}
+                      </td>
+                      <td>
+                        <div style="float: right;">
+                          <button class="btn btn-primary" (click)="updateAnsText(i)" style="margin-right: 5px;">
+                            Update
+                          </button>
+                          <button class="btn btn-primary" (click)="AnsDtlDel(i)">
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,21 @@
+:host ::ng-deep .mat-expansion-panel-body {
+     padding: 0px !important;
+}
+.form-control,.custom-select{
+    width: 170px;
+}
+.btndelete {
+
+    background-color: rgb(189, 51, 80);
+
+    color: white;
+
+  }
+
+.btndelete:hover {
+
+    background-color:  #740110;
+
+    color: white;
+
+  }

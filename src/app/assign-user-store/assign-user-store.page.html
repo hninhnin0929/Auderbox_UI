@@ -1,0 +1,323 @@
+<ion-content>
+    <div class="myOuterContainer">
+        <div class="d-flex justify-content-start ">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link" id="list-rs-tab" data-toggle="tab" href="#list-rs" role="tab"
+                        aria-controls="list" aria-selected="true" (click)="listTabClick()">List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="new-rs-tab" data-toggle="tab" href="#new-rs" role="tab" aria-controls="new"
+                        (click)="newTabClick()" aria-selected="false">New</a>
+                </li>
+            </ul>
+            <button type="button" class="btn btn-primary header-btn header-btn-save" 
+                (click)="save()" [disabled]="isDisable" *ngIf="btn">
+                    Save
+            </button>
+            <button type="button" class="btn btn-primary header-btn header-btn-delete btndelete"
+                (click)="delete()" [disabled]="isDisable" *ngIf="btn">
+                    Delete
+            </button>
+        </div>
+        <div class="tab-content" id="nav-tabContent">
+
+            <div class="tab-pane fade" id="list-rs" role="tabpanel" aria-labelledby="list-rs-tab">
+                <mat-accordion class="example-headers-align ">
+                    <mat-expansion-panel class="border rounded mb-1">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title class="text-primary">
+                                Advance
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                <small></small>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <form [formGroup]='list_fg'>
+                            <div class="row row-cols-2">
+                                <div class="col">
+                                    <div class="form-group row">
+                                        <label for="cri-username" class="col-sm-3 col-form-label col-form-label-sm">User
+                                            Name</label>
+                                        <div class="col-sm">
+                                            <input type="text" id="cri-username" class="form-control form-control-sm"
+                                                style="width:200px" formControlName="name">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group row">
+                                        <label for="type" class="col-sm-3 col-form-label col-form-label-sm">Type</label>
+                                        <div class="col-sm">
+                                            <select name="" class="custom-select custom-select-sm"
+                                                formControlName="type" id="type" style="width:200px">
+                                                <option value="0" selected>All</option>
+                                                <option value="1" selected>Sale Person</option>
+                                                <option value="2" selected>Delivery</option>
+                                                <option value="4" selected>Store Owner</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col">
+                                    <div class="d-flex justify-content-start">
+                                        <div class="btn-group" role="group" style="height: 35px;">
+                                            <button (click)="getAll()" type="button" class="btn btn-primary"
+                                                >
+                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                            </button>
+                                            <button (click)="refresh()" type="button" class="btn btn-primary">
+                                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        <div class="d-flex justify-content-start">
+                                            <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                                                <button (click)="print()" type="button" class="btn btn-primary">
+                                                    Export
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </mat-expansion-panel>
+
+                </mat-accordion>
+                <pagination-controls id="config_list" (pageChange)="pageChangedList($event)">
+                </pagination-controls>
+                <div class="table-responsive text-nowrap mt-2">
+                    <table class="table table-hover table-bordered" style="font-size: 13px;">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col" class="sticky-top" style="width: 5px">#</th>
+                                <th scope="col" class="sticky-top">User Name</th>
+                              
+                                <th scope="col" class="sticky-top">Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let d of list_fg.get('list').value | paginate: config_list;let i = index" (click)="detail(d)">
+                                <th scope="row">{{d.i}}</th>
+                                <td>{{d.userName}}</td>
+                             
+                                <td>
+                                    <a *ngIf="d.type == '1'">Sale Person</a>
+                                    <a *ngIf="d.type == '2'">Delivery Person</a>
+                                    <a *ngIf="d.type == '4'">Store Owner</a>
+                                </td>
+                            </tr>
+                            <tr *ngIf="list_fg.get('list').value.length == 0">
+                                <th scope="row" colspan="4">No Record!</th>
+                                
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="new-rs" role="tabpanel" aria-labelledby="new-rs-tab">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <form [formGroup]="detail_header_fg">
+                            <div class="row row-cols-2">
+                                <div class="col">
+                                    <div class="form-group row">
+                                        <label for="type" class="col-sm-3 col-form-label col-form-label-sm">Type</label>
+                                        <div class="col-sm">
+                                            <select name="" class="custom-select custom-select-sm form"
+                                                formControlName="tran-type" id="type">
+                                                <option value="0" selected>-</option>
+                                                <option value="1" >Sale Person</option>
+                                                <option value="2" >Delivery</option>
+                                                <option value="4" >Store Owner</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="wh" class="col-sm-3 col-form-label col-form-label-sm ">User Name
+                                        </label>
+                                        <div class="col-sm">
+                                            <select class="custom-select custom-select-sm form"
+                                                formControlName="user-selected">
+                                                <option value=''>-</option>
+                                                <option [ngValue]="p"
+                                                
+                                                    *ngFor="let p of detail_header_fg.get('user-list').value">
+                                                    {{p.userName}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group row">
+                                        <label for="wh" class="col-sm-3 col-form-label col-form-label-sm ">Team Name
+                                        </label>
+                                        <div class="col-sm">
+                                           <a class="form-control form-control-sm border-0">{{detail_header_fg.get('user-selected').value.teamName}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                               
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col mystore">
+                        <div class="card-body mx-auto ">
+
+                            <ul style="list-style-type: none;padding: inherit;">
+                                <li class="pb-2">
+
+                                    <div class="d-flex justify-content-start ">
+                                        <h6 style="width: 100%;">Assigned Stores</h6>
+                                        <mat-progress-bar mode="query" id="progress-bar-assign-store" class="mt-1">
+                                        </mat-progress-bar>
+                                    </div>
+                                </li>
+                                <li class="pb-2">
+                                    <div class="row">
+                                        <div class="col-8 py-0">
+                                            <pagination-controls id="config_mystore"
+                                                (pageChange)="pageChangedMyStore($event)">
+                                            </pagination-controls>
+                                        </div>
+                                        <div class="col py-0 text-right">
+                                            <div class="btn-group" role="group" aria-label="Basic example">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                    (click)="descending()">
+                                                    Descending
+                                                    <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                    (click)="ascending()">
+                                                    Ascending
+                                                    <i class="fa fa-sort-asc" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <li class="py-1">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h6>Name</h6>
+                                        </div>
+                                        <div class="col-3 text-right">
+                                            <h6>Code</h6>
+                                        </div>
+                                        <div class="col-3 text-right">
+                                            <h6>Operation</h6>
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <li class="py-1"
+                                    *ngFor="let s of detail_header_fg.get('my-stores').value | paginate: config_mystore ; let i = index">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            {{s.name}}
+                                        </div>
+                                        <div class="col-3 text-right">
+                                            {{s.code}}
+                                        </div>
+                                        <div class="col-3 text-right">
+                                            <a class="text-danger remove" (click)="removeAssignedStore(s)">Remove</a>
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <li class="py-1" *ngIf="detail_header_fg.get('my-stores').value.length == 0">
+                                    <a class="text-muted">No records</a>
+
+                                </li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div class="col avaliable-store">
+
+                        <div class="card-body mx-auto ">
+                            <ul style="list-style-type: none;padding: inherit;">
+                                <li class="pb-2">
+                                    <div class="d-flex justify-content-start ">
+                                        <h6 class="align-middle" style="width: 100%;">Avaliable Stores</h6>
+                                        <mat-progress-bar mode="query" id="progress-bar-avaliable-store" class="mt-1">
+                                        </mat-progress-bar>
+                                    </div>
+                                </li>
+                                <li class="pb-2">
+                                    <div class="row">
+                                        <div class="col-8 py-0">
+                                            <pagination-controls id="config_avaliable_store"
+                                                (pageChange)="pageChangedAvaliableStore($event)">
+                                            </pagination-controls>
+                                        </div>
+                                        <div class="col py-0 text-right">
+                                            <form [formGroup]="detail_avaliable_store_fg">
+                                                <div class="input-group input-group-sm" style="width: 200px;">
+                                                    <input type="text" class="form-control border-right-0"
+                                                        formControlName="store-search"
+                                                        (keyup.enter)="searchAvaliableStore()" placeholder="Search"
+                                                        aria-describedby="basic-search">
+                                                    <div class="input-group-append">
+
+                                                        <button class="btn btn-sm btn-outline-secondary" type="button"
+                                                            (click)="searchAvaliableStore()" id="button-addon1"><i
+                                                                class="fa fa-search"></i></button>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-sm btn-outline-secondary" type="button"
+                                                            (click)="clearAvailableStores()" id="button-addon1"><i
+                                                                class="fa fa-times"></i></button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li class="py-1">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h6>Name</h6>
+                                        </div>
+                                        <div class="col text-right">
+                                            <h6>Code</h6>
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <li class="py-1"
+                                    *ngFor="let s of detail_header_fg.get('avaliable-stores').value | paginate: config_avaliable_store; let i = index">
+                                    <div class="row">
+                                        <div class="col">
+                                            <mat-checkbox [(ngModel)]="s.check" (change)="changeCheckedStore(s)">
+                                                {{s.name}}
+                                            </mat-checkbox>
+                                        </div>
+                                        <div class="col text-right">
+                                            {{s.code}}
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <li class="py-1" *ngIf="detail_header_fg.get('avaliable-stores').value.length == 0">
+                                    <a class="text-muted">No records</a>
+
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ion-content>

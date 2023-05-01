@@ -1,0 +1,152 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="tab-content" id="nav-tabContent">
+      <div class="card sticky-top" style="margin-bottom: 8px; width: 100%;">
+        <div class="card-header bg-transparent" style="width: 100%;">
+          {{spinner? 'Loading order list':'Advance'}}
+          <i *ngIf="!spinner" (click)="advanceSearch(searchtab? false: true);"
+            [class]="searchtab? 'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'" aria-hidden="true">
+          </i>
+          <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+            <span class="sr-only"></span>
+          </div>
+        </div>
+        <div class="card-body" *ngIf="searchtab" id="advance-card">
+          <div class="row">
+            <div class="col">
+              <div class="form-group row">
+                <label for="cri-date" class="col-sm-5 col-form-label col-form-label-sm">Date</label>
+                <div class="col-sm">
+                  <div class="input-group input-group-sm">
+                    <input required [(ngModel)]="criteria.criData.date" class="form-control" matInput 
+                      [matDatepicker]="picker2" placeholder="Select Date" name="cri-date" readonly>
+                    <div class="input-group-append date-form" >
+                      <i class="input-group-text fa fa-calendar" aria-hidden="true" (click)="picker2.open()"></i>
+                      <mat-datepicker #picker2 displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY">
+                      </mat-datepicker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-shopname" class="col-sm-5 col-form-label col-form-label-sm">Shop Name</label>
+                <div class="col-sm">
+                  <input type="text" matInput id="cri-shopname" class="form-control form-control-sm" 
+                    [(ngModel)]="criteria.criData.t1" [formControl]="shopNameSearch" 
+                    [matAutocomplete]="auto">
+                  <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let shop of shoplist" [value]="shop.shopName" style="font-size: small;">
+                      {{shop.shopName}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label for="cri-fromusername" class="col-sm-5 col-form-label col-form-label-sm">User Name (from)</label>
+                <div class="col-sm">
+                  <input type="text" matInput id="cri-fromusername" class="form-control form-control-sm" 
+                    [(ngModel)]="criteria.criData.fromUserName" [formControl]="fromUserNameSearch" 
+                    [matAutocomplete]="auto1">
+                  <mat-autocomplete #auto1="matAutocomplete">
+                    <mat-option *ngFor="let user1 of userlist1" [value]="user1.userName" style="font-size: small;">
+                      {{user1.userName}}
+                    </mat-option>
+                  </mat-autocomplete>
+                  <!-- <select [(ngModel)]="criteria.criData.fromUserName" class="custom-select custom-select-sm"
+                    name="cri-fromusername" id="cri-fromusername" [disabled]="userlist1.length==0">
+                    <option value="" selected>-</option>
+                    <option [value]="user1.syskey" *ngFor="let user1 of userlist1">
+                      {{user1.t2}}
+                    </option>
+                  </select> -->
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cri-status" class="col-sm-5 col-form-label">Status</label>
+                <div class="col-sm">
+                  <select [(ngModel)]="criteria.criData.n3" class="custom-select custom-select-sm"
+                    name="cri-status" id="cri-status">
+                    <option value="-1" selected>-</option>
+                    <option value="1" selected>Active</option>
+                    <option value="0" selected>Inactive</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label for="cri-tousername" class="col-sm-5 col-form-label col-form-label-sm">User Name (to)</label>
+                <div class="col-sm">
+                  <input type="text" matInput id="cri-tousername" class="form-control form-control-sm" 
+                    [(ngModel)]="criteria.criData.toUserName" [formControl]="toUserNameSearch" 
+                    [matAutocomplete]="auto2">
+                  <mat-autocomplete #auto2="matAutocomplete">
+                    <mat-option *ngFor="let user2 of userlist2" [value]="user2.userName" style="font-size: small;">
+                      {{user2.userName}}
+                    </mat-option>
+                  </mat-autocomplete>
+                  <!-- <select [(ngModel)]="criteria.criData.toUserName" class="custom-select custom-select-sm"
+                    name="cri-tousername" id="cri-tousername" [disabled]="userlist2.length==0">
+                    <option value="" selected>-</option>
+                    <option [value]="user2.syskey" *ngFor="let user2 of userlist2">
+                      {{user2.t2}}
+                    </option>
+                  </select> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="d-flex justify-content-start">
+                <div class="btn-group" role="group" style="height: 35px;">
+                  <button (click)="search(0, true)" type="button" class="btn btn-primary" [disabled]="spinner">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                    <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                  </button> 
+                </div>
+                <div class="d-flex justify-content-start">
+                  <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                    <button (click)="print()" type="button" class="btn btn-primary">
+                      Export
+                    </button>
+                    <!-- <ion-button fill="clear" (click)="print()">Export</ion-button> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive text-nowrap overflow-auto">
+          <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          <table class="table table-hover " style="font-size: 13px;">
+          <thead class="thead-dark">
+            <tr>
+              <th [class]="searchtab? '':'sticky-top'" scope="col" style="width: 5px">#</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Date</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">From User Name</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">To User Name</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Shop Name</th>
+              <th [class]="searchtab? '':'sticky-top'" scope="col">Active/Inactive</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of transferShopList | paginate: config; let i = index" >
+              <th scope="row">{{i+1}}</th>
+              <td>{{d.date}}</td>
+              <td>{{d.fromUserName}}</td>
+              <td>{{d.toUserName}}</td>
+              <td>{{d.t1}}</td>
+              <td>{{d.n3}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</ion-content>

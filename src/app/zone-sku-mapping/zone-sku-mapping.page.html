@@ -1,0 +1,260 @@
+<ion-content>
+  <div class="myOuterContainer">
+      <div class="d-flex justify-content-start mb-2">
+          <ul class="nav nav-pills" id="zmap-pills-tab" role="tablist">
+              <li class="nav-item">
+                  <a class="nav-link" id="zmap-list-tab" data-toggle="tab" href="#zmap-list" role="tab" aria-controls="zmap-list"
+                      aria-selected="true" (click)="btn=false;">List</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" id="zmap-new-tab" data-toggle="tab" href="#zmap-new" role="tab" aria-controls="zmap-new"
+                      aria-selected="false" (click)="newTabClick($event); btn=true">New</a>
+              </li>
+          </ul>
+          <button type="button" class="btn btn-primary  header-btn" (click)="save()" *ngIf="btn">{{zoneObj.syskey==''
+              || zoneObj.syskey=='0'? 'Save':'Update' }}</button>
+          <!-- <button type="button" class="btn btn-primary  header-btn"
+              [disabled]="zoneObj.syskey=='' || zoneObj.syskey=='0'" *ngIf="btn"
+              (click)="gotoDelete()">Delete</button> -->
+      </div>
+      <div class="tab-content" id="nav-tabContent">
+          <div class="tab-pane fade" id="zmap-list" role="tabpanel" aria-labelledby="zmap-list-tab">
+              <mat-accordion class="example-headers-align ">
+                  <mat-expansion-panel class="border rounded mb-1">
+                      <mat-expansion-panel-header>
+                          <mat-panel-title class="text-primary">
+                              Advance
+                          </mat-panel-title>
+                          <mat-panel-description>
+                              <small></small>
+                          </mat-panel-description>
+                      </mat-expansion-panel-header>
+                      <form [formGroup]='list_searchbox_zmapsku'>
+                          <div class="row row-cols-2">
+                              <div class="col">
+                                  <div class="form-group row">
+                                      <label for="stock-code"
+                                          class="col-sm-2 col-form-label col-form-label-sm">Code</label>
+                                      <div class="col">
+                                          <input type="text" id="stockcat-code" name="stock-code"
+                                              class="form-control form-control-sm" formControlName="code">
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col">
+                                  <div class="form-group row">
+                                      <label for="stock-name"
+                                          class="col-sm-2 col-form-label col-form-label-sm">Description</label>
+                                      <div class="col">
+                                          <input type="text" id="stock-name" name="stock-name" formControlName="name"
+                                              class="form-control form-control-sm">
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col">
+                                  <div class="d-flex justify-content-start">
+                                      <div class="btn-group" role="group" style="height: 35px;">
+                                          <button (click)="search()" type="button" class="btn btn-primary"
+                                              [disabled]="spinner">
+                                              <i class="fa fa-search" aria-hidden="true"></i>
+                                          </button>
+                                          <button (click)="refresh()" type="button" class="btn btn-primary">
+                                              <i class="fa fa-refresh" aria-hidden="true"></i>
+                                          </button>
+                                      </div>
+                                      <!-- <div class="d-flex justify-content-start">
+                                          <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                                              <button (click)="print()" type="button" class="btn btn-primary">
+                                                  Export
+                                              </button>
+                                          </div>
+                                      </div> -->
+
+                                  </div>
+                              </div>
+                          </div>
+                      </form>
+
+                  </mat-expansion-panel>
+
+              </mat-accordion>
+              <pagination-controls id="config_zskumap_list" (pageChange)="pageChangedList($event)">
+              </pagination-controls>
+              <table class="table table-hover " style="font-size: 13px;">
+                  <thead class="thead-dark">
+                      <tr>
+                          <th scope="col" style="width: 5px">#</th>
+                          <th scope="col">Code</th>
+                          <th scope="col">Description</th>
+
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let d of zoneList | paginate : config_list ;let i = index" (click)="detail(d)">
+                          <th scope="row">{{i+1}}</th>
+                          <td>{{d.code}}</td>
+                          <td>{{d.description}}</td>
+
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+          <div class="tab-pane fade px-3" id="zmap-new" role="tabpanel" aria-labelledby="zmap-new-tab">
+
+              <div class="row">
+                  <div class="col-4">
+                      <div class="card-body mx-auto py-0" style="margin-bottom: -2px; margin-top: 10px;">
+                          <div class="form-group row">
+                              <label for="name" class="col-form-label col-form-label-sm">Zone</label>
+                                <div class="col-sm">
+                                  <select class="custom-select custom-select-sm"
+                                    name="zone-new" (change)="zoneChange()" [(ngModel)]="zoneObj.syskey"
+                                    id="zone-new">
+                                    <option value="0" selected>-</option>
+                                    <option [value]="i.syskey" *ngFor="let i of zoneList">
+                                    {{i.description}}</option>
+                                  </select>
+                                </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="table-responsive text-nowrap mt-1" id="map_sku_list">
+                <pagination-controls id="config_zone_sku" (pageChange)="pageZoneSKUChanged($event)">
+                </pagination-controls>
+                <table class="table table-hover" style="font-size: 12px;">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="sticky-top" scope="col asc" style="width:5%"> 
+                            <a><span ><i class="fa fa-plus-circle clickable"  (click)="goSKUListPopup()" style="font-size: 20px;"></i></span></a>
+                            </th>
+                            <th class="sticky-top" scope="col" style="width: 5px;">
+                                #
+                            </th>   
+                            <th class="sticky-top" scope="col asc" >
+                                Stock Code
+                            </th>
+                            <th class="sticky-top" scope="col" >
+                                Stock Name
+                            </th>
+                            <th class="sticky-top" scope="col" >
+                                Brand Owner
+                            </th>
+                            <th class="sticky-top" scope="col" >
+                                Brand
+                            </th>
+                            <th style="width: 5%;" (click)="deleteAllItems()">
+                            <a><i class="fa fa-times-circle fa-lg" style="font-size: 20px;"></i></a>    
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let sku of _mappedSKU | paginate: config_zone_sku; let i = index">                      
+                        <td scope="row" ></td>
+                        <td scope="row" >{{i+1}}</td>
+                        <td scope="row" >{{sku.stockCode}}</td>
+                        <td scope="row" >{{sku.stockDesc}}</td>                    
+                        <td scope="row" >{{sku.boDesc}}</td>
+                        <td scope="row" > {{sku.brandDesc}}</td>
+                        <td style="text-align:center" (click)="deleteItem(sku.stockSyskey)">
+                            <a><i class="fa fa-times-circle fa-lg" style="font-size: 20px;"></i></a>
+                        </td> 
+                        </tr>
+                    </tbody>
+    
+                </table>
+    
+            </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+  <!-- POPUP when click "ADD SKU" [FROM HERE] -->
+  <div class="modal fade" id="zmapSKUModalList" tabindex="-1" role="dialog" aria-labelledby="zsku-ModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog  modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="zsku-ModalLongTitle">Stock List</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body surveyortable"
+          style="max-height: 400px !important; overflow-x: auto !important; white-space: nowrap;">
+          <div class="row">
+                <div class="col">
+                    <div class="form-group row">
+                        <label for="stock-code" class="col-sm-3 col-form-label col-form-label-sm">
+                            Stock Code
+                        </label>
+                        <div class="col-sm">
+                            <input type="text" id="cri_zskucode" name="cri_zskucode" placeholder="Search and Enter"
+                            class="form-control form-control-sm" [(ngModel)]="skuObj.stockCode" (keyup.enter)="getAvailableSKUList()">
+                        </div>
+                    </div>
+                
+                </div>
+                <div class="col">
+                    <div class="form-group row">
+                        <label for="stock-code"
+                            class="col-sm-3 col-form-label col-form-label-sm">Stock Name
+                        </label>
+                        <div class="col-sm">
+                            <input type="text" id="cri_zskuname" name="cri_zskuname" placeholder="Search and Enter"
+                                class="form-control form-control-sm" [(ngModel)]="skuObj.stockDesc" (keyup.enter)="getAvailableSKUList()">
+                        </div>
+                    </div>
+                
+                </div>
+          </div>
+
+          <div class="d-flex justify-content-center" *ngIf="isLoading">
+            <div class=" spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"
+              id="spinner-advsearch">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+          <table  class="table table-hover mt-2" style="font-size: 13px;">
+            <thead class="thead-dark">
+              <tr>
+                <th nowrap>
+                    <ion-checkbox (click)="allSKUSelect($event)" [(ngModel)]="isCheckedAll" style="padding-left: 1px"></ion-checkbox>
+                    Stock Code
+                </th>
+                <th>Stock Name</th>
+                <th>Brand Owner</th>
+                <th>Brand</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let sku of _availableSKU">
+                <td nowrap>
+                  <ion-checkbox [(ngModel)]="sku.selected"></ion-checkbox>
+                  {{sku.stockCode}}
+                </td>
+                <td>{{sku.stockDesc}}</td>
+                <td>{{sku.boDesc}}</td>
+                <td>{{sku.brandDesc}}</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+        <div class="modal-footer">
+          <button (click)="addSKU()" type="button" class="btn btn-primary"> Add Stock</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- POPUP when click "ADD SKU" [TO HERE] -->
+
+
+</ion-content>

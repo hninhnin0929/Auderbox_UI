@@ -1,0 +1,95 @@
+.logintitle {
+    background: linear-gradient(to right, #f16349 0%, #ffc800 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+.url:hover{
+    color: rgba(0, 38, 209, 0.849);
+    text-decoration: underline;
+}
+.url{
+    font-size: 12px;
+  
+}
+
+#keyboard {
+    list-style: none;
+    margin-top: 100px;
+    padding: 0px;
+}
+
+#keyboard li {
+    float: left;
+    margin: 0 5px 5px 0;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    line-height: 60px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #C8C8C8;
+    border-radius: 5px;
+}
+
+#keyboard .input {
+    width: 125px;
+}
+
+.capslock,
+.tab,
+.left-shift,
+.clearl,
+.switch {
+    clear: left;
+}
+
+#keyboard .space {
+    float: left;
+    width: 556px;
+}
+
+#keyboard .switch,
+#keyboard .space,
+#keyboard .return {
+    font-size: 16px;
+}
+
+.on {
+    display: none;
+}
+
+#keyboard li:hover {
+    position: relative;
+    top: 1px;
+    left: 1px;
+    border-color: #e5e5e5;
+    cursor: pointer;
+}
+
+.mid {
+    margin-left: 20px;
+}
+
+ion-loading.custom-loading {
+    background: transparent;
+    box-shadow: none;
+}
+.inner-addon {
+    position: relative;
+  }
+  
+  /* style glyph */
+  .inner-addon .glyphicon {
+    position: absolute;
+    padding: 10px;
+    pointer-events: none;
+  }
+  
+  /* align glyph */
+  .left-addon .glyphicon  { left:  0px;}
+  .right-addon .glyphicon { right: 0px;}
+  
+  /* add padding  */
+  .left-addon input  { padding-left:  30px; }
+  .right-addon input { padding-right: 30px; }

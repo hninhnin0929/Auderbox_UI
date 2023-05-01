@@ -1,0 +1,48 @@
+.close {
+    outline: none !important;
+
+    float: right;
+    font-size: 16px;
+
+    transition: all 0.4s;
+}
+.custom-dialog-container .mat-dialog-container {
+    position: relative;
+}
+.card {
+    height: 65vh !important;
+    overflow: auto !important;
+}
+.card-header {
+    background-color: whitesmoke !important;
+    z-index: 2;
+    top: 0;
+}
+
+ul li {
+    display: inline;
+}
+.example-section {
+    display: flex;
+    align-content: center;
+    align-items: center;
+}
+.type-section {
+    height: 68px;
+}
+
+.example-margin {
+    margin: 0 10px;
+}
+
+@media only screen and (max-width: 700px) {
+    .close {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        /* background: blue; */
+        color: white;
+        opacity: 1;
+        text-shadow: none;
+    }
+}

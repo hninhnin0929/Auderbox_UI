@@ -1,0 +1,182 @@
+<ion-content>
+  <div class="myOuterContainer">
+    <div class="d-flex justify-content-start mb-2">
+      <ul class="nav nav-pills pb-1" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="userlist-tab" data-toggle="pill" href="#userlist" role="tab" aria-controls="stockList"
+            aria-selected="true">List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="usernew-tab" data-toggle="pill" href="#usernew" role="tab" aria-controls="stockNew"
+            (click)="detailTab()" aria-selected="false">New</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tab-content" id="pills-tabContent">
+      <div class="tab-pane fade overflow-auto" id="userlist" role="tabpanel" aria-labelledby="userlist-tab">
+        <mat-accordion class="example-headers-align ">
+          <mat-expansion-panel (opened)="advanceSearch(searchtab? false: true)"
+            class="border rounded advance-search-panel mb-1">
+            <mat-expansion-panel-header class="advance-search-panel-header">
+              <mat-panel-title class="text-primary">
+                <span *ngIf="!spinner">Advance</span>
+                <div class="spinner-border text-primary" role="status" id="spinner-advsearch" *ngIf="spinner">
+                  <span class="sr-only"></span>
+                </div>
+              </mat-panel-title>
+              <mat-panel-description>
+                <small></small>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div class="row row-cols-3">
+              <div class="col">
+                <div class="form-group row">
+                  <label for="user-id" class="col-sm-4 col-form-label col-form-label-sm">User ID</label>
+                  <div class="col-sm">
+                    <input type="text" id="user-id" class="form-control form-control-sm "
+                      [(ngModel)]="searchObj.userId">
+                  </div>
+                </div>
+
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <label for="user-name" class="col-sm-4 col-form-label col-form-label-sm">User Name</label>
+                  <div class="col-sm">
+                    <input type="text" id="user-name" class="form-control form-control-sm"
+                      [(ngModel)]="searchObj.userName">
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+
+                <div class="form-group row">
+                  <label for="team" class="col-sm-4 col-form-label col-form-label-sm">Team</label>
+                  <div class="col-sm">
+                    <input type="text" id="team" class="form-control form-control-sm" [(ngModel)]="searchObj.otherId">
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <label for="inactive" class="col-sm-4 col-form-label col-form-label-sm">Team Type</label>
+                  <div class="col-sm">
+                    <select class="custom-select custom-select-sm" [(ngModel)]="searchObj.teamtype" id="ut">
+                      <option [value]="t.code" *ngFor="let t of teamType">{{t.val}}</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <label for="teamStatus" class="col-sm-4 col-form-label col-form-label-sm">
+                    Status
+                  </label>
+                  <div class="col-sm">
+                    <select id="teamStatus" class="custom-select custom-select-sm" [(ngModel)]="searchObj.status">
+                      <option value="" selected>All</option>
+                      <option [value]="0">Active</option>
+                      <option [value]="1">Inactive</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <label for="inactive" class="col-sm-4 col-form-label col-form-label-sm">User Type</label>
+                  <div class="col-sm">
+                    <!-- <select multiple class="custom-select custom-select-sm" id="ut" 
+                      [(ngModel)]="searchObj.userType">
+                        <option [value]="t.code" *ngFor="let t of userType">
+                          {{t.val}}
+                        </option>
+                    </select> -->
+                    <div class="card card-body" style="width: 170px">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="0" id="cri-usertype-0" name = "usertype-cri-def">
+                        <label class="form-check-label" for="cri-usertype-0">
+                          All
+                        </label>
+                      </div>
+                      <div class="form-check" *ngFor="let t of userType;let i = index">
+                        <input class="form-check-input" type="checkbox" [value]="t.code" [id]="'cri-usertype-' + t.code" [(ngModel)]="t.check" name = "usertype-cri">
+                        <label class="form-check-label" [for]="'cri-usertype-' + t.code">
+                          {{t.val}}
+                        </label>
+                      </div>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="d-flex justify-content-start">
+                  <div class="btn-group" role="group" style="height: 35px;">
+                    <button (click)="search()" type="button" class="btn btn-primary" [disabled]="spinner">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                    <button (click)="advanceSearchReset()" type="button" class="btn btn-primary">
+                      <i class="fa fa-refresh" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="d-flex justify-content-start">
+                    <div class="btn-group" style="height: 35px; margin-left: 10px;">
+                      <button (click)="print()" type="button" class="btn btn-primary">
+                        Export
+                      </button>
+                      <!-- <ion-button fill="clear" (click)="print()">Export</ion-button> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+
+        <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+        <div class="mt-1">
+
+          <table class="table table-hover table-bordered" style="font-size: 13px;">
+            <thead class="thead-dark ">
+              <tr>
+                <th scope="col" style="width: 5px">#</th>
+                <th scope="col" >Id</th>
+                <th scope="col" >Name</th>
+                <th scope="col" >User Type</th>
+                <th scope="col" >Team Type</th>
+                <th scope="col" >Team</th>
+                <th scope="col-1" class="text-center">Status</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="_array.length==0">
+                <td scope="row" colspan="6">No record</td>
+              </tr>
+              <tr *ngFor="let item of _array | paginate: config; let i = index" (click)="gotoDetail(item);">
+                <td scope="row">{{item.i+1}}</td>
+                <td scope="row">{{item.userId}}</td>
+                <td scope="row">{{item.userName}}</td>
+                <td scope="row">{{item.usertype}}</td>
+                <td scope="row">{{item.teamtype }}</td>
+                <td scope="row">{{item.otherId}}</td>
+                <td scope="row" class="text-center">
+                  <span class="dot bg-success" *ngIf="item.status =='Active'"></span>
+                  <span class="dot bg-secondary" *ngIf="item.status =='Inactive'"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</ion-content>

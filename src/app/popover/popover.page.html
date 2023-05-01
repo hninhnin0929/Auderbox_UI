@@ -1,0 +1,22 @@
+<ion-content>
+    <div class="myOuterContainer">
+        <div class="d-flex justify-content-center">
+            <img src="assets/img/avatar.png" class="img rounded-circle" style="width: 80px; margin: auto" alt="...">
+        </div>
+        <div class="justify-content-center">
+            <div class="card-body">
+                <h5 class="card-title text-center">{{userid}}</h5>
+                <p class="card-text text-center">{{username}}</p>
+            </div>
+        </div>
+
+        <div class="list-group list-group-flush">
+
+            <a class="list-group-item list-group-item-action" disabled>Go to account</a>
+            <a class="list-group-item list-group-item-action text-primary" (click)="logout()">Logout</a>
+
+        </div>
+
+    </div>
+
+</ion-content>

@@ -1,0 +1,46 @@
+
+<ion-content>
+  <h3>Upload File</h3>
+
+  <!--<form [formGroup]="fileUploadForm" (ngSubmit)="onFormSubmit()">
+      <div class="row">
+          <div class="col-sm-12">
+              <div>
+                  <h6 class="head-title margin-top-8"><span>UPLOAD</span></h6>
+              </div>
+          </div>
+  
+          <div class="col-sm-6 text-center">
+  
+              <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="customFile" name="myfile"
+                      (change)="onFileSelect($event)" #UploadFileInput>
+                  <label class="custom-file-label" for="customFile">{{fileInputLabel || 'Choose File'}}</label>
+              </div>
+  
+          </div>
+          <div class="col-sm-6 text-center">
+              <button class="btn btn-primary" type="submit">Upload</button>
+          </div>
+      </div>
+  </form>-->
+  
+  <div class="form-group row">
+    <label for="typeId" class="col-sm-4 col-form-label">Upload Excel </label>
+    <div class="col-sm">
+      <input class="form-control" type="file" #fileInput (click)="resetValue()" (change)="onUpload($event)"
+     />
+    </div>
+  </div>
+
+  <div>
+    <button type="button" class="btn btn-primary " (click)="excelBind()" 
+      style="float: right;">
+      Import
+    </button>
+    <button type="button" class="btn btn-primary " (click)="sampleExcelDownload()"
+    style="margin-right: 10px; float: right;">
+    Sample Excel Download
+  </button>
+  </div>
+</ion-content>

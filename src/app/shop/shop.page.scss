@@ -1,0 +1,579 @@
+.spinner-border {
+    margin-left: 20px;
+    width: 20px;
+    height: 20px;
+}
+// #shop-name,
+// #shop-phno,
+// #shop-email,
+// #shop-oname {
+//     width: 150px;
+// }
+#textarea-table {
+    cursor: pointer;
+}
+
+.selectBox {
+    display: inline-block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    vertical-align: middle;
+    /* background: #fff url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e) no-repeat right .75rem center/8px 10px; */
+    border: 1px solid #ced4da;
+}
+.surveyorbtn {
+    position: absolute;
+    bottom: 10%;
+    right: 10%;
+}
+@media (max-width: 400px) {
+    .surveyorbtn {
+        position: absolute;
+        bottom: 0;
+        right: 1%;
+    }
+}
+
+.headershadow {
+    box-shadow: 0px 2px 3px 0px grey !important;
+}
+.container {
+    padding: 5px;
+}
+.editItem {
+    float: right;
+    font-size: 16px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.rtposition {
+    padding: 10px;
+
+    position: absolute;
+    right: 10px;
+    top: 0px;
+    z-index: 10000;
+}
+.surveyor-section {
+    align-content: center;
+    align-items: center;
+}
+
+.surveyor-margin {
+    margin: 0 10px;
+}
+
+
+
+.mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+}
+
+:host ::ng-deep .mat-radio-container {
+    height: 15px;
+    width: 15px;
+}
+:host ::ng-deep .mat-radio-outer-circle {
+    height: 15px;
+    width: 15px;
+}
+:host ::ng-deep .mat-radio-inner-circle {
+    height: 15px;
+    width: 15px;
+}
+
+:host ::ng-deep .cdk-overlay-container {
+    z-index: 2000 !important;
+}
+
+:host ::ng-deep .mat-radio-button .mat-radio-ripple {
+    height: 30px; /*double of your required circle radius*/
+    width: 30px; /*double of your required circle radius*/
+    left: calc(50% - 15px); /*'10px'-same as your required circle radius*/
+    top: calc(50% - 15px); /*'10px'-same as your required circle radius*/
+}
+
+//   :host ::ng-deep .mat-button-toggle-group .mat-button-toggle-button  .mat-button-toggle-label-content{
+//     height: 13px !important;
+//     font-size: 14px;
+//     margin: auto;
+//   }
+:host ::ng-deep .mat-button-toggle-label-content {
+    line-height: 15px !important;
+}
+
+.save:hover {
+    text-decoration: underline;
+}
+.spinner-border {
+    margin-left: 20px;
+    width: 20px;
+    height: 20px;
+}
+#pic-model {
+    z-index: 1000px !important;
+}
+.flexbin {
+    display: flex;
+    overflow: hidden;
+    flex-wrap: wrap;
+    margin: -2.5px;
+}
+.flexbin:after {
+    content: "";
+    flex-grow: 999999999;
+    min-width: 300px;
+    height: 0;
+}
+.flexbin > * {
+    position: relative;
+    display: block;
+    height: 300px;
+    margin: 2.5px;
+    flex-grow: 1;
+}
+.flexbin > * > img {
+    height: 300px;
+    object-fit: cover;
+    max-width: 100%;
+    min-width: 100%;
+    vertical-align: bottom;
+}
+.flexbin.flexbin-margin {
+    margin: 2.5px;
+}
+@media (max-width: 980px) {
+    .flexbin {
+        display: flex;
+        overflow: hidden;
+        flex-wrap: wrap;
+        margin: -2.5px;
+    }
+    .flexbin:after {
+        content: "";
+        flex-grow: 999999999;
+        min-width: 150px;
+        height: 0;
+    }
+    .flexbin > * {
+        position: relative;
+        display: block;
+        height: 150px;
+        margin: 2.5px;
+        flex-grow: 1;
+    }
+    .flexbin > * > img {
+        height: 150px;
+        object-fit: cover;
+        max-width: 100%;
+        min-width: 100%;
+        vertical-align: bottom;
+    }
+    .flexbin.flexbin-margin {
+        margin: 2.5px;
+    }
+}
+@media (max-width: 400px) {
+    .flexbin {
+        display: flex;
+        overflow: hidden;
+        flex-wrap: wrap;
+        margin: -2.5px;
+    }
+    .flexbin:after {
+        content: "";
+        flex-grow: 999999999;
+        min-width: 100px;
+        height: 0;
+    }
+    .flexbin > * {
+        position: relative;
+        display: block;
+        height: 100px;
+        margin: 2.5px;
+        flex-grow: 1;
+    }
+    .flexbin > * > img {
+        height: 100px;
+        object-fit: cover;
+        max-width: 100%;
+        min-width: 100%;
+        vertical-align: bottom;
+    }
+    .flexbin.flexbin-margin {
+        margin: 2.5px;
+    }
+}
+// Default variables that can be overrided
+$flexbin-row-height: 100px !default;
+$flexbin-space: 5px !default;
+
+$flexbin-tablet-max: 980px !default;
+$flexbin-row-height-tablet: 150px !default;
+$flexbin-space-tablet: $flexbin-space !default;
+
+$flexbin-phone-max: 400px !default;
+$flexbin-row-height-phone: 100px !default;
+$flexbin-space-phone: $flexbin-space !default;
+
+// Minxin for customize multiple Flexbin layout
+// For example, 300px height for desktop devices, 150px height for mobile devices
+@mixin flexbin($row-height, $space) {
+    display: flex;
+    overflow: hidden;
+    flex-wrap: wrap;
+    margin: -$space / 2;
+
+    // Let final row align left fit if images are not enough to fill
+    // If the gap is very small, fill the final row
+    &:after {
+        content: "";
+        flex-grow: 999999999; // avoid final row zoom too much to fit width
+        min-width: $row-height; // avoid small gap in final row (< $row-height)
+        height: 0;
+    }
+
+    > * {
+        position: relative;
+        display: block;
+        height: $row-height;
+        margin: $space / 2;
+        flex-grow: 1;
+
+        > img {
+            height: $row-height;
+            object-fit: cover;
+            max-width: 100%;
+            min-width: 100%;
+            vertical-align: bottom;
+        }
+    }
+
+    // Add margin around flexbin gallery
+    // Visual margin is the same with space between rows
+    &.flexbin-margin {
+        margin: $space / 2;
+    }
+    
+}
+// CSS class for basic usage
+.flexbin {
+    // Desktop devices
+    @include flexbin($flexbin-row-height, $flexbin-space);
+
+    // Tablet devices
+    @media (max-width: $flexbin-tablet-max) {
+        @include flexbin($flexbin-row-height-tablet, $flexbin-space-tablet);
+    }
+
+    // Phone devices
+    @media (max-width: $flexbin-phone-max) {
+        @include flexbin($flexbin-row-height-phone, $flexbin-space-phone);
+    }
+}
+
+// preview image kmz
+/* The Modal (background) */
+
+#previewMerchandiseImgModel {
+    display: none;
+    /* Hidden by default */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.9);
+    /* Black w/ opacity */
+}
+
+/* Modal Content (image) */
+
+.previewMerchandiseImgModel-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+}
+
+/* Caption of Modal Image */
+
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+}
+
+/* Add Animation */
+
+.previewMerchandiseImgModel-content,
+#caption {
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+@keyframes zoom {
+    from {
+        transform: scale(0.1);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+/* The Close Button */
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+.isempty {
+    width: 100%;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+/* 100% Image Width on Smaller Screens */
+
+@media only screen and (max-width: 700px) {
+    .previewMerchandiseImgModel-content {
+        width: 100%;
+    }
+}
+
+ 
+.btndelete {
+
+    background-color: rgb(189, 51, 80);
+
+    color: white;
+
+  }
+
+.btndelete:hover {
+
+    background-color:  #740110;
+
+    color: white;
+
+  }
+
+ 
+/* switch locked/unlocked */
+  $primary: #5628EE;
+$lightGrey: #99A3BA;
+
+.switch {
+    height: 20px;
+    display: block;
+    position: relative;
+    cursor: pointer;
+    input {
+        display: none;
+        & + span {
+            padding-left: 50px;
+            min-height: 20px;
+            line-height: 20px;
+            display: block;
+            color: $lightGrey;
+            position: relative;
+           // vertical-align: middle;
+            white-space: nowrap;
+            transition: color .3s ease;
+            &:before,
+            &:after {
+                content: '';
+                display: block;
+                position: absolute;
+                border-radius: 12px;
+            }
+            &:before {
+                top: 0;
+                left: 0;
+                width: 42px;
+                height: 24px;
+                background: #E4ECFA;
+                transition: all .3s ease;
+            }
+            &:after {
+                width: 18px;
+                height: 18px;
+                background: #fff;
+                top: 3px;
+                left: 3px;
+                box-shadow: 0 1px 3px rgba(#121621, .1);
+                transition: all .45s ease;
+            }
+            em {
+                width: 8px;
+                height: 7px;
+                background: $lightGrey;
+                position: absolute;
+                left: 8px;
+                bottom: 7px;
+                border-radius: 2px;
+                display: block;
+                z-index: 1;
+                transition: all .45s ease;
+                &:before {
+                    content: '';
+                    width: 2px;
+                    height: 2px;
+                    border-radius: 1px;
+                    background: #fff;
+                    position: absolute;
+                    display: block;
+                    left: 50%;
+                    top: 50%;
+                    margin: -1px 0 0 -1px;
+                }
+                &:after {
+                    content: '';
+                    display: block;
+                    border-top-left-radius: 4px;
+                    border-top-right-radius: 4px;
+                    border: 1px solid $lightGrey;
+                    border-bottom: 0;
+                    width: 6px;
+                    height: 4px;
+                    left: 1px;
+                    bottom: 6px;
+                    position: absolute;
+                    z-index: 1;
+                    transform-origin: 0 100%;
+                    transition: all .45s ease;
+                    transform: rotate(-35deg) translate(0, 1px);
+                }
+            }
+            strong {
+                font-weight: normal;
+                position: relative;
+                display: block;
+                top: 1px;
+                &:before,
+                &:after {
+                    font-size: 12px;
+                    font-weight: 500;
+                    display: block;
+                    font-family: 'Mukta Malar', Arial;
+                   // -webkit-backface-visibility: hidden;
+                }
+                &:before {
+                    content: 'Not Verified';
+                    transition: all .3s ease .2s;
+                }
+                &:after {
+                    content: 'Verified';
+                    opacity: 0;
+                    visibility: hidden;
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    color: $primary;
+                    transition: all .3s ease;
+                    transform: translate(2px, 0);
+                }
+            }
+        }
+        &:checked {
+            & + span {
+                &:before {
+                    background: rgba($primary, .35);
+                }
+                &:after {
+                    background: #fff;
+                    transform: translate(18px, 0);
+                }
+                em {
+                    transform: translate(18px, 0);
+                    background: $primary;
+                    &:after {
+                        border-color: $primary;
+                        transform: rotate(0deg) translate(0, 0);
+                    }
+                }
+                strong {
+                    &:before {
+                        opacity: 0;
+                        visibility: hidden;
+                        transition: all .3s ease;
+                        transform: translate(-2px, 0);
+                    }
+                    &:after {
+                        opacity: 1;
+                        visibility: visible;
+                        transform: translate(0, 0);
+                        transition: all .3s ease .2s;
+                    }
+                }
+            }
+        }
+    }
+}
+
+html {
+    -webkit-font-smoothing: antialiased;
+}
+
+* {
+    box-sizing: border-box;
+    &:before,
+    &:after {
+        box-sizing: border-box;
+    }
+}
+
+// Center & dribbble
+body {
+    min-height: 100vh;
+    font-family: 'Mukta Malar', Arial;
+    line-height: 22px;
+    font-size: 16px;
+    color: #ADAFB6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .switch {
+        display: table;
+        margin: 12px auto;
+        min-width: 118px;
+    }
+    .dribbble {
+        position: fixed;
+        display: block;
+        right: 20px;
+        bottom: 20px;
+        img {
+            display: block;
+            height: 28px;
+        }
+    }
+}
+ 
+//----------

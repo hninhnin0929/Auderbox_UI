@@ -1,0 +1,37 @@
+
+#rdLevel{
+    float: left;
+    padding: none;
+    margin: none;
+}
+.container{
+    padding: 10px;
+}
+#scrollable{
+    max-height: 500px;
+    overflow-y: scroll;
+    margin: auto;
+  }
+  #btnGroup > ion-button{
+    
+    float: right;
+}
+.form-control-sm,.custom-select-sm{
+    width: 170px;
+}
+
+.btndelete {
+
+    background-color: rgb(189, 51, 80);
+
+    color: white;
+
+  }
+
+.btndelete:hover {
+
+    background-color:  #740110;
+
+    color: white;
+
+  }

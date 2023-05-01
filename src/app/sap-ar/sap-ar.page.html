@@ -1,0 +1,150 @@
+<div class="card mb-2">
+  <form [formGroup]="filterBoxFormGroup">
+    <div class="card-body pb-0">
+      <div class="row row-cols-1 row-cols-sm-2">
+        <!-- <div class="col">
+          <div class="form-group row">
+            <label for="fd" class="col-sm-3 col-form-label">Date </label>
+            <div class="col-sm">
+              <div class="input-group  datepicker">
+                  <input [(ngModel)]="criteria.fromDate" [min]="criteria.fromDate" matInput [matDatepicker]="fromDatePicker" placeholder="Select Date" class="form-control"
+                  [ngModelOptions]="{standalone: true}" [disabled]="true" readonly>
+                <div class="input-group-append date-btn border-top border-right border-bottom py-2 px-2 rounded-right"
+                  style="width: fit-content;" (click)="fromDatePicker.open()">
+                  <i class="fa fa-calendar" aria-hidden="true "></i>
+                  <mat-datepicker #fromDatePicker></mat-datepicker>
+                </div>
+              </div>
+            </div>
+            <label class="col-sm-3 col-form-label"><input type="checkbox" [(ngModel)]="criteria.chkDate" (change)="changeAllDate()" [disabled]="true" [ngModelOptions]="{standalone: true}">&nbsp;All</label>
+          </div>
+        </div> -->
+        <div class="col">
+          <div class="form-group row">
+            <label for="fd" class="col-sm-3 col-form-label col-form-label-sm">Choose File </label>
+            <div class="col-sm">
+              <input type="file" id="arfilechose" class="custom-file-input form-control-sm" name="arfilechose" [ngModelOptions]="{standalone: true}"
+              [ngModel]="importload" #chosearfile (click)="resetValue()" (change)="onUpload($event)" >
+             <label class="custom-file-label col-form-label-sm text-truncate"
+              matTooltip="chosearfile.value == ''? 'Name': chosearfile.value"
+              for="arfilechose">{{chosearfile.value == ''? 'Name': chosearfile.value}}</label>
+            </div>           
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer d-flex bg-light border-top-0">
+      <button class="btn btn-primary mr-3" id="btn-arpreview" (click)="gotoPreview()">
+        <i class="fa fa-eye mr-1"></i>
+        Preview</button>
+        <button class="btn btn-primary mr-3" id="btn-arimport" (click)="gotoImport()" [disabled]="!arImportBtn_Access">
+          <i class="fa fa-file mr-1"></i>
+        Import SAP Template</button>
+      <button class="btn btn-primary" id="btn-ardownload" (click)="download()" [hidden]="true">
+        <i class="fa fa-download mr-1"></i>
+        Download</button>
+    </div>
+    <div class="progress" style="width: 100%;" id="progress-bar-ar">
+      <div class="progress-bar progress-bar-success progress-bar-striped active progress-bar-animated" role="progressbar" aria-valuenow="83"
+      aria-valuemin="0" aria-valuemax="100" style="width:100%">
+      </div>
+    </div>
+  </form>
+</div>
+<div id="no-log-tab" *ngIf="flag.isDownload">
+  <div class="border rounded py-1 px-1 mb-1 pl-1 d-flex"  id="ar-download-result">    
+    <span class="text-dark btn"><i class="fa fa-info-circle"></i>{{resultData.message}}!</span>
+    <div class="btn btn-link" (click)="showSuccessList()">
+        <i class="fa fa-check" style="color: green;"></i>Successful Records : <strong style="color: green;">{{resultData.successList.length}}</strong>
+    </div>
+    <div class="btn btn-link" (click)="showFailList()"><i class="fa fa-times" style="color: red;"></i>Failed Records     : <strong style="color: red;">{{resultData.failList.length}}</strong></div>
+    <!-- <div class="form-group ml-auto"> 
+      <button class="btn btn-primary" id="" (click)="showDetail()" [disabled]="true"><i class="fa fa-list mr-1"></i>Show</button>
+    </div> -->
+  </div>
+</div>
+<div id="ar-detail-table" class="table-responsive text-nowrap overflow-auto mt-2">
+  <pagination-controls id="ardetail" (pageChange)="pageChanged($event)">
+  </pagination-controls>
+  <table class="table table-hover" style="font-size: 13px;">
+    <thead class="thead-dark">
+      <tr class="bg-light">
+        <th>No.</th>
+        <th>CUSTOMER_ID</th>
+        <th>CUSTOMER_NAME</th>
+        <th>INVOICE_NUMBER</th>
+        <th>INVOICE_DATE</th>
+        <th>DUE_DATE</th>
+        <th>CURRENCY</th>
+        <th>AMOUNT</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let arLts of _arlistdata | paginate : config; let i = index">
+        <td>{{i+1}}</td>
+        <td>{{arLts.CUSTOMER_ID}}</td>
+        <td>{{arLts.CUSTOMER_NAME}}</td>
+        <td>{{arLts.INVOICE_NUMBER}}</td>
+        <td>{{arLts.INVOICE_DATE}}</td>
+        <td>{{arLts.DUE_DATE}}</td>
+        <td>{{arLts.CURRENCY}}</td>
+        <td>{{arLts.AMOUNT}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div id="ar-result-table" class="table-responsive text-nowrap overflow-auto mt-2">
+  <pagination-controls id="arresult" (pageChange)="pageChanged($event)">
+  </pagination-controls>
+  <table class="table table-hover" style="font-size: 13px;">
+    <thead class="thead-dark">
+      <tr class="bg-light">
+        <th>No.</th>
+        <th>CUSTOMER_ID</th>
+        <th>CUSTOMER_NAME</th>
+        <th>INVOICE_NUMBER</th>
+        <th>INVOICE_DATE</th>
+        <th>DUE_DATE</th>
+        <th>CURRENCY</th>
+        <th>AMOUNT</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let rarLts of _resultList | paginate : config; let i = index">
+        <td>{{i+1}}</td>
+        <td>{{rarLts.customerId}}</td>
+        <td>{{rarLts.customerName}}</td>
+        <td>{{rarLts.invNumber}}</td>
+        <td>{{rarLts.invDate}}</td>
+        <td>{{rarLts.dueDate}}</td>
+        <td>{{rarLts.currency}}</td>
+        <td>{{rarLts.amount}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<!-- <div id="log-tab" *ngIf="filterBoxFormGroup.get('log').value">
+  <div id="ar-log-table">
+    <pagination-controls>
+    </pagination-controls>
+    <table class="table table-sm mt-2">
+      <tr class="bg-light">
+        <th>No</th>
+        <th>File Name</th>
+        <th>Date</th>
+        <th>Batch No</th>
+        <th width="20px"></th>
+      </tr>
+      <tr *ngFor="let i of tableData | paginate : config">
+        <td>1</td>
+        <td>batch_1</td>
+        <td>27-8-2021</td>
+        <td>1</td>
+        <td>
+          <button class="btn btn-link">Download</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+</div> -->
